@@ -12,7 +12,9 @@ import org.springframework.stereotype.Service;
 import com.project.TeamFinder.dto.LoginUserDTO;
 import com.project.TeamFinder.dto.RegisterUserDTO;
 import com.project.TeamFinder.dto.VerifyUserDTO;
+import com.project.TeamFinder.model.Role;
 import com.project.TeamFinder.model.User;
+import com.project.TeamFinder.repository.CollegeRepresentativeRepository;
 import com.project.TeamFinder.repository.UserRepository;
 
 import jakarta.mail.MessagingException;
@@ -20,18 +22,21 @@ import jakarta.mail.MessagingException;
 @Service
 public class AuthenticationService {
     private final UserRepository userRepository;
+    private final CollegeRepresentativeRepository collegeRepresentativeRepository;
     private final PasswordEncoder passwordEncoder;
     private final AuthenticationManager authenticationManager;
     private final EmailService emailService;
 
     public AuthenticationService(
             UserRepository userRepository,
+            CollegeRepresentativeRepository collegeRepresentativeRepository,
             AuthenticationManager authenticationManager,
             PasswordEncoder passwordEncoder,
             EmailService emailService
     ) {
         this.authenticationManager = authenticationManager;
         this.userRepository = userRepository;
+        this.collegeRepresentativeRepository = collegeRepresentativeRepository;
         this.passwordEncoder = passwordEncoder;
         this.emailService = emailService;
     }
@@ -43,7 +48,15 @@ public class AuthenticationService {
     }
 
     public User signup(RegisterUserDTO input) {
-        User user = new User(input.getUsername(), input.getEmail(), passwordEncoder.encode(input.getPassword()));
+        User user = new User(input.getUsername(), input.getEmail(), passwordEncoder.encode(input.getPassword()), input.getRole());
+
+        if (user.getRole() == Role.REPRESENTATIVE) {
+            Boolean repAllowed = collegeRepresentativeRepository.existsByEmail(input.getEmail());
+            if (!repAllowed) {
+                throw new RuntimeException("You ain't no rep!");
+            }
+        }
+
         user.setVerificationCode(generateVerificationCode());
         user.setVerificationCodeExpiresAt(LocalDateTime.now().plusMinutes(15));
         user.setEnabled(false);

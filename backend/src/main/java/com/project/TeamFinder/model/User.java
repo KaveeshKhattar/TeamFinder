@@ -30,6 +30,9 @@ public class User implements UserDetails {
     @Column(nullable = false)
     private String password;
 
+    @Enumerated(EnumType.STRING)
+    private Role role;
+
     private Boolean enabled;
     
     @Column(name="verification_code")
@@ -39,10 +42,11 @@ public class User implements UserDetails {
     private LocalDateTime verificationCodeExpiresAt;
 
 
-    public User(String username, String email, String password) {
+    public User(String username, String email, String password, Role role) {
         this.username = username;
         this.email = email;
         this.password = password;
+        this.role = role;
     }
 
     public User() {
@@ -50,7 +54,7 @@ public class User implements UserDetails {
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        return List.of();        
+        return List.of();
     }
 
     @Override

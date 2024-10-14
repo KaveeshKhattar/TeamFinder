@@ -1,5 +1,7 @@
 package com.project.TeamFinder.dto;
 
+import com.project.TeamFinder.model.Role;
+
 import lombok.Getter;
 import lombok.Setter;
 
@@ -9,4 +11,5 @@ public class RegisterUserDTO {
     private String email;
     private String password;
     private String username;
+    private Role role;
 }
