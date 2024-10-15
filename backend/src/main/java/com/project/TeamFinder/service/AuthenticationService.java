@@ -47,8 +47,12 @@ public class AuthenticationService {
         return String.valueOf(code);
     }
 
+    public boolean isEmailExists(String email) {
+        return userRepository.existsByEmail(email);
+    }
+
     public User signup(RegisterUserDTO input) {
-        User user = new User(input.getUsername(), input.getEmail(), passwordEncoder.encode(input.getPassword()), input.getRole());
+        User user = new User(input.getFirstName(), input.getLastName(), input.getUsername(), input.getEmail(), passwordEncoder.encode(input.getPassword()), input.getRole());
 
         if (user.getRole() == Role.REPRESENTATIVE) {
             Boolean repAllowed = collegeRepresentativeRepository.existsByEmail(input.getEmail());
@@ -85,6 +89,14 @@ public class AuthenticationService {
     }
 
     public User authenticate(LoginUserDTO input) {
+        
+        if (input.getRole() == Role.REPRESENTATIVE) {
+            Boolean repAllowed = collegeRepresentativeRepository.existsByEmail(input.getEmail());
+            if (!repAllowed) {
+                throw new RuntimeException("You ain't no rep!");
+            }
+        }
+
         User user = userRepository.findByEmail(input.getEmail())
                 .orElseThrow(() -> new RuntimeException("User not found"));
 
@@ -118,7 +130,6 @@ public class AuthenticationService {
     }
 
     private void sendVerificationEmail(User user) { 
-        //TODO: Update with company logo
         String subject = "Account Verification";
         String verificationCode = "VERIFICATION CODE " + user.getVerificationCode();
         String htmlMessage = "<html>"

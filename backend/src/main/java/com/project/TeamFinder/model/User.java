@@ -42,7 +42,7 @@ public class User implements UserDetails {
     private LocalDateTime verificationCodeExpiresAt;
 
 
-    public User(String username, String email, String password, Role role) {
+    public User(String firstName, String lastName, String username, String email, String password, Role role) {
         this.username = username;
         this.email = email;
         this.password = password;

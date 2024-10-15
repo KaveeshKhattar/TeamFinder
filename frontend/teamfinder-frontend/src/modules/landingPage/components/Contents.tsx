@@ -1,6 +1,13 @@
+import { useNavigate } from 'react-router-dom';
 import sectionOneImg from '../assets/join-a-team.webp'
 
 function Contents() {
+    const navigate = useNavigate();
+
+    const handleLoginClick = () => {
+        navigate('/login');
+    };
+
     return (
         <div className='flex flex-col m-4 min-h-screen'>
 
@@ -28,7 +35,7 @@ function Contents() {
 
             <div className='p-4 flex flex-col items-center'>
                 <p className="text-3xl mb-4"> Don't let your friend group <span className="font-bold">limit you!</span></p>
-                <button className='text-3xl border-2 border-blue-500 animate-flicker'>Sign Up</button>
+                <button className='text-2xl border-2 animate-flicker' onClick={handleLoginClick}>Log In</button>
             </div>
 
         </div>

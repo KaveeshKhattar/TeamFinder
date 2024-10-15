@@ -1,6 +1,10 @@
 package com.project.TeamFinder.controller;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -14,16 +18,19 @@ import com.project.TeamFinder.model.User;
 import com.project.TeamFinder.responses.LoginResponse;
 import com.project.TeamFinder.service.AuthenticationService;
 import com.project.TeamFinder.service.JwtService;
+import org.springframework.web.bind.annotation.GetMapping;
+
 
 @RequestMapping("/auth")
 @RestController
+@CrossOrigin
 public class AuthenticationController {
     private final JwtService jwtService;
     private final AuthenticationService authenticationService;
 
     public AuthenticationController(JwtService jwtService, AuthenticationService authenticationService) {
         this.jwtService = jwtService;
-        this.authenticationService = authenticationService;
+        this.authenticationService = authenticationService;        
     }
 
     @PostMapping("/signup")
@@ -63,5 +70,14 @@ public class AuthenticationController {
             return ResponseEntity.badRequest().body(e.getMessage());
         }
     }
+
+    @GetMapping("check-email")
+    public ResponseEntity<Map<String, Boolean>> doesEmailExist(@RequestParam String email) {
+        boolean emailExists = authenticationService.isEmailExists(email);
+        Map<String, Boolean> response = new HashMap<>();
+        response.put("exists", emailExists);
+        return ResponseEntity.ok(response);
+    }
+    
 
 }
