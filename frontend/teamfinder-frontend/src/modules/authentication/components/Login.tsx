@@ -21,6 +21,7 @@ function Login() {
             });
             
             if (response.status === 200) {
+                localStorage.setItem('token', response.data.token);
                 signIn();
                 navigate("/home", {state: { email }});
             }
