@@ -34,8 +34,9 @@ function Contents() {
             </div>
 
             <div className='p-4 flex flex-col items-center'>
-                <p className="text-3xl mb-4"> Don't let your friend group <span className="font-bold">limit you!</span></p>
-                <button className='text-2xl border-2 animate-flicker' onClick={handleLoginClick}>Log In</button>
+                <p className="text-3xl"> Compete and<span className="font-bold"> win big!</span></p>
+                <p className='text-md mb-4'>Don't let your friend group limit you.</p>
+                <button className='text-2xl border-2 animate-flicker' onClick={handleLoginClick}>Join Now</button>
             </div>
 
         </div>

@@ -2,6 +2,7 @@ import axios from "axios";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import Header from "../../landingPage/components/Header";
+import { useAuth } from "../../core/hooks/useAuth";
 
 function Login() {
 
@@ -9,6 +10,7 @@ function Login() {
     const [password, setPassword] = useState('');
     const [role, setRole] = useState('');
     const navigate = useNavigate();
+    const { signIn } = useAuth();
 
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
@@ -19,7 +21,8 @@ function Login() {
             });
             
             if (response.status === 200) {
-                navigate("/home");
+                signIn();
+                navigate("/home", {state: { email }});
             }
         } catch (err) {
             console.log(err, "Log in failed!")
@@ -28,9 +31,9 @@ function Login() {
 
     return (
         <>
-        <Header ></Header>
+        <Header></Header>
         <div className="flex flex-col">
-        <h2 className="text-4xl">Log In</h2>
+        <h2 className="text-4xl">Sign In</h2>
             
             <form className="mt-4" onSubmit={handleSubmit}>
                 <select className="p-2" value={role} onChange={(e) => setRole(e.target.value)} required>
