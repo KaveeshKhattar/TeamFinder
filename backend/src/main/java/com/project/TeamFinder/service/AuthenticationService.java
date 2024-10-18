@@ -52,7 +52,7 @@ public class AuthenticationService {
     }
 
     public User signup(RegisterUserDTO input) {
-        User user = new User(input.getFirstName(), input.getLastName(), input.getUsername(), input.getEmail(), passwordEncoder.encode(input.getPassword()), input.getRole());
+        User user = new User(input.getFirstName(), input.getLastName(), input.getEmail(), passwordEncoder.encode(input.getPassword()), input.getRole());
 
         if (user.getRole() == Role.REPRESENTATIVE) {
             Boolean repAllowed = collegeRepresentativeRepository.existsByEmail(input.getEmail());

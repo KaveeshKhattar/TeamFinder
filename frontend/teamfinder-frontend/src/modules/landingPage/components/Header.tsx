@@ -30,7 +30,7 @@ function Header() {
 
             <a href="/" className="text-2xl text-black dark:text-white hover:text-gray-400">Home</a>
             {isSignedIn ? (
-                  <a href="/home" className="text-2xl p-1 text-black dark:text-white ">Search Teams</a>
+                  <a href="/home" className="text-2xl p-1 text-black dark:text-white ">Explore Teams</a>
             ) : (
               <button></button>
             )}

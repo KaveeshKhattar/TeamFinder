@@ -22,10 +22,13 @@ public class User implements UserDetails {
     private Long id;
 
     @Column(unique = true, nullable = false)
-    private String username;
-
-    @Column(unique = true, nullable = false)
     private String email;
+
+    @Column
+    private String firstName;
+
+    @Column
+    private String lastName;
 
     @Column(nullable = false)
     private String password;
@@ -42,8 +45,9 @@ public class User implements UserDetails {
     private LocalDateTime verificationCodeExpiresAt;
 
 
-    public User(String firstName, String lastName, String username, String email, String password, Role role) {
-        this.username = username;
+    public User(String firstName, String lastName, String email, String password, Role role) {
+        this.firstName = firstName;
+        this.lastName = lastName;
         this.email = email;
         this.password = password;
         this.role = role;
@@ -85,5 +89,17 @@ public class User implements UserDetails {
     @Override
     public boolean isEnabled() {
         return enabled;
+    }
+
+    @Override
+    public String toString() {
+        return "User{" +
+                "id=" + id +
+                ", email='" + email + '\'' +
+                ", firstName='" + firstName + '\'' +
+                ", lastName='" + lastName + '\'' +
+                ", role='" + role + '\'' +
+                ", enabled=" + enabled +
+                '}';
     }
 }

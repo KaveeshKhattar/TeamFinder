@@ -7,5 +7,6 @@ import lombok.Setter;
 @Setter
 public class VerifyUserDTO {
     private String email;
+    private String username;
     private String verificationCode;
 }

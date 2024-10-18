@@ -7,7 +7,6 @@ function Signup() {
 
     const [firstName, setFirstName] = useState('');
     const [lastName, setLastName] = useState('');
-    const [username, setUsername] = useState('');
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [role, setRole] = useState('');
@@ -39,10 +38,9 @@ function Signup() {
         e.preventDefault();
 
         try {
-            console.log(firstName, lastName, username, email, password, role)
             const response = await axios.post('http://localhost:8080/auth/signup', {
-                firstName, lastName, username, email, password, role
-            });            
+                firstName, lastName, email, password, role
+            });
             
             if (response.status === 200) {
                 navigate('/verification', { state: { email } });
@@ -68,8 +66,6 @@ function Signup() {
                     <input className="m-2 p-2" type="text" value={firstName} onChange={(e) => setFirstName(e.target.value)} required placeholder="First Name"/>
                     
                     <input className="m-2 p-2" type="text" value={lastName} onChange={(e) => setLastName(e.target.value)} required placeholder="Last Name"/>
-                    
-                    <input className="m-2 p-2" type="text" value={username} onChange={(e) => setUsername(e.target.value)} required placeholder="Username"/>
                     
                     <input className={`p-2 m-2 rounded-md border-2 
                         ${emailExists === null ? 'border-transparent'
