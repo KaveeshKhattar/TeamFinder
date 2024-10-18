@@ -6,7 +6,7 @@ function LandingPage() {
 
     return (
         <div className='flex flex-col justify-between items-center max-w-3xl m-auto'>
-            <Header></Header>
+            <Header title="TeamFinder"></Header>
             <Contents></Contents>
             <Footer></Footer>
         </div>

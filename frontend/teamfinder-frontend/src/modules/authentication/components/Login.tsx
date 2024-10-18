@@ -23,7 +23,7 @@ function Login() {
             if (response.status === 200) {
                 localStorage.setItem('token', response.data.token);
                 signIn();
-                navigate("/home", {state: { email }});
+                navigate("/colleges", {state: { email }});
             }
         } catch (err) {
             console.log(err, "Log in failed!")
@@ -32,7 +32,7 @@ function Login() {
 
     return (
         <>
-        <Header></Header>
+        <Header title="Login"></Header>
         <div className="flex flex-col">
         <h2 className="text-4xl">Sign In</h2>
             
@@ -48,7 +48,7 @@ function Login() {
                     
                     <input className="m-2 p-2" type="password" id="password" value={password} onChange={(e) => setPassword(e.target.value)} required placeholder="Password"/>
                     
-                    <button><input type="submit" /></button>
+                    <button className="p-2"><input type="submit" /></button>
                 </div>
             </form>
             <p>Don't have an account? Sign up <a href="/signup">here.</a></p>

@@ -1,7 +1,12 @@
 import { useState } from "react";
 import { useAuth } from "../../core/hooks/useAuth";
 
-function Header() {
+// Step 1: Define an interface for the props
+interface HeaderProps {
+  title: string; // Specify that title should be a string
+}
+
+function Header({ title }: HeaderProps) {
 
     const [isOpen, setIsOpen] = useState(false);
     const { isSignedIn } = useAuth();
@@ -15,14 +20,14 @@ function Header() {
 
         <div className="flex items-center">
           <button className="z-50 text-sm px-3 py-2 mr-2" onClick={toggleMenu}><i className={`fa-solid ${isOpen ? 'fa-xmark' : 'fa-bars'}`}></i></button>
-          <a href="/"><h2 className="text-2xl font-bold text-black dark:text-white">TeamFinder</h2></a>          
+          <h2 className="text-2xl font-bold text-black dark:text-white">{title}</h2>
         </div>
 
         <div className="flex items-center">
           {isSignedIn ? (
                   <button className="text-sm p-2 mr-2"><a href="/profile">Profile</a></button>
             ) : (
-                  <button><a href="/login">Sign In</a></button>
+                  <button className="p-2"><a href="/login">Sign In</a></button>
             )}
         </div>        
 
@@ -30,7 +35,7 @@ function Header() {
 
             <a href="/" className="text-2xl text-black dark:text-white hover:text-gray-400">Home</a>
             {isSignedIn ? (
-                  <a href="/home" className="text-2xl p-1 text-black dark:text-white ">Explore Teams</a>
+                  <a href="/colleges" className="text-2xl p-1 text-black dark:text-white ">Explore Teams</a>
             ) : (
               <button></button>
             )}

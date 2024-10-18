@@ -21,13 +21,13 @@ public class CollegeController {
         this.collegeService = collegeService;
     }
 
-    @GetMapping("/home")
+    @GetMapping("/colleges")
     public ResponseEntity<List<College>> allColleges() {
         List<College> colleges = collegeService.findAllColleges();
         return ResponseEntity.ok(colleges);
     }
 
-    @RequestMapping(method = RequestMethod.OPTIONS, value = "/home")
+    @RequestMapping(method = RequestMethod.OPTIONS, value = "/colleges")
     public ResponseEntity<?> handleOptionsRequest() {
         return ResponseEntity.ok().build(); // Respond with 200 OK to OPTIONS requests
     }

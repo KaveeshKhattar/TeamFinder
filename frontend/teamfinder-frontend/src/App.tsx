@@ -7,6 +7,7 @@ import Login from './modules/authentication/components/Login'
 import Signup from './modules/authentication/components/Signup'
 import { AuthProvider } from './modules/core/components/AuthContext'
 import Profile from './modules/profile/components/Profile'
+import Events from './modules/events/components/Events'
 
 function App() {
 
@@ -19,7 +20,8 @@ function App() {
           <Route path="/login" element={<Login />} />
           <Route path="/signup" element={<Signup />} />
           <Route path="/verification" element={<Verification />} />
-          <Route path="/home" element={<HomePage />} />
+          <Route path="/colleges" element={<HomePage />} />
+          <Route path="/:collegeUrl" element={<Events />} />
         </Routes>
       </Router>
     </AuthProvider>

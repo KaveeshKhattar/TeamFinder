@@ -86,11 +86,7 @@ function Profile() {
 
   return (
     <>
-      <Header></Header>
-
-      <div className="flex flex-col justify-center items-center ">
-        <h2 className="text-2xl">Manage Your Profile</h2>
-      </div>
+      <Header title="Profile"></Header>
 
       <div className="flex flex-col">
         <form className="mt-4">
@@ -101,7 +97,7 @@ function Profile() {
                 <div className="flex justify-center items-center">
                   <p className="mr-2">First Name: </p>
                   <input
-                    className="p-2 rounded-md bg-slate-100"
+                    className="p-2 rounded-md dark:bg-zinc-800 bg-slate-100"
                     type="text"
                     name="firstName"
                     value={firstName}
@@ -112,7 +108,7 @@ function Profile() {
               ) : (
                 <div className="flex justify-center items-center">
                   <p className="mr-2">First Name: </p>
-                  <p className="bg-slate-50 p-2 rounded-md">{firstName}</p>
+                  <p className="p-2 rounded-md">{firstName}</p>
                   
                 </div>
               )}
@@ -124,7 +120,7 @@ function Profile() {
                 <div className="flex justify-center items-center">
                   <p className="mr-2">Last Name: </p>
                   <input
-                    className="p-2 rounded-md bg-slate-100"
+                    className="p-2 rounded-md dark:bg-zinc-800 bg-slate-100"
                     type="text"
                     name="lastName"
                     value={lastName}
@@ -135,7 +131,7 @@ function Profile() {
               ) : (
                 <div className="flex justify-center items-center">
                   <p className="mr-2">Last Name: </p>
-                  <p className="mr-2 bg-slate-50 p-2 rounded-md">{lastName}</p>
+                  <p className="mr-2 p-2 rounded-md">{lastName}</p>
                 </div>
               )}
             </div>
