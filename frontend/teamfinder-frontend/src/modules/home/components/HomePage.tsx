@@ -3,6 +3,7 @@ import Header from "../../landingPage/components/Header";
 import axios from "axios";
 import { Link } from "react-router-dom";
 import collegeImg from '../assets/college.jpg'
+import Loading from "../../core/components/Loading";
 
 interface College {
     id: number;
@@ -40,7 +41,7 @@ function HomePage() {
     }, []);
 
     if (loading) {
-        return <div>Loading...</div>; // Show a loading state
+        return <Loading />;
     }
 
     if (error) {

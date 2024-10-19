@@ -11,7 +11,6 @@ import org.springframework.web.bind.annotation.RestController;
 
 
 import com.project.TeamFinder.model.Event;
-import com.project.TeamFinder.service.CollegeService;
 import com.project.TeamFinder.service.EventService;
 
 

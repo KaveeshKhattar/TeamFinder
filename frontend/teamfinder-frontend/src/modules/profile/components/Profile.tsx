@@ -145,6 +145,7 @@ function Profile() {
 
             <button
               onClick={handleSignOut}
+              type="button"
               className="mt-4 p-2 w-full text-red-500"
             >
               Sign Out

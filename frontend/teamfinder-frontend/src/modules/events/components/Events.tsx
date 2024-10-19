@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import Header from "../../landingPage/components/Header";
 import axios from "axios";
 import { Link, useLocation } from "react-router-dom";
+import Loading from "../../core/components/Loading";
 
 interface Event {
     id: number;
@@ -21,8 +22,6 @@ function Events() {
     
     const location = useLocation();
     const { collegeId } = location.state;
-    
-    console.log("CollegeID: ", collegeId);
 
     useEffect(() => {
         const fetchEvents = async () => {
@@ -50,7 +49,7 @@ function Events() {
     }, [collegeId]);
 
     if (loading) {
-        return <div>Loading...</div>; // Show a loading state
+        return <Loading />;
     }
 
     if (error) {
@@ -63,7 +62,7 @@ function Events() {
         <Header title="Events"></Header>
             <div className="flex border-2 bg-slate-100 rounded-md">
                 <i className="fa-solid fa-magnifying-glass m-2 text-black "></i>
-                <input type="text" placeholder="Search Colleges..." className="bg-slate-100 w-full" />
+                <input type="text" placeholder="Search Events..." className="bg-slate-100 w-full" />
             </div>
 
             <div className="grid grid-cols-2 mt-4 gap-2">
@@ -72,12 +71,14 @@ function Events() {
                     const formattedName = event.name.replace(/\s+/g, '-');
                     const eventUrl = formattedName.toLowerCase()
 
-                    return <Link to={`/${eventUrl}/events`} key={event.id}>
-                    <div className="rounded-md">
-                        <p className="text-black dark:text-white ">{event.name}</p>
-                        <p className="text-black dark:text-white ">{event.venue}</p>
-                        <p className="text-black dark:text-white ">{event.teamSize}</p>
-                        <p className="text-black dark:text-white ">{event.description}</p>
+                    return <Link to={`${location.pathname}/${eventUrl}`} state={{ eventId: event.id }} key={event.id}>
+                    <div className="dark:bg-zinc-600 bg-slate-100 rounded-md p-2">
+                        <p className="text-2xl text-black dark:text-white ">{event.name}</p>
+
+                        <div className="flex justify-center items-center">
+                            <p className="font-bold mr-4 text-black dark:text-white">Team Size: </p>
+                            <p className="text-black dark:text-white">{event.teamSize}</p>
+                        </div>                        
                     </div>
                     </Link>
                 })}

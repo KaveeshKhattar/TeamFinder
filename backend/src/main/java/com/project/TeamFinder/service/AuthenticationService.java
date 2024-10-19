@@ -90,12 +90,12 @@ public class AuthenticationService {
 
     public User authenticate(LoginUserDTO input) {
         
-        if (input.getRole() == Role.REPRESENTATIVE) {
-            Boolean repAllowed = collegeRepresentativeRepository.existsByEmail(input.getEmail());
-            if (!repAllowed) {
-                throw new RuntimeException("You ain't no rep!");
-            }
-        }
+        // if (input.getRole() == Role.REPRESENTATIVE) {
+        //     Boolean repAllowed = collegeRepresentativeRepository.existsByEmail(input.getEmail());
+        //     if (!repAllowed) {
+        //         throw new RuntimeException("You ain't no rep!");
+        //     }
+        // }
 
         User user = userRepository.findByEmail(input.getEmail())
                 .orElseThrow(() -> new RuntimeException("User not found"));

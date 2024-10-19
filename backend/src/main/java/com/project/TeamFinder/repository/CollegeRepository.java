@@ -9,7 +9,9 @@ import com.project.TeamFinder.model.College;
 
 @Repository
 public interface CollegeRepository extends CrudRepository<College, Long>{
-        
+    
+    @Override
     List<College> findAll();
+
     Long findIdByName(String name);
 }
