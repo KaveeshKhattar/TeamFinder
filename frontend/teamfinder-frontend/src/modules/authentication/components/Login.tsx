@@ -45,7 +45,7 @@ function Login() {
                 <div className="flex flex-col m-4">                    
                     <input className="m-2 p-2 border-2 border-zinc-300 dark:border-slate-600 rounded-md" type="text" id="email" value={email} onChange={(e) => setEmail(e.target.value)} required placeholder="abc@xyz.com"/>
                     
-                    <input className="m-2 p-2 border-2 border-zinc-600 rounded-md" type="password" id="password" value={password} onChange={(e) => setPassword(e.target.value)} required placeholder="Password"/>
+                    <input className="m-2 p-2 border-2 border-zinc-300 dark:border-slate-600 rounded-md" type="password" id="password" value={password} onChange={(e) => setPassword(e.target.value)} required placeholder="Password"/>
                     
                     <button className="p-2 dark:bg-zinc-600 bg-slate-100"><input type="submit" /></button>
                 </div>

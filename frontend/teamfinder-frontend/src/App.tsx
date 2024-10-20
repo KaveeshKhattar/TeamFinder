@@ -11,6 +11,7 @@ import Events from './modules/events/components/Events'
 import Teams from './modules/teams/components/Teams'
 import { Suspense } from 'react'
 import Loading from './modules/core/components/Loading'
+import TeamDetails from './modules/teams/components/TeamDetails'
 
 function App() {
 
@@ -27,6 +28,7 @@ function App() {
             <Route path="/colleges" element={<HomePage />} />
             <Route path="/:collegeUrl" element={<Events />} />
             <Route path="/:collegeUrl/:eventUrl" element={<Teams />} />
+            <Route path="/:collegeUrl/:eventUrl/:teamUrl" element={<TeamDetails />} />
           </Routes>
         </Suspense>
       </Router>
