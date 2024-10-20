@@ -48,11 +48,11 @@ public class AuthenticationService {
     }
 
     public boolean isEmailExists(String email) {
-        return userRepository.existsByEmail(email);
+        return userRepository.existsByEmailContainingIgnoreCase(email);
     }
 
     public User signup(RegisterUserDTO input) {
-        User user = new User(input.getFirstName(), input.getLastName(), input.getEmail(), passwordEncoder.encode(input.getPassword()), input.getRole());
+        User user = new User(input.getFirstName(), input.getLastName(), input.getFirstName() + " " + input.getLastName(),  input.getEmail(), passwordEncoder.encode(input.getPassword()), input.getRole());
 
         if (user.getRole() == Role.REPRESENTATIVE) {
             Boolean repAllowed = collegeRepresentativeRepository.existsByEmail(input.getEmail());

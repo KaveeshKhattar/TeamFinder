@@ -24,4 +24,9 @@ public class Team {
     @Column(name="event_id")
     private long eventId;
 
+    @Override 
+    public String toString() {
+        return "Team Name: " + name + " Event ID: " + eventId;
+    }
+
 }

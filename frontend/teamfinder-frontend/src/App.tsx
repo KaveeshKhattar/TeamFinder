@@ -12,11 +12,12 @@ import Teams from './modules/teams/components/Teams'
 import { Suspense } from 'react'
 import Loading from './modules/core/components/Loading'
 import TeamDetails from './modules/teams/components/TeamDetails'
+import MakeTeam from './modules/teams/components/MakeTeam'
 
 function App() {
 
   return (
-    <AuthProvider>
+    <AuthProvider> 
       <Router>
         <Suspense fallback={<Loading />}>
           <Routes>
@@ -29,6 +30,7 @@ function App() {
             <Route path="/:collegeUrl" element={<Events />} />
             <Route path="/:collegeUrl/:eventUrl" element={<Teams />} />
             <Route path="/:collegeUrl/:eventUrl/:teamUrl" element={<TeamDetails />} />
+            <Route path="/:collegeUrl/:eventUrl/makeTeam" element={<MakeTeam />} />
           </Routes>
         </Suspense>
       </Router>

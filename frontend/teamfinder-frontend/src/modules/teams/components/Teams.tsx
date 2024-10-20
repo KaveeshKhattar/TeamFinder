@@ -20,10 +20,6 @@ interface Team {
   members: User[];
 }
 
-// interface TeamMember {
-//     teamId: number;
-//     userId: number;
-// }
 
 function Teams() {
   const [teams, setTeams] = useState<Team[]>([]);
@@ -32,10 +28,11 @@ function Teams() {
   const [error, setError] = useState<string | null>(null);
 
   const location = useLocation();
-  const { eventId } = location.state;
+  const { eventId, eventURL } = location.state;
 
   useEffect(() => {
     const token = localStorage.getItem("token");
+    
 
     const fetchTeams = async () => {
       try {
@@ -61,13 +58,6 @@ function Teams() {
     fetchTeams();
   }, [eventId]);
 
-  // const mergedTeams = teams.map((team, index) => {
-  //         return {
-  //             ...team,
-  //             members: teamMembers[index] // Adding members to the corresponding team
-  //         };
-  //     });
-
   if (loading) {
     return <Loading />;
   }
@@ -90,16 +80,17 @@ function Teams() {
           />
         </div>
 
-        <div>
-          <button className="flex justify-center items-center mt-2 p-2 border-1 border-black dark:border-white w-full ">
+        <div>          
+          <Link to={`${location.pathname}/makeTeam`} state={{ eventID: eventId, eventUrl: eventURL }} className="flex justify-center items-center mt-2 p-2 dark:bg-zinc-600 bg-slate-100 text-black dark:text-white rounded-md border-1 border-black dark:border-white w-full ">
             <p className="m-1">Make a Team</p>
             <i className="fa-solid fa-plus"></i>
-          </button>
+          </Link>
         </div>
       </div>
 
       <div className="grid grid-cols-1 mt-4 gap-2">
         {teams.map((team) => {
+
           const formattedName = team.teamName
             ? team.teamName.replace(/\s+/g, "-")
             : team.teamName;

@@ -1,6 +1,7 @@
 package com.project.TeamFinder.controller;
 
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.project.TeamFinder.dto.UpdateUserDTO;
@@ -15,14 +16,19 @@ import java.util.Optional;
 
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestHeader;
 
 
+
 @RestController
 @RequestMapping("/users")
+@CrossOrigin
 public class UserController {
     
     private final UserService userService;
@@ -57,6 +63,7 @@ public class UserController {
         final String jwt = token.substring(7);
         final String userEmail = jwtService.extractUsername(jwt);
         Optional<User> profile = userService.findByEmail(userEmail);
+        
         return ResponseEntity.ok(profile);
     }
 
@@ -68,5 +75,13 @@ public class UserController {
         User updatedUser = userService.updateUser(userEmail, updateUserDTO);
         return ResponseEntity.ok(updatedUser);
     }
+    
+    @GetMapping("/searchUsersByFirstName")
+    public List<User> getUsersByFirstName(@RequestHeader("Authorization") String token, @RequestParam String name) {
+        System.out.println("Called search controller with name: " + name);
+        List<User> filteredUsers = userService.getUsersByFullName(name);
+        return filteredUsers;
+    }
+    
     
 }

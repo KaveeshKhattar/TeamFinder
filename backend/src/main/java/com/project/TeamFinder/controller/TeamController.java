@@ -2,6 +2,7 @@ package com.project.TeamFinder.controller;
 
 import java.util.List;
 
+import org.apache.catalina.connector.Response;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -9,8 +10,15 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.project.TeamFinder.dto.CreateTeamDTO;
 import com.project.TeamFinder.dto.TeamWithMembersDTO;
+import com.project.TeamFinder.model.Team;
 import com.project.TeamFinder.service.TeamService;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+
+
 
 
 @RestController
@@ -29,4 +37,13 @@ public class TeamController {
         
         return ResponseEntity.ok(teamsWithMembers);
     }
+
+    @PostMapping("/teams/createTeam")
+    public ResponseEntity<Team> postTeam(@RequestBody Team newTeam) {
+        System.out.println("Called create Team controller");
+        System.out.println("Team" + newTeam);
+        teamService.addTeam(newTeam);
+        return ResponseEntity.ok(newTeam);
+    }
+    
 }

@@ -71,7 +71,7 @@ function Events() {
                     const formattedName = event.name.replace(/\s+/g, '-');
                     const eventUrl = formattedName.toLowerCase()
 
-                    return <Link to={`${location.pathname}/${eventUrl}`} state={{ eventId: event.id }} key={event.id}>
+                    return <Link to={`${location.pathname}/${eventUrl}`} state={{ eventId: event.id, eventURL: `http://localhost:5173/${location.pathname}/${eventUrl}` }} key={event.id}>
                     <div className="dark:bg-zinc-600 bg-slate-100 rounded-md p-2">
                         <p className="text-2xl text-black dark:text-white ">{event.name}</p>
 

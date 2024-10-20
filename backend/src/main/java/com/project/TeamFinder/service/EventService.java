@@ -16,9 +16,6 @@ public class EventService {
     }
 
     public List<Event> getEventsByCollegeId(Long collegeId) {
-        System.out.println("Called service");
-        List<Event> colleges = eventRepository.findByCollegeId(collegeId);
-        System.out.println(colleges);
         return eventRepository.findByCollegeId(collegeId);
     }    
 

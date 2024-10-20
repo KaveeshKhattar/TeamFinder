@@ -27,7 +27,6 @@ public class EventController {
 
     @GetMapping("/{collegeId}")
     public ResponseEntity<List<Event>> getEvents(@PathVariable Long collegeId) {
-        System.out.println("Called");
         List<Event> events = eventService.getEventsByCollegeId(collegeId);
         return ResponseEntity.ok(events);
     }

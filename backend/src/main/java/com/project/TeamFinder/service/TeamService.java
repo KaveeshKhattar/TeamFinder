@@ -28,9 +28,12 @@ public class TeamService {
     }
 
     public List<Team> getTeamsByEventId(Long eventId) {
-        System.out.println("Called Team service");
-        
         return teamRepository.findByEventId(eventId);
+    }
+
+    public Team addTeam(Team team) {
+        System.out.println("Called create Team service");
+        return teamRepository.save(team);
     }
 
     public List<TeamWithMembersDTO> getAllTeamsWithMembers(Long eventId) {
@@ -54,7 +57,6 @@ public class TeamService {
             
             TeamWithMembersDTO teamWithMembersDTO = new TeamWithMembersDTO(team, users);
             teamsWithMembers.add(teamWithMembersDTO);
-            System.out.println(teamsWithMembers); 
         }
 
         return teamsWithMembers;

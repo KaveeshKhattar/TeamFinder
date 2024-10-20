@@ -24,11 +24,14 @@ public class User implements UserDetails {
     @Column(unique = true, nullable = false)
     private String email;
 
-    @Column
+    @Column(name="first_name")
     private String firstName;
 
-    @Column
+    @Column(name="last_name")
     private String lastName;
+
+    @Column(name="full_name")
+    private String fullName;
 
     @Column(nullable = false)
     private String password;
@@ -45,9 +48,10 @@ public class User implements UserDetails {
     private LocalDateTime verificationCodeExpiresAt;
 
 
-    public User(String firstName, String lastName, String email, String password, Role role) {
+    public User(String firstName, String lastName, String fullName, String email, String password, Role role) {
         this.firstName = firstName;
         this.lastName = lastName;
+        this.fullName = fullName;
         this.email = email;
         this.password = password;
         this.role = role;
@@ -55,6 +59,7 @@ public class User implements UserDetails {
 
     public User() {
     }
+
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {

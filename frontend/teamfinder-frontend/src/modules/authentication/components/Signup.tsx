@@ -75,7 +75,7 @@ function Signup() {
                     
                     <input className="m-2 p-2 border-2 border-zinc-300 dark:border-slate-600 rounded-md" type="text" value={lastName} onChange={(e) => setLastName(e.target.value)} required placeholder="Last Name"/>
                     
-                    <input className={`p-2 m-2 rounded-md border-2 
+                    <input className={`p-2 m-2 rounded-md border-2
                         ${emailExists === null ? 'border-transparent'
                         : emailExists ? 'border-red-500' 
                         : 'border-green-500'}

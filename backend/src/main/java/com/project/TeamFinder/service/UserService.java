@@ -1,6 +1,7 @@
 package com.project.TeamFinder.service;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
@@ -8,6 +9,7 @@ import org.springframework.stereotype.Service;
 
 import com.project.TeamFinder.dto.UpdateUserDTO;
 import com.project.TeamFinder.model.User;
+import com.project.TeamFinder.projection.UserProjection;
 import com.project.TeamFinder.repository.UserRepository;
 
 import jakarta.transaction.Transactional;
@@ -47,4 +49,13 @@ public class UserService {
         }
         return userRepository.save(user);        
     }
+
+    @Transactional
+    public List<User> getUsersByFullName(String firstNameSearch) {
+        System.out.println("Called search service with name");
+        List<User> searchResults = userRepository.findByFullNameContainingIgnoreCase(firstNameSearch);
+        System.out.println("Results: " + searchResults);
+        return searchResults;
+    }
+
 }
