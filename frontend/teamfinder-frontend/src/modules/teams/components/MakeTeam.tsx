@@ -1,7 +1,7 @@
 import { useCallback, useEffect, useState } from "react";
 import Header from "../../landingPage/components/Header";
 import axios from "axios";
-import { useLocation, useNavigate } from "react-router-dom";
+import { useLocation } from "react-router-dom";
 
 interface Member {
   id: number;        
@@ -26,7 +26,7 @@ function MakeTeam() {
   const location = useLocation();
   const { eventID } = location.state;
 
-  const navigate = useNavigate();
+  // const navigate = useNavigate();
   const token = localStorage.getItem("token");
 
   const handleSearchChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -114,12 +114,47 @@ function MakeTeam() {
         
         console.log("Response: ", response);
         if (response.status === 200) {
-            navigate("../");
+          console.log("Team Response after team creation: ", response.data);
+          const teamId = response.data.id;
+
+          // Call the function to map users to the newly created team
+          await createUserTeamMappings(teamId);
         }
     } catch (err) {
         console.log(err, "Making a team failed!")
     }
   }
+
+  const createUserTeamMappings = async (teamId: number) => {
+
+    const user_ids = members.map((member) => member.id);
+
+    try {
+
+        const response = await axios.post(
+          "http://localhost:8080/api/teams/createUserTeamMappings",
+          {
+            teamId: teamId,
+            userIds: user_ids
+          },
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,  // Pass authorization token
+            }
+          }
+        );
+
+        if (response.status === 200) {
+          console.log(`User ${user_ids} added to team ${teamId}:`, response.data);
+        } else {
+          console.log("Fail");
+        }
+      
+    } catch (error) {
+      console.error('Error adding users to the team:', error);
+    }
+  }
+
   return (
     <>
       <Header title="Make a Team"></Header>

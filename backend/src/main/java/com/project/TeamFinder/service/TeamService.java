@@ -6,12 +6,14 @@ import java.util.stream.Collectors;
 
 import org.springframework.stereotype.Service;
 
+import com.project.TeamFinder.dto.TeamUserRequestDTO;
 import com.project.TeamFinder.dto.TeamWithMembersDTO;
 import com.project.TeamFinder.model.Team;
 import com.project.TeamFinder.model.TeamMembers;
 import com.project.TeamFinder.projection.UserProjection;
 import com.project.TeamFinder.repository.TeamMembersRepository;
 import com.project.TeamFinder.repository.TeamRepository;
+import com.project.TeamFinder.repository.TeamUserRepository;
 import com.project.TeamFinder.repository.UserRepository;
 
 @Service
@@ -20,11 +22,13 @@ public class TeamService {
     private final TeamRepository teamRepository;
     private final TeamMembersRepository teamMembersRepository;
     private final UserRepository userRepository;
+    private final TeamUserRepository teamUserRepository;
 
-    public TeamService(TeamRepository teamRepository, TeamMembersRepository teamMembersRepository, UserRepository userRepository) {
+    public TeamService(TeamRepository teamRepository, TeamMembersRepository teamMembersRepository, UserRepository userRepository, TeamUserRepository teamUserRepository) {
         this.teamRepository = teamRepository;
         this.teamMembersRepository = teamMembersRepository;
         this.userRepository = userRepository;
+        this.teamUserRepository = teamUserRepository;
     }
 
     public List<Team> getTeamsByEventId(Long eventId) {
@@ -61,5 +65,13 @@ public class TeamService {
 
         return teamsWithMembers;
 
+    }
+
+    public void addUsersToTeam(Long teamId, List<Long> userIds) {
+        // Loop through the list of users and add each one to the team
+        System.out.println("Called create Team User Mappings Service with: " + teamId + " " + userIds);
+        for (Long userId : userIds) {
+            teamUserRepository.addUserToTeam(teamId, userId);
+        }
     }
 }
