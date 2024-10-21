@@ -15,6 +15,9 @@ import com.project.TeamFinder.model.Team;
 import com.project.TeamFinder.service.TeamService;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestHeader;
+import org.springframework.web.bind.annotation.RequestParam;
+
 
 
 
@@ -51,5 +54,15 @@ public class TeamController {
         teamService.addUsersToTeam(request.getTeamId(), request.getUserIds());
         return ResponseEntity.ok(request);
     }
-    
+
+    @GetMapping("/teams/searchTeams")
+    public List<TeamWithMembersDTO> getFilteredTeams(@RequestHeader("Authorization") String token, @RequestParam String name, @RequestParam Long eventId) {
+        System.out.println("Called team search controller with name: " + name);
+        List<TeamWithMembersDTO> globalTeams = teamService.getAllTeamsWithMembers(eventId);
+        System.out.println("Global Teams: " + globalTeams);
+        List<TeamWithMembersDTO> filteredTeams = teamService.searchTeams(globalTeams, name);
+        System.out.println("Filtered Teams: " + filteredTeams);
+        return filteredTeams;
+    }
+
 }

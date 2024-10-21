@@ -14,31 +14,57 @@ interface College {
 function HomePage() {
 
     const [colleges, setColleges] = useState<College[]>([]);
+    const [searchTerm, setSearchTerm] = useState("");
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState<string | null>(null);
 
+    const fetchColleges = async () => {
+        try {
+            const token = localStorage.getItem("token");
+            const response = await axios.get("http://localhost:8080/colleges", {
+                headers: {
+                    Authorization: `Bearer ${token}`
+                },
+            });
+            setColleges([...response.data])
+            
+        } catch (err) {
+            setError("Error fetching colleges");
+            console.error(err);
+
+        } finally {
+            setLoading(false);
+        }
+    };
+
     useEffect(() => {
-        const fetchColleges = async () => {
-            try {
-                const token = localStorage.getItem("token");
-                const response = await axios.get("http://localhost:8080/colleges", {
-                    headers: {
-                        Authorization: `Bearer ${token}`
-                    },
-                });
-                setColleges([...response.data])
-                
-            } catch (err) {
-                setError("Error fetching colleges");
-                console.error(err);
-
-            } finally {
-                setLoading(false);
-            }
-        };
-
         fetchColleges();
     }, []);
+
+    const handleSearchChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
+        const token = localStorage.getItem("token");
+        const value = e.target.value;
+        setSearchTerm(value);
+        
+        if (value) {
+            const responseFilteredColleges = await axios.get(
+                "http://localhost:8080/colleges/searchColleges",
+                {
+                    params: {
+                        name: searchTerm
+                    },
+                    headers: {
+                        Authorization: `Bearer ${token}`
+                    }
+                }
+            );
+
+            setColleges([...responseFilteredColleges.data])
+
+        } else {
+            fetchColleges();
+        }
+    }
 
     if (loading) {
         return <Loading />;
@@ -53,7 +79,7 @@ function HomePage() {
             <Header title="Colleges"></Header>
             <div className="flex border-2 bg-slate-100 rounded-md">
                 <i className="fa-solid fa-magnifying-glass m-2 text-black "></i>
-                <input type="text" placeholder="Search Colleges..." className="bg-slate-100 w-full" />
+                <input type="text" placeholder="Search Colleges..." className="bg-slate-100 w-full" onChange={handleSearchChange}/>
             </div>
 
             <div className="grid grid-cols-2 mt-4 gap-2">

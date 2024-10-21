@@ -1,6 +1,7 @@
 package com.project.TeamFinder.service;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 import org.springframework.stereotype.Service;
 
@@ -18,5 +19,11 @@ public class EventService {
     public List<Event> getEventsByCollegeId(Long collegeId) {
         return eventRepository.findByCollegeId(collegeId);
     }    
+
+    public List<Event> searchEvents(List<Event> globalEvents, String name) {
+        return globalEvents.stream()
+            .filter(event -> event.getName() != null && event.getName().toLowerCase().contains(name.toLowerCase()))
+            .collect(Collectors.toList());
+    }
 
 }

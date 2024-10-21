@@ -6,8 +6,8 @@ import java.util.stream.Collectors;
 
 import org.springframework.stereotype.Service;
 
-import com.project.TeamFinder.dto.TeamUserRequestDTO;
 import com.project.TeamFinder.dto.TeamWithMembersDTO;
+import com.project.TeamFinder.model.Event;
 import com.project.TeamFinder.model.Team;
 import com.project.TeamFinder.model.TeamMembers;
 import com.project.TeamFinder.projection.UserProjection;
@@ -73,5 +73,11 @@ public class TeamService {
         for (Long userId : userIds) {
             teamUserRepository.addUserToTeam(teamId, userId);
         }
+    }
+
+    public List<TeamWithMembersDTO> searchTeams(List<TeamWithMembersDTO> globalTeams, String name) {
+        return globalTeams.stream()
+            .filter(team -> team.getTeamName() != null && team.getTeamName().toLowerCase().contains(name.toLowerCase()))
+            .collect(Collectors.toList());
     }
 }

@@ -14,4 +14,6 @@ public interface CollegeRepository extends CrudRepository<College, Long>{
     List<College> findAll();
 
     Long findIdByName(String name);
+
+    List<College> findByNameContainingIgnoreCase(String name);
 }

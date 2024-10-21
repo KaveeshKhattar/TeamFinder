@@ -186,7 +186,7 @@ function MakeTeam() {
                     >
                       <p> {person.firstName} {person.lastName} </p>
 
-                      <button className="flex items-center p-1 bg-green-500" type="button" onClick={() => addMember(person)}>
+                      <button className="flex items-center p-1 text-white dark:text-black bg-green-500" type="button" onClick={() => addMember(person)}>
                         <i className="fa-solid fa-plus p-1"></i>
                         <p>Add</p>
                       </button>
@@ -211,7 +211,7 @@ function MakeTeam() {
                   <div key={`${member.id}-${member.email}`} className="flex justify-between items-center mb-4 p-2">
                     <p>{member.firstName} {member.lastName}</p>
                     
-                      <button className="flex items-center p-1 bg-red-500" type="button" onClick={() => removeMember(member.id)}>
+                      <button className="flex items-center p-1 text-white dark:text-black bg-red-500" type="button" onClick={() => removeMember(member.id)}>
                         <i className="fa-solid fa-minus p-1"></i>
                         <p>Remove</p>
                       </button>
