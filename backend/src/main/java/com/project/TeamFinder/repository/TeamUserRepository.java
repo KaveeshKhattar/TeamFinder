@@ -17,5 +17,10 @@ public interface TeamUserRepository extends CrudRepository<TeamUser, Long> {
     @Transactional
     @Query(value = "INSERT INTO team_members (team_id, user_id) VALUES (:teamId, :userId)", nativeQuery = true)
     void addUserToTeam(@Param("teamId") Long teamId, @Param("userId") Long userId);
+
+    @Modifying
+    @Transactional
+    @Query(value = "SELECT CASE WHEN COUNT(*) > 0 THEN true ELSE false END FROM team_members WHERE team_id = :teamId AND user_id = :userId", nativeQuery = true)
+    boolean existsByTeamIdAndUserId(@Param("teamId") Long teamId, @Param("userId") Long userId);
     
 }

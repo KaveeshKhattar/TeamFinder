@@ -73,7 +73,10 @@ public class TeamService {
         // Loop through the list of users and add each one to the team
 
         for (Long userId : userIds) {
-            teamUserRepository.addUserToTeam(teamId, userId);
+            if (!teamUserRepository.existsByTeamIdAndUserId(teamId, userId)) {
+                teamUserRepository.addUserToTeam(teamId, userId);
+            }
+            
         }
     }
 
@@ -96,8 +99,10 @@ public class TeamService {
         return interestedUsers;
     }
     
-    public void addInterestedUser(Long eventId, Long id) {
-        System.out.println("EventID:" + eventId + "ID: " + id);
-        eventUserRepository.addInterestedUserToEvent(eventId, id);
+    public void addInterestedUser(Long eventId, Long id) {        
+        if (!eventUserRepository.existsByEventIdAndId(eventId, id)) {
+            System.out.println("EventID:" + eventId + "ID: " + id);
+            eventUserRepository.addInterestedUserToEvent(eventId, id);
+        }
     }
 }

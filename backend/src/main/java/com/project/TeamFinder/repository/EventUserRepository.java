@@ -21,4 +21,8 @@ public interface EventUserRepository extends CrudRepository<EventUser, Long>{
     @Transactional
     @Query(value = "INSERT INTO events_interested_users (event_id, user_id) VALUES (:eventId, :id)", nativeQuery = true)
     void addInterestedUserToEvent(@Param("eventId") Long eventId, @Param("id") Long id);
+
+    @Query(value = "SELECT CASE WHEN COUNT(*) > 0 THEN true ELSE false END FROM events_interested_users WHERE event_id = :eventId AND user_id = :id", nativeQuery = true)
+    boolean existsByEventIdAndId(@Param("eventId") Long eventId, @Param("id") Long id);
+
 }

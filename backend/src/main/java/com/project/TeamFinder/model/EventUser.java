@@ -26,7 +26,7 @@ public class EventUser {
 
     @Override
     public String toString() {
-        return "UpdateUserDTO{" +
+        return "EventUserDTO{" +
                 "eventId='" + eventId + '\'' +
                 ", userId='" + userId + '\'' +
                 '}';

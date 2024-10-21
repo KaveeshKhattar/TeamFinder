@@ -1,7 +1,7 @@
 import { useCallback, useEffect, useState } from "react";
 import Header from "../../landingPage/components/Header";
 import axios from "axios";
-import { useLocation } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 
 interface Member {
   id: number;        
@@ -26,7 +26,7 @@ function MakeTeam() {
   const location = useLocation();
   const { eventID } = location.state;
 
-  // const navigate = useNavigate();
+  const navigate = useNavigate();
   const token = localStorage.getItem("token");
 
   const handleSearchChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -116,6 +116,7 @@ function MakeTeam() {
 
           // Call the function to map users to the newly created team
           await createUserTeamMappings(teamId);
+          navigate("/");
         }
     } catch (err) {
         console.log(err, "Making a team failed!")
