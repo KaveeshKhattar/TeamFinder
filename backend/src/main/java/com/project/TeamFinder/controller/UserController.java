@@ -76,7 +76,6 @@ public class UserController {
     
     @GetMapping("/searchUsersByFirstName")
     public List<User> getUsersByFirstName(@RequestHeader("Authorization") String token, @RequestParam String name) {
-        System.out.println("Called search controller with name: " + name);
         List<User> filteredUsers = userService.getUsersByFullName(name);
         return filteredUsers;
     }

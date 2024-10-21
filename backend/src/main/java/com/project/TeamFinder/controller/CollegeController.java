@@ -37,7 +37,6 @@ public class CollegeController {
 
     @GetMapping("/colleges/searchColleges")
     public List<College> getFilteredColleges(@RequestHeader("Authorization") String token, @RequestParam String name) {
-        System.out.println("Called college search controller with name: " + name);
         List<College> filteredColleges = collegeService.searchColleges(name);
         return filteredColleges;
     }

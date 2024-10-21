@@ -50,9 +50,7 @@ public class UserService {
 
     @Transactional
     public List<User> getUsersByFullName(String firstNameSearch) {
-        System.out.println("Called search service with name");
         List<User> searchResults = userRepository.findByFullNameContainingIgnoreCase(firstNameSearch);
-        System.out.println("Results: " + searchResults);
         return searchResults;
     }
 

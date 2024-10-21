@@ -38,7 +38,7 @@ function MakeTeam() {
     // Filter people by name
     if (value) {
       setDivVisible(true);
-      console.log("Request URL: ", `http://localhost:8080/users/searchUsersByFirstName`)
+
       const response = await axios.get(`http://localhost:8080/users/searchUsersByFirstName`, {
         params: {
             name: searchTerm
@@ -100,7 +100,6 @@ function MakeTeam() {
     e.preventDefault();
     
     const team: Team = { name: teamName, eventId: eventID };
-    console.log("Team: ", team);
     try {
       const response = await axios.post(
         'http://localhost:8080/api/teams/createTeam',  // API endpoint
@@ -112,9 +111,7 @@ function MakeTeam() {
         }
       );
         
-        console.log("Response: ", response);
         if (response.status === 200) {
-          console.log("Team Response after team creation: ", response.data);
           const teamId = response.data.id;
 
           // Call the function to map users to the newly created team

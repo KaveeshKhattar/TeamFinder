@@ -22,7 +22,16 @@ function Profile() {
   useEffect(() => {
     const token = localStorage.getItem("token");
 
+    // if (token) {
+    //   const decodedToken = JSON.parse(atob(token.split('.')[1])); // For JWTs
+    //   console.log("Token Expiration Time: ", decodedToken.exp);
+    //   if ((decodedToken.exp) < Date.now()) {
+    //     handleSignOut();
+    //   }
+    // }
+
     const fetchUser = async () => {
+
       try {
         const response = await axios.get(
           "http://localhost:8080/users/profile",
@@ -34,6 +43,7 @@ function Profile() {
         );
 
         if (response.status === 200) {
+
           const { firstName = "", lastName = ""} = response.data;
 
           // Set state with the fetched data
@@ -57,7 +67,7 @@ function Profile() {
 
     if (isEditing) {
       try {
-        console.log("sending updated values: ", firstName, lastName);
+
         const response = await fetch('http://localhost:8080/users/update', {
           method: 'PUT',
           headers: {
@@ -71,7 +81,7 @@ function Profile() {
         });
 
         if (response.status === 200) {
-          console.log("User updated successfully");
+
           setIsEditing(false); // Toggle edit mode after a successful update
         } else {
           console.error("Failed to update user:", await response.text());

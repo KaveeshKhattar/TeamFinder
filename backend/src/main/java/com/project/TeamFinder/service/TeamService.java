@@ -7,10 +7,11 @@ import java.util.stream.Collectors;
 import org.springframework.stereotype.Service;
 
 import com.project.TeamFinder.dto.TeamWithMembersDTO;
-import com.project.TeamFinder.model.Event;
+import com.project.TeamFinder.model.EventUser;
 import com.project.TeamFinder.model.Team;
 import com.project.TeamFinder.model.TeamMembers;
 import com.project.TeamFinder.projection.UserProjection;
+import com.project.TeamFinder.repository.EventUserRepository;
 import com.project.TeamFinder.repository.TeamMembersRepository;
 import com.project.TeamFinder.repository.TeamRepository;
 import com.project.TeamFinder.repository.TeamUserRepository;
@@ -23,12 +24,14 @@ public class TeamService {
     private final TeamMembersRepository teamMembersRepository;
     private final UserRepository userRepository;
     private final TeamUserRepository teamUserRepository;
+    private final EventUserRepository eventUserRepository;
 
-    public TeamService(TeamRepository teamRepository, TeamMembersRepository teamMembersRepository, UserRepository userRepository, TeamUserRepository teamUserRepository) {
+    public TeamService(TeamRepository teamRepository, TeamMembersRepository teamMembersRepository, UserRepository userRepository, TeamUserRepository teamUserRepository, EventUserRepository eventUserRepositroy) {
         this.teamRepository = teamRepository;
         this.teamMembersRepository = teamMembersRepository;
         this.userRepository = userRepository;
         this.teamUserRepository = teamUserRepository;
+        this.eventUserRepository = eventUserRepositroy;
     }
 
     public List<Team> getTeamsByEventId(Long eventId) {
@@ -36,7 +39,6 @@ public class TeamService {
     }
 
     public Team addTeam(Team team) {
-        System.out.println("Called create Team service");
         return teamRepository.save(team);
     }
 
@@ -69,7 +71,7 @@ public class TeamService {
 
     public void addUsersToTeam(Long teamId, List<Long> userIds) {
         // Loop through the list of users and add each one to the team
-        System.out.println("Called create Team User Mappings Service with: " + teamId + " " + userIds);
+
         for (Long userId : userIds) {
             teamUserRepository.addUserToTeam(teamId, userId);
         }
@@ -79,5 +81,23 @@ public class TeamService {
         return globalTeams.stream()
             .filter(team -> team.getTeamName() != null && team.getTeamName().toLowerCase().contains(name.toLowerCase()))
             .collect(Collectors.toList());
+    }
+
+    public List<UserProjection> getInterestedUsers(Long eventID) {
+        List<EventUser> interestedUserRows = eventUserRepository.findByEventId(eventID);
+
+        List<Long> userIds = interestedUserRows.stream()
+            .map(EventUser::getUserId) // Use method reference to get userId
+            .collect(Collectors.toList());
+
+        // List<User> users = (List<User>) userRepository.findAllById(userIds);
+        List<UserProjection> interestedUsers = userRepository.findAllByIdIn(userIds);
+        
+        return interestedUsers;
+    }
+    
+    public void addInterestedUser(Long eventId, Long id) {
+        System.out.println("EventID:" + eventId + "ID: " + id);
+        eventUserRepository.addInterestedUserToEvent(eventId, id);
     }
 }

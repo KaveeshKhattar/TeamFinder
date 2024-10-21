@@ -1,0 +1,24 @@
+package com.project.TeamFinder.repository;
+
+import org.springframework.data.jpa.repository.Modifying;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.CrudRepository;
+import org.springframework.data.repository.query.Param;
+import org.springframework.stereotype.Repository;
+
+import com.project.TeamFinder.model.EventUser;
+
+import jakarta.transaction.Transactional;
+
+import java.util.List;
+
+
+@Repository
+public interface EventUserRepository extends CrudRepository<EventUser, Long>{
+    List<EventUser> findByEventId(Long eventId);
+
+    @Modifying
+    @Transactional
+    @Query(value = "INSERT INTO events_interested_users (event_id, user_id) VALUES (:eventId, :id)", nativeQuery = true)
+    void addInterestedUserToEvent(@Param("eventId") Long eventId, @Param("id") Long id);
+}

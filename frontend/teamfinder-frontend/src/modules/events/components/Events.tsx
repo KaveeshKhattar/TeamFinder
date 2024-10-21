@@ -27,8 +27,6 @@ function Events() {
     const fetchEvents = useCallback(async () => {
         try {
             const token = localStorage.getItem("token");
-            console.log("Fetching Events");
-            console.log(`Request URL: http://localhost:8080/api/colleges/${collegeId}`);
             const response = await axios.get(`http://localhost:8080/api/colleges/${collegeId}`, {
                 headers: {
                     Authorization: `Bearer ${token}`

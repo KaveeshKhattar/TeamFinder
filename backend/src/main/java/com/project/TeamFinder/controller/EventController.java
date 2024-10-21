@@ -36,7 +36,7 @@ public class EventController {
 
     @GetMapping("/events/searchEvents")
     public List<Event> getFilteredEvents(@RequestHeader("Authorization") String token, @RequestParam String name, @RequestParam Long collegeId) {
-        System.out.println("Called event search controller with name: " + name);
+
         List<Event> globalEvents = eventService.getEventsByCollegeId(collegeId);
         List<Event> filteredEvents = eventService.searchEvents(globalEvents, name);
         return filteredEvents;
