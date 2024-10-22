@@ -16,7 +16,7 @@ function HomePage() {
     const fetchColleges = async () => {
         try {
             const token = localStorage.getItem("token");
-            const response = await axios.get("http://localhost:8080/colleges", {
+            const response = await axios.get("http://localhost:8080/api/colleges", {
                 headers: {
                     Authorization: `Bearer ${token}`
                 },
@@ -43,7 +43,7 @@ function HomePage() {
         
         if (value) {
             const responseFilteredColleges = await axios.get(
-                "http://localhost:8080/colleges/searchColleges",
+                "http://localhost:8080/api/colleges/searchColleges",
                 {
                     params: {
                         name: searchTerm

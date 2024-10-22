@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { useAuth } from "../../core/hooks/useAuth";
+import { HeaderProps } from "../../../types";
 
 function Header({ title }: HeaderProps) {
 
