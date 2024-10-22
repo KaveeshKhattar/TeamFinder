@@ -4,36 +4,15 @@ import { useCallback, useEffect, useState } from "react";
 import axios from "axios";
 import Loading from "../../core/components/Loading";
 import profilePic from "../assets/profilePic.webp";
-
-interface User {
-  id: number;
-  email: string;
-  firstName: string;
-  lastName: string;
-  role: string;
-  enabled: boolean;
-}
-
-interface Team {
-  teamId: number;
-  teamName: string;
-  members: User[];
-}
-
-interface UserProjection {
-  id: number;
-  email: string;
-  firstName: string;
-  lastName: string;
-}
+import { Member, TeamUser } from "../../../types";
 
 function Teams() {
-  const [teams, setTeams] = useState<Team[]>([]);
+  const [teams, setTeams] = useState<TeamUser[]>([]);
   const [searchTerm, setSearchTerm] = useState("");
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [isViewingTeams, setisViewingTeams] = useState<boolean>(true);
-  const [individuals, setIndividuals] = useState<UserProjection[]>([]);
+  const [individuals, setIndividuals] = useState<Member[]>([]);
 
   const location = useLocation();
   const { eventId, eventURL } = location.state;

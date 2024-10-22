@@ -3,16 +3,7 @@ import Header from "../../landingPage/components/Header";
 import axios from "axios";
 import { Link, useLocation } from "react-router-dom";
 import Loading from "../../core/components/Loading";
-
-interface Event {
-    id: number;
-    collegeId: number;
-    date: Date;
-    name: string;
-    venue: string;
-    teamSize: number;
-    description: string;
-}
+import { Event } from "../../../types";
 
 function Events() {
 

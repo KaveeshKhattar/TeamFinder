@@ -4,12 +4,7 @@ import axios from "axios";
 import { Link } from "react-router-dom";
 import collegeImg from '../assets/college.jpg'
 import Loading from "../../core/components/Loading";
-
-interface College {
-    id: number;
-    name: string;
-    location: string
-}
+import { College } from "../../../types";
 
 function HomePage() {
 

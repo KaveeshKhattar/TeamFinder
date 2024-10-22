@@ -1,13 +1,7 @@
 import { useLocation } from "react-router-dom";
 import Header from "../../landingPage/components/Header";
 import profilePic from "../assets/profilePic.webp";
-
-interface Member {
-    id: number;        
-    firstName: string; 
-    lastName: string;  
-    email: string;  
-  }
+import { Member } from "../../../types";
 
 function TeamDetails() {
 

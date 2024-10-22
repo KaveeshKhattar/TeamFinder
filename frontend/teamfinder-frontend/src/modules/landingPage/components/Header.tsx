@@ -1,11 +1,6 @@
 import { useState } from "react";
 import { useAuth } from "../../core/hooks/useAuth";
 
-// Step 1: Define an interface for the props
-interface HeaderProps {
-  title: string; // Specify that title should be a string
-}
-
 function Header({ title }: HeaderProps) {
 
     const [isOpen, setIsOpen] = useState(false);

@@ -2,18 +2,7 @@ import { useCallback, useEffect, useState } from "react";
 import Header from "../../landingPage/components/Header";
 import axios from "axios";
 import { useLocation, useNavigate } from "react-router-dom";
-
-interface Member {
-  id: number;        
-  firstName: string;
-  lastName: string;
-  email: string;
-}
-
-interface Team {
-  name: string;
-  eventId: number;
-}
+import { Member } from "../../../types";
 
 function MakeTeam() {
 
@@ -99,7 +88,7 @@ function MakeTeam() {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     
-    const team: Team = { name: teamName, eventId: eventID };
+    const team = { name: teamName, eventId: eventID };
     try {
       const response = await axios.post(
         'http://localhost:8080/api/teams/createTeam',  // API endpoint
