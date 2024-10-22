@@ -3,6 +3,7 @@ import Header from "../../landingPage/components/Header";
 import axios from "axios";
 import { useLocation, useNavigate } from "react-router-dom";
 import { Member } from "../../../types";
+import SearchBar from "../../core/components/SearchBar";
 
 function MakeTeam() {
 
@@ -147,16 +148,7 @@ function MakeTeam() {
       <Header title="Make a Team"></Header>
 
       <div className="flex flex-col ">
-        <div className="flex border-2 bg-slate-100 rounded-md">
-          <i className="fa-solid fa-magnifying-glass m-2 text-black "></i>
-          <input
-            type="text"
-            placeholder="Search People..."
-            className="bg-slate-100 text-black w-full"
-            value={searchTerm}
-            onChange={handleSearchChange}
-          />
-        </div>
+        <SearchBar onChange={handleSearchChange} />
 
         {/* Dropdown for filtered people */}
         {divVisible && (

@@ -5,6 +5,7 @@ import { Link } from "react-router-dom";
 import collegeImg from '../assets/college.jpg'
 import Loading from "../../core/components/Loading";
 import { College } from "../../../types";
+import SearchBar from "../../core/components/SearchBar";
 
 function HomePage() {
 
@@ -72,10 +73,7 @@ function HomePage() {
     return(
         <>
             <Header title="Colleges"></Header>
-            <div className="flex border-2 bg-slate-100 rounded-md">
-                <i className="fa-solid fa-magnifying-glass m-2 text-black "></i>
-                <input type="text" placeholder="Search Colleges..." className="bg-slate-100 w-full" onChange={handleSearchChange}/>
-            </div>
+            <SearchBar onChange={handleSearchChange} />
 
             <div className="grid grid-cols-2 mt-4 gap-2">
                 {colleges.map((college) => {
