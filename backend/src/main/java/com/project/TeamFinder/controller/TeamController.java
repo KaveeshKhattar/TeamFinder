@@ -30,33 +30,32 @@ public class TeamController {
         this.teamService = teamService;
     }
 
-    @GetMapping("/events/{eventId}")
+    @GetMapping("/events/{eventId}/teams")
     public ResponseEntity<List<TeamWithMembersDTO>> getTeams(@PathVariable long eventId) {
         List<TeamWithMembersDTO> teamsWithMembers = teamService.getAllTeamsWithMembers(eventId);
         
         return ResponseEntity.ok(teamsWithMembers);
     }
 
-    @GetMapping("/events/fetchIndividuals/{eventId}")
+    @GetMapping("/events/{eventId}/InterestedIndividuals")
     public List<UserProjection> getInterestedUsers(@PathVariable long eventId) {
         List<UserProjection> interestedUsers = teamService.getInterestedUsers(eventId);
         return interestedUsers;
     }
 
-    @PostMapping("/events/createIndividual")
+    @PostMapping("/events/InterestedIndividual")
     public ResponseEntity<Long> postInterestedUser(@RequestBody EventUserDTO request) {
-        teamService.addInterestedUser(request.getEventId(), request.getId());
-        return ResponseEntity.ok(request.getId());
+        teamService.addInterestedUser(request.getEventId(), request.getUserId());
+        return ResponseEntity.ok(request.getUserId());
     }
     
-    
-    @PostMapping("/teams/createTeam")
+    @PostMapping("/teams/team")
     public ResponseEntity<Team> postTeam(@RequestBody Team newTeam) {
         teamService.addTeam(newTeam);
         return ResponseEntity.ok(newTeam);
     }
 
-    @PostMapping("/teams/createUserTeamMappings")
+    @PostMapping("/teams/userTeamMappings")
     public ResponseEntity<TeamUserRequestDTO> postTeamUserMappings(@RequestBody TeamUserRequestDTO request) {
         teamService.addUsersToTeam(request.getTeamId(), request.getUserIds());
         return ResponseEntity.ok(request);

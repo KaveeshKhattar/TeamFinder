@@ -13,6 +13,7 @@ function Teams() {
   const [error, setError] = useState<string | null>(null);
   const [isViewingTeams, setisViewingTeams] = useState<boolean>(true);
   const [individuals, setIndividuals] = useState<Member[]>([]);
+  const [userId, setUserId] = useState(0);
 
   const location = useLocation();
   const { eventId, eventURL } = location.state;
@@ -21,7 +22,7 @@ function Teams() {
     const token = localStorage.getItem("token");
     try {
       const response = await axios.get(
-        `http://localhost:8080/api/events/fetchIndividuals/${eventId}`,
+        `http://localhost:8080/api/events/${eventId}/InterestedIndividuals`,
         {
           headers: {
             Authorization: `Bearer ${token}`,
@@ -44,7 +45,7 @@ function Teams() {
 
 
       const response = await axios.get(
-        `http://localhost:8080/api/events/${eventId}`,
+        `http://localhost:8080/api/events/${eventId}/teams`,
         {
           headers: {
             Authorization: `Bearer ${token}`,
@@ -100,7 +101,6 @@ function Teams() {
 
   const handleClickInterested = async () => {
     const token = localStorage.getItem("token");
-    let id = 0;
     try {
       const response = await axios.get("http://localhost:8080/users/profile", {
         headers: {
@@ -109,7 +109,7 @@ function Teams() {
       });
 
       if (response.status === 200) {
-        id = response.data.id;
+        setUserId(response.data.id)
       }
     } catch (err) {
       console.log(err, "Sign up failed!");
@@ -117,9 +117,9 @@ function Teams() {
 
     try {
       const response = await axios.post(
-        "http://localhost:8080/api/events/createIndividual",
+        "http://localhost:8080/api/events/InterestedIndividual",
         {
-          id: id,
+          userId: userId,
           eventId: eventId,
         },
         {

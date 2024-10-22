@@ -7,7 +7,7 @@ import lombok.Setter;
 @Setter
 public class EventUserDTO {
     private Long eventId;
-    private Long id;
+    private Long userId;
     
     public EventUserDTO() {}
 

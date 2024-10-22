@@ -18,7 +18,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 
 
 @RestController
-@RequestMapping("/api/colleges")
+@RequestMapping("/api")
 @CrossOrigin
 public class EventController {
 
@@ -28,17 +28,17 @@ public class EventController {
         this.eventService = eventService;
     }
 
-    @GetMapping("/{collegeId}")
+    @GetMapping("/{collegeId}/events")
     public ResponseEntity<List<Event>> getEvents(@PathVariable Long collegeId) {
         List<Event> events = eventService.getEventsByCollegeId(collegeId);
         return ResponseEntity.ok(events);
     }
 
-    @GetMapping("/events/searchEvents")
-    public List<Event> getFilteredEvents(@RequestHeader("Authorization") String token, @RequestParam String name, @RequestParam Long collegeId) {
+    @GetMapping("/college/events/searchEvents")
+    public List<Event> getFilteredEvents(@RequestHeader("Authorization") String token, @RequestParam String eventSearchTerm, @RequestParam Long collegeId) {
 
         List<Event> globalEvents = eventService.getEventsByCollegeId(collegeId);
-        List<Event> filteredEvents = eventService.searchEvents(globalEvents, name);
+        List<Event> filteredEvents = eventService.searchEvents(globalEvents, eventSearchTerm);
         return filteredEvents;
     }
     
