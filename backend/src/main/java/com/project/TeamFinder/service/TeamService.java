@@ -2,6 +2,7 @@ package com.project.TeamFinder.service;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import org.springframework.stereotype.Service;
@@ -104,5 +105,76 @@ public class TeamService {
             System.out.println("EventID:" + eventId + "ID: " + id);
             eventUserRepository.addInterestedUserToEvent(eventId, id);
         }
+    }
+
+    public List<Long> getTeamIdsPerUserId(Long userId) {
+        return teamMembersRepository.findTeamIdByUserId(userId);
+    }
+
+    public List<TeamWithMembersDTO> getTeamsPerUserId(List<Long> teamIds) {
+        System.out.println("Called here.");
+
+        List<TeamWithMembersDTO> teamsWithMembers = new ArrayList<>();
+
+        for (Long teamId: teamIds) {
+
+            Optional<Team> optionalTeam = teamRepository.findById(teamId);
+        
+            Team team = optionalTeam.orElseThrow(() -> new RuntimeException("Team not found"));
+
+            List<TeamMembers> members = teamMembersRepository.findByTeamId(team.getId());
+
+            List<Long> userIds = members.stream()
+            .map(TeamMembers::getUserId) // Use method reference to get userId
+            .collect(Collectors.toList());
+
+            // List<User> users = (List<User>) userRepository.findAllById(userIds);
+            List<UserProjection> users = userRepository.findAllByIdIn(userIds);
+
+            TeamWithMembersDTO teamWithMembersDTO = new TeamWithMembersDTO(team, users);
+            teamsWithMembers.add(teamWithMembersDTO);
+        }
+
+        return teamsWithMembers;
+
+    }
+
+    public Team getTeamById(Long id) {
+        Optional<Team> optionalTeam = teamRepository.findById(id);        
+        Team team = optionalTeam.orElseThrow(() -> new RuntimeException("Team not found"));
+
+        return team;
+    }
+
+    public void updateTeam(Team updatedTeam) {
+        teamRepository.save(updatedTeam); // This saves the updated team entity
+    }
+
+    public void updateUsersInTeam(Long teamId, List<Long> userIds) {
+
+        // Clear existing user mappings (optional based on your requirements)
+        System.out.println("userIds: " + userIds);
+        teamUserRepository.deleteUsersFromTeamByIds(teamId, userIds);
+
+        // Add new user mappings
+        for (Long userId : userIds) {
+            teamUserRepository.addUserToTeam(teamId, userId);
+        }
+    }
+
+    public void updateTeamName(Long id, String name) {
+        teamRepository.updateTeamNameById(id, name);
+    }
+
+    public void deleteTeam(Long id) {
+        // You can perform additional checks here if necessary
+        System.out.println("Deleting team...");
+        teamRepository.deleteById(id); // This will throw an exception if the ID does not exist
+    }
+
+    public void deleteTeamMembers(Long id) {
+        // You can perform additional checks here if necessary
+        System.out.println("Deleting members...");
+        teamMembersRepository.deleteMembers(id); // This will throw an exception if the ID does not exist
     }
 }

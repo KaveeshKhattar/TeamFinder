@@ -13,11 +13,13 @@ import lombok.Setter;
 public class TeamWithMembersDTO {
     private Long teamId;
     private String teamName;
+    private Long eventId;
     private List<UserProjection> members;
 
     public TeamWithMembersDTO(Team team, List<UserProjection> members) {
         this.teamId = team.getId();
         this.teamName = team.getName();
+        this.eventId = team.getEventId();
         this.members = members;
     }
 

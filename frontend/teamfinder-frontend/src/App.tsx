@@ -13,6 +13,7 @@ import { Suspense } from 'react'
 import Loading from './modules/core/components/Loading'
 import TeamDetails from './modules/teams/components/TeamDetails'
 import MakeTeam from './modules/teams/components/MakeTeam'
+import ProfileTeam from './modules/profile/components/ProfileTeam'
 
 function App() {
 
@@ -23,6 +24,7 @@ function App() {
           <Routes>
             <Route path="/" element={<LandingPage />} />
             <Route path="/profile" element={<Profile />} />
+            <Route path="/profile/:teamUrl" element={<ProfileTeam />} />
             <Route path="/login" element={<Login />} />
             <Route path="/signup" element={<Signup />} />
             <Route path="/verification" element={<Verification />} />

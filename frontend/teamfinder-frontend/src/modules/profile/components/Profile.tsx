@@ -1,17 +1,21 @@
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import Header from "../../landingPage/components/Header";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import axios from "axios";
 // import profilePic from "../assets/profile-pic.jpg";
 import { useAuth } from "../../core/hooks/useAuth";
+import { Team } from "../../../types";
 
 function Profile() {
   const [firstName, setFirstName] = useState("");
   const [lastName, setLastName] = useState("");
+  const [userId, setUserId] = useState(0);
+  // const [teamIds, setTeamIds] = useState<number[]>([]);
+  const [profileTeams, setProfileTeams] = useState<Team[]>([]);
   const { signOut } = useAuth();
   const navigate = useNavigate();
 
-  
+
   const handleSignOut = () => {
     signOut();
     localStorage.removeItem("token");
@@ -44,11 +48,13 @@ function Profile() {
 
         if (response.status === 200) {
 
-          const { firstName = "", lastName = ""} = response.data;
+          const { firstName = "", lastName = "", id } = response.data;
 
           // Set state with the fetched data
+          setUserId(id);
           setFirstName(firstName);
           setLastName(lastName);
+          console.log("userId: ", id, "firstName: ", firstName, "lastName: ", lastName);
         }
       } catch (err) {
         console.log(err, "Sign up failed!");
@@ -57,6 +63,8 @@ function Profile() {
 
     fetchUser();
   }, []);
+
+
 
   const [isEditing, setIsEditing] = useState(false);
 
@@ -94,6 +102,47 @@ function Profile() {
     }
   };
 
+  // const fetchTeamIdsPerProfile = async () => {
+  //   const responseTeamIds = await axios.get(
+  //     "http://localhost:8080/api/teams/teamIds/profile",
+  //     {
+  //       params: {
+  //         userId: id
+  //       }
+  //     }
+  //   );
+  //   setTeamIds([responseTeamIds.data]); 
+  // }
+
+  // fetchTeamIdsPerProfile();
+
+  const fetchTeams = useCallback(async () => {
+    if (userId) {  // Ensure userId is set
+      console.log("User ID being sent: ", userId);
+      try {
+        const token = localStorage.getItem('token');
+        const responseTeams = await axios.get(
+          "http://localhost:8080/api/teams/profile",
+          {
+            params: { userId: userId },
+            headers: {
+              Authorization: `Bearer ${token}` // Include the JWT token
+            }
+          }
+        );
+        setProfileTeams(responseTeams.data);
+      } catch (error) {
+        console.error("Error fetching teams:", error);
+      }
+    } else {
+      console.log("User ID is not available yet.");
+    }
+  }, [userId])
+
+  useEffect(() => {
+    fetchTeams();
+  }, [fetchTeams])
+
   return (
     <>
       <Header title="Profile"></Header>
@@ -101,7 +150,7 @@ function Profile() {
       <div className="flex flex-col">
         <form className="mt-4">
           <div className="flex flex-col m-4 justify-center items-center">
-            
+
             <div className="edit-first-name mb-2">
               {isEditing ? (
                 <div className="flex justify-center items-center">
@@ -119,14 +168,14 @@ function Profile() {
                 <div className="flex justify-center items-center">
                   <p className="mr-2">First Name: </p>
                   <p className="p-2 rounded-md">{firstName}</p>
-                  
+
                 </div>
               )}
             </div>
 
             <div className="edit-last-name mb-2">
               {isEditing ? (
-                
+
                 <div className="flex justify-center items-center">
                   <p className="mr-2">Last Name: </p>
                   <input
@@ -160,6 +209,38 @@ function Profile() {
             >
               Sign Out
             </button>
+
+            <div>
+              Teams:
+              {profileTeams.map((profileTeam) => {
+                console.log(profileTeam)
+                console.log("profile team ID: ", profileTeam.teamId)
+                const teamName = profileTeam.teamName || "";
+                const formattedName = teamName.replace(/\s+/g, "-");
+                const teamUrl = formattedName.toLowerCase();
+                return (
+                    <div key={profileTeam.teamId}>
+                      <p>{profileTeam.teamName}</p>
+                      <ul>
+                        {profileTeam.members.map((member) => {
+                          console.log("Member ID: ", `${member.id}-${profileTeam.teamId}`)
+                          return (
+                            <li key={`${member.id}-${profileTeam.teamId}`}>
+                              <p>Member Name: {member.firstName} {member.lastName}</p>
+                            </li>
+                          );
+                        })
+                      }
+                      </ul>
+                      <Link to={`${location.pathname}/${teamUrl}`} state={{ team: profileTeam }}>
+                      <button>
+                        Edit team
+                      </button>
+                    </Link>
+                    </div>
+                )
+              })}
+            </div>
           </div>
         </form>
       </div>

@@ -1,5 +1,6 @@
 package com.project.TeamFinder.model;
 
+
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -28,5 +29,4 @@ public class Team {
     public String toString() {
         return "Team Name: " + name + " Event ID: " + eventId;
     }
-
 }
