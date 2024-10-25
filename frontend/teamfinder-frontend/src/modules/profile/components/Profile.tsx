@@ -1,10 +1,11 @@
 import { useCallback, useEffect, useState } from "react";
 import Header from "../../landingPage/components/Header";
-import { Link, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import axios from "axios";
 // import profilePic from "../assets/profile-pic.jpg";
 import { useAuth } from "../../core/hooks/useAuth";
 import { Team } from "../../../types";
+import TeamCard from "../../teams/components/TeamCard";
 
 function Profile() {
   const [firstName, setFirstName] = useState("");
@@ -118,7 +119,7 @@ function Profile() {
         );
         if (responseTeams.status === 200) {
           setProfileTeams(responseTeams.data);
-          localStorage.setItem("profileTeams", JSON.stringify(profileTeams));
+          // localStorage.setItem("profileTeams", JSON.stringify(profileTeams));
         }
       } catch (error) {
         console.error("Error fetching teams:", error);
@@ -126,114 +127,88 @@ function Profile() {
     } else {
       console.log("User ID is not available yet.");
     }
-  }, [profileTeams, userId])
+  }, [userId])
 
   useEffect(() => {
     fetchTeams();
   }, [fetchTeams])
 
+  useEffect(() => {
+    if (profileTeams.length) {
+      localStorage.setItem("profileTeams", JSON.stringify(profileTeams));
+    }
+  }, [profileTeams]);
+
   return (
     <>
-      <Header title="Profile"></Header>
+  <Header title="Profile" />
 
-      <div className="flex flex-col">
-        <form className="mt-4">
-          <div className="flex flex-col m-4 justify-center items-center">
+  <div className="flex flex-col">
+    <form className="mt-4">
+      <div className="flex flex-col m-4 justify-center items-center">
 
-            <div className="edit-first-name mb-2">
-              {isEditing ? (
-                <div className="flex justify-center items-center">
-                  <p className="mr-2">First Name: </p>
-                  <input
-                    className="p-2 rounded-md dark:bg-zinc-800 bg-slate-100"
-                    type="text"
-                    name="firstName"
-                    value={firstName}
-                    onChange={(e) => setFirstName(e.target.value)}
-                    placeholder="First Name"
-                  />
-                </div>
-              ) : (
-                <div className="flex justify-center items-center">
-                  <p className="mr-2">First Name: </p>
-                  <p className="p-2 rounded-md">{firstName}</p>
-
-                </div>
-              )}
+        <div className="edit-first-name mb-2">
+          {isEditing ? (
+            <div className="flex justify-center items-center">
+              <p className="mr-2">First Name: </p>
+              <input
+                className="p-2 rounded-md dark:bg-zinc-800 bg-slate-100"
+                type="text"
+                name="firstName"
+                value={firstName}
+                onChange={(e) => setFirstName(e.target.value)}
+                placeholder="First Name"
+              />
             </div>
-
-            <div className="edit-last-name mb-2">
-              {isEditing ? (
-
-                <div className="flex justify-center items-center">
-                  <p className="mr-2">Last Name: </p>
-                  <input
-                    className="p-2 rounded-md dark:bg-zinc-800 bg-slate-100"
-                    type="text"
-                    name="lastName"
-                    value={lastName}
-                    onChange={(e) => setLastName(e.target.value)}
-                    placeholder="Last Name"
-                  />
-                </div>
-              ) : (
-                <div className="flex justify-center items-center">
-                  <p className="mr-2">Last Name: </p>
-                  <p className="mr-2 p-2 rounded-md">{lastName}</p>
-                </div>
-              )}
+          ) : (
+            <div className="flex justify-center items-center">
+              <p className="mr-2">First Name: </p>
+              <p className="p-2 rounded-md">{firstName}</p>
             </div>
+          )}
+        </div>
 
-            <button
-              onClick={saveChanges}
-              className="mt-4 p-2 w-full"
-            >
-              {isEditing ? 'Save Changes' : 'Edit Profile'}
-            </button>
-
-            <button
-              onClick={handleSignOut}
-              type="button"
-              className="mt-4 p-2 w-full text-red-500"
-            >
-              Sign Out
-            </button>
-
-            <div>
-              Teams:
-              {profileTeams.map((profileTeam) => {
-                console.log(profileTeam)
-                console.log("profile team ID: ", profileTeam.teamId)
-                const teamName = profileTeam.teamName || "";
-                const formattedName = teamName.replace(/\s+/g, "-");
-                const teamUrl = formattedName.toLowerCase();
-                return (
-                    <div key={profileTeam.teamId}>
-                      <p>{profileTeam.teamName}</p>
-                      <ul>
-                        {profileTeam.members.map((member) => {
-                          console.log("Member ID: ", `${member.id}-${profileTeam.teamId}`)
-                          return (
-                            <li key={`${member.id}-${profileTeam.teamId}`}>
-                              <p>Member Name: {member.firstName} {member.lastName}</p>
-                            </li>
-                          );
-                        })
-                      }
-                      </ul>
-                      <Link to={`${location.pathname}/${teamUrl}`} state={{ team: profileTeam }}>
-                      <button>
-                        Edit team
-                      </button>
-                    </Link>
-                    </div>
-                )
-              })}
+        <div className="edit-last-name mb-2">
+          {isEditing ? (
+            <div className="flex justify-center items-center">
+              <p className="mr-2">Last Name: </p>
+              <input
+                className="p-2 rounded-md dark:bg-zinc-800 bg-slate-100"
+                type="text"
+                name="lastName"
+                value={lastName}
+                onChange={(e) => setLastName(e.target.value)}
+                placeholder="Last Name"
+              />
             </div>
-          </div>
-        </form>
+          ) : (
+            <div className="flex justify-center items-center">
+              <p className="mr-2">Last Name: </p>
+              <p className="mr-2 p-2 rounded-md">{lastName}</p>
+            </div>
+          )}
+        </div>
+
+        <button onClick={saveChanges} className="mt-4 p-2 w-full">
+          {isEditing ? 'Save Changes' : 'Edit Profile'}
+        </button>
+
+        <button onClick={handleSignOut} type="button" className="mt-4 p-2 w-full text-red-500">
+          Sign Out
+        </button>
+
+        <div className="w-full mt-4">
+          <p className="text-2xl font-bold">Teams:</p>
+          {profileTeams.map((profileTeam) => (
+            <TeamCard key={profileTeam.teamId} team={profileTeam} location={`${location.pathname}`} />
+          ))}
+        </div>
+
       </div>
-    </>
+    </form>
+  </div>
+</>
+
   );
 }
 
