@@ -35,6 +35,7 @@ public class TeamWithMembersDTO {
             for (UserProjection member : members) {
                 sb.append("{id=").append(member.getId())
                   .append(", email='").append(member.getEmail()).append('\'')
+                  .append(", fullName='").append(member.getFirstName()).append('\'')
                   .append(", firstName='").append(member.getFirstName()).append('\'')
                   .append(", lastName='").append(member.getLastName()).append("'}, ");
             }

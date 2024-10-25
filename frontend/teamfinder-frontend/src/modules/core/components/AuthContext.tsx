@@ -27,6 +27,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
       setIsSignedIn(false);
       localStorage.removeItem("isSignedIn"); // Persist in localStorage
       localStorage.removeItem("token");
+      localStorage.removeItem("profileTeams");
     };
   
     return (

@@ -74,7 +74,7 @@ public class UserController {
         return ResponseEntity.ok(updatedUser);
     }
     
-    @GetMapping("/searchUsersByFirstName")
+    @GetMapping("/searchUsersByFullName")
     public List<User> getUsersByFirstName(@RequestHeader("Authorization") String token, @RequestParam String name) {
         List<User> filteredUsers = userService.getUsersByFullName(name);
         return filteredUsers;

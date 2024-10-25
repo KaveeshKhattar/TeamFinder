@@ -18,6 +18,7 @@ export interface Member {
     id: number;
     firstName: string;
     lastName: string;
+    fullName: string;
     email: string;
 }
 
@@ -26,6 +27,7 @@ export interface User {
     email: string;
     firstName: string;
     lastName: string;
+    fullName: string;
     role: string;
     enabled: boolean;
 }

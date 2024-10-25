@@ -35,7 +35,6 @@ public class TeamController {
     @GetMapping("/events/{eventId}/teams")
     public ResponseEntity<List<TeamWithMembersDTO>> getTeams(@PathVariable long eventId) {
         List<TeamWithMembersDTO> teamsWithMembers = teamService.getAllTeamsWithMembers(eventId);
-        
         return ResponseEntity.ok(teamsWithMembers);
     }
 

@@ -33,7 +33,7 @@ function ProfileTeam() {
     if (value) {
       setDivVisible(true);
 
-      const response = await axios.get(`http://localhost:8080/users/searchUsersByFirstName`, {
+      const response = await axios.get(`http://localhost:8080/users/searchUsersByFullName`, {
         params: {
           name: searchTerm
         },

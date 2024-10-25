@@ -10,7 +10,6 @@ import SearchBar from "../../core/components/SearchBar";
 
 function Teams() {
   const [teams, setTeams] = useState<Team[]>([]);
-  const [searchTerm, setSearchTerm] = useState("");
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [isViewingTeams, setisViewingTeams] = useState<boolean>(true);
@@ -67,33 +66,29 @@ function Teams() {
   }, [fetchTeams]);
 
   const handleSearchChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
-    const token = localStorage.getItem("token");
     const value = e.target.value;
-    setSearchTerm(value);
+    
+    try {
+      console.log("Fetching filtered teams...");
 
-    if (value) {
-      const responseFilteredTeams = await axios.get(
-        "http://localhost:8080/api/teams/searchTeams",
-        {
-          params: {
-            name: searchTerm,
-            eventId: eventId,
-          },
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        }
+      // Filter the fetched teams based on the search term
+      const filteredTeams = teams.filter((team) =>
+          team.members.some((member) =>
+              member.fullName.toLowerCase().includes(value.toLowerCase()) // Use value instead of searchTerm
+          )
       );
 
-      if (responseFilteredTeams.data === "") {
-        setTeams([]);
-      }
-
-      setTeams(responseFilteredTeams.data);
-    } else {
-      fetchTeams();
+      // Check if there are any filtered teams and update state
+      if (filteredTeams.length > 0) {
+          setTeams(filteredTeams);
+        }
+    } catch (error) {
+        console.error("Error fetching teams:", error);
+        // Optionally, you can handle errors here
+        // e.g., show an error message or fallback to default state
     }
-  };
+};
+
 
   const handleViewingTeamsOrIndividuals = () => {
     setisViewingTeams(!isViewingTeams);
@@ -191,9 +186,8 @@ function Teams() {
             <Link
               to={`${location.pathname}/makeTeam`}
               state={{ eventID: eventId, eventUrl: eventURL }}
-              className={`flex justify-center items-center mt-2 p-2 dark:bg-zinc-600 bg-slate-100 text-black dark:text-white rounded-md border-1 border-black dark:border-white w-full ${
-                makeTeamPossible ? "pointer-events-none opacity-50" : ""
-              }`}
+              className={`flex justify-center items-center mt-2 p-2 dark:bg-zinc-600 bg-slate-100 text-black dark:text-white rounded-md border-1 border-black dark:border-white w-full ${makeTeamPossible ? "pointer-events-none opacity-50" : ""
+                }`}
             >
               <p className="m-1">Make a Team</p>
               <i className="fa-solid fa-plus"></i>
