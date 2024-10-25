@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.project.TeamFinder.dto.EventUserDTO;
+import com.project.TeamFinder.dto.MemberDTO;
 import com.project.TeamFinder.dto.TeamUserRequestDTO;
 import com.project.TeamFinder.dto.TeamWithMembersDTO;
 import com.project.TeamFinder.model.Team;
@@ -49,6 +50,12 @@ public class TeamController {
         teamService.addInterestedUser(request.getEventId(), request.getUserId());
         return ResponseEntity.ok(request.getUserId());
     }
+
+    @DeleteMapping("/events/InterestedIndividual")
+    public ResponseEntity<Long> dropInterestedUser(@RequestParam Long userID, @RequestParam Long eventId) {
+        teamService.removeInterestedUser(eventId, userID);
+        return ResponseEntity.ok(userID);
+    }
     
     @PostMapping("/teams/team")
     public ResponseEntity<Team> postTeam(@RequestBody Team newTeam) {
@@ -58,6 +65,7 @@ public class TeamController {
 
     @PostMapping("/teams/userTeamMappings")
     public ResponseEntity<TeamUserRequestDTO> postTeamUserMappings(@RequestBody TeamUserRequestDTO request) {
+        System.out.println("Adding these guys: " + request.getUserIds() + " to this team: " + request.getTeamId());
         teamService.addUsersToTeam(request.getTeamId(), request.getUserIds());
         return ResponseEntity.ok(request);
     }
@@ -104,11 +112,8 @@ public class TeamController {
 
     @GetMapping("/teams/profile")
     public List<TeamWithMembersDTO> getAllTeamsforProfile(@RequestParam Long userId) {
-        System.out.println("Called here");
-        System.out.println("UserID: " + userId);
         List<Long> teamIds = teamService.getTeamIdsPerUserId(userId);
         List<TeamWithMembersDTO> result = teamService.getTeamsPerUserId(teamIds);
-        System.out.println("result: " + result);
         return result;
     }
 
@@ -125,6 +130,23 @@ public class TeamController {
         teamService.deleteTeamMembers(id); // Call service method to delete the team
         return ResponseEntity.noContent().build(); // Return 204 No Content on success
     }
+
+    @GetMapping("/isPartOfAny")
+    public Boolean getTeamsPerProfile(@RequestParam Long eventId, @RequestParam Long userId) {
+        List<TeamWithMembersDTO> globalTeams = teamService.getAllTeamsWithMembers(eventId);
+        System.out.println("Called here");
+        for (TeamWithMembersDTO team : globalTeams) {
+            if (team.getMembers() != null) {
+                for (UserProjection member : team.getMembers()) {
+                    if (member.getId().equals(userId)) {
+                        return true; // User is part of this team
+                    }
+                }
+            }
+        }
+        return false; // User is not part of any teams
+    }
+    
 
     
 

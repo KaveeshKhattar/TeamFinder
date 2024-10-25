@@ -8,7 +8,7 @@ import SearchBar from "../../core/components/SearchBar";
 function ProfileTeam() {
 
   const [teamName, setTeamName] = useState("");
-  const [searchTerm, setSearchTerm] = useState("");
+
   const [filteredPeople, setFilteredPeople] = useState<Member[]>([]);
   const [divVisible, setDivVisible] = useState(false);
   const location = useLocation();
@@ -26,7 +26,6 @@ function ProfileTeam() {
   const handleSearchChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
 
     const value = e.target.value;
-    setSearchTerm(value);
 
 
     // Filter people by name
@@ -35,7 +34,7 @@ function ProfileTeam() {
 
       const response = await axios.get(`http://localhost:8080/users/searchUsersByFullName`, {
         params: {
-          name: searchTerm
+          name: value
         },
         headers: {
           Authorization: `Bearer ${token}`
@@ -107,7 +106,7 @@ function ProfileTeam() {
     
       // Check if the response indicates a successful deletion
       if (response.status === 200) {
-        console.log(`Team with ID ${team.teamId} deleted successfully.`);
+
         
         // Optionally, you can navigate to another page or perform other actions
         navigate("/");
@@ -119,13 +118,13 @@ function ProfileTeam() {
   }
 
   const createUserTeamMappings = async (teamId: number) => {
-
+    
     const user_ids = members.map((member) => member.id);
-    console.log("sending these users: ", user_ids);
+
 
     try {
 
-      const response = await axios.put(
+      await axios.put(
         "http://localhost:8080/api/teams/userTeamMappings",
         {
           teamId: teamId,
@@ -137,12 +136,6 @@ function ProfileTeam() {
           }
         }
       );
-
-      if (response.status === 200) {
-        console.log(`User ${user_ids} added to team ${teamId}:`, response.data);
-      } else {
-        console.log("Fail");
-      }
 
     } catch (error) {
       console.error('Error adding users to the team:', error);

@@ -8,7 +8,7 @@ import SearchBar from "../../core/components/SearchBar";
 function MakeTeam() {
 
   const [teamName, setTeamName] = useState("");
-  const [searchTerm, setSearchTerm] = useState("");
+
   const [filteredPeople, setFilteredPeople] = useState<Member[]>([]);
   const [divVisible, setDivVisible] = useState(false);
   const [members, setMembers] = useState<Member[]>([])
@@ -22,7 +22,6 @@ function MakeTeam() {
   const handleSearchChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
 
     const value = e.target.value;
-    setSearchTerm(value);
 
 
     // Filter people by name
@@ -31,7 +30,7 @@ function MakeTeam() {
 
       const response = await axios.get(`http://localhost:8080/users/searchUsersByFullName`, {
         params: {
-          name: searchTerm
+          name: value
         },
         headers: {
           Authorization: `Bearer ${token}`
@@ -91,6 +90,7 @@ function MakeTeam() {
 
     const team = { name: teamName, eventId: eventID };
     try {
+      console.log("Creating team");
       const response = await axios.post(
         'http://localhost:8080/api/teams/team',  // API endpoint
         team,  // This is the request body (team object)
@@ -116,9 +116,10 @@ function MakeTeam() {
   const createUserTeamMappings = async (teamId: number) => {
 
     const user_ids = members.map((member) => member.id);
+    console.log("UserIDS: ", user_ids)
 
     try {
-
+      console.log("Creating team mappings");
       const response = await axios.post(
         "http://localhost:8080/api/teams/userTeamMappings",
         {

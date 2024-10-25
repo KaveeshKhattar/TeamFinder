@@ -27,14 +27,6 @@ function Profile() {
   useEffect(() => {
     const token = localStorage.getItem("token");
 
-    // if (token) {
-    //   const decodedToken = JSON.parse(atob(token.split('.')[1])); // For JWTs
-    //   console.log("Token Expiration Time: ", decodedToken.exp);
-    //   if ((decodedToken.exp) < Date.now()) {
-    //     handleSignOut();
-    //   }
-    // }
-
     const fetchUser = async () => {
 
       try {
@@ -55,7 +47,6 @@ function Profile() {
           setUserId(id);
           setFirstName(firstName);
           setLastName(lastName);
-          console.log("userId: ", id, "firstName: ", firstName, "lastName: ", lastName);
         }
       } catch (err) {
         console.log(err, "Sign up failed!");
@@ -141,73 +132,77 @@ function Profile() {
 
   return (
     <>
-  <Header title="Profile" />
+      <Header title="Profile" />
 
-  <div className="flex flex-col">
-    <form className="mt-4">
-      <div className="flex flex-col m-4 justify-center items-center">
+      <div className="flex flex-col ">
+        <form className="mt-4">
+          <div className="flex flex-col m-4 justify-center items-center">
 
-        <div className="edit-first-name mb-2">
-          {isEditing ? (
-            <div className="flex justify-center items-center">
-              <p className="mr-2">First Name: </p>
-              <input
-                className="p-2 rounded-md dark:bg-zinc-800 bg-slate-100"
-                type="text"
-                name="firstName"
-                value={firstName}
-                onChange={(e) => setFirstName(e.target.value)}
-                placeholder="First Name"
-              />
+            <div className="edit-first-name mb-2">
+              {isEditing ? (
+                <div className="flex justify-center items-center">
+                  <p className="mr-2">First Name: </p>
+                  <input
+                    className="p-2 rounded-md dark:bg-zinc-800 bg-slate-100"
+                    type="text"
+                    name="firstName"
+                    value={firstName}
+                    onChange={(e) => setFirstName(e.target.value)}
+                    placeholder="First Name"
+                  />
+                </div>
+              ) : (
+                <div className="flex justify-center items-center">
+                  <p className="mr-2">First Name: </p>
+                  <p className="p-2 rounded-md">{firstName}</p>
+                </div>
+              )}
             </div>
-          ) : (
-            <div className="flex justify-center items-center">
-              <p className="mr-2">First Name: </p>
-              <p className="p-2 rounded-md">{firstName}</p>
+
+            <div className="edit-last-name mb-2">
+              {isEditing ? (
+                <div className="flex justify-center items-center">
+                  <p className="mr-2">Last Name: </p>
+                  <input
+                    className="p-2 rounded-md dark:bg-zinc-800 bg-slate-100"
+                    type="text"
+                    name="lastName"
+                    value={lastName}
+                    onChange={(e) => setLastName(e.target.value)}
+                    placeholder="Last Name"
+                  />
+                </div>
+              ) : (
+                <div className="flex justify-center items-center">
+                  <p className="mr-2">Last Name: </p>
+                  <p className="mr-2 p-2 rounded-md">{lastName}</p>
+                </div>
+              )}
             </div>
-          )}
-        </div>
 
-        <div className="edit-last-name mb-2">
-          {isEditing ? (
-            <div className="flex justify-center items-center">
-              <p className="mr-2">Last Name: </p>
-              <input
-                className="p-2 rounded-md dark:bg-zinc-800 bg-slate-100"
-                type="text"
-                name="lastName"
-                value={lastName}
-                onChange={(e) => setLastName(e.target.value)}
-                placeholder="Last Name"
-              />
+            <button onClick={saveChanges} className="mt-4 p-2 w-full">
+              {isEditing ? 'Save Changes' : 'Edit Profile'}
+            </button>
+
+            <button onClick={handleSignOut} type="button" className="mt-4 p-2 w-full text-red-500">
+              Sign Out
+            </button>
+
+            <div className="w-full mt-4">
+              <p className="text-2xl font-bold">Teams:</p>
+              {profileTeams.length > 0 ? (
+                profileTeams.map((profileTeam) => (
+                  <TeamCard key={profileTeam.teamId} team={profileTeam} location={`${location.pathname}`} />
+                ))
+              ) : (
+                <p className="text-lg text-gray-500">No teams created.</p>
+              )}
             </div>
-          ) : (
-            <div className="flex justify-center items-center">
-              <p className="mr-2">Last Name: </p>
-              <p className="mr-2 p-2 rounded-md">{lastName}</p>
-            </div>
-          )}
-        </div>
 
-        <button onClick={saveChanges} className="mt-4 p-2 w-full">
-          {isEditing ? 'Save Changes' : 'Edit Profile'}
-        </button>
-
-        <button onClick={handleSignOut} type="button" className="mt-4 p-2 w-full text-red-500">
-          Sign Out
-        </button>
-
-        <div className="w-full mt-4">
-          <p className="text-2xl font-bold">Teams:</p>
-          {profileTeams.map((profileTeam) => (
-            <TeamCard key={profileTeam.teamId} team={profileTeam} location={`${location.pathname}`} />
-          ))}
-        </div>
-
+          </div>
+        </form>
       </div>
-    </form>
-  </div>
-</>
+    </>
 
   );
 }

@@ -5,10 +5,11 @@ import { Link, useLocation } from "react-router-dom";
 import Loading from "../../core/components/Loading";
 import { Event } from "../../../types";
 import SearchBar from "../../core/components/SearchBar";
+import pic from "../assets/halloween.jpg"
 
 function Events() {
     const [events, setEvents] = useState<Event[]>([]);
-    const [searchTerm, setSearchTerm] = useState("");
+
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState<string | null>(null);
 
@@ -42,14 +43,14 @@ function Events() {
     const handleSearchChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
         const token = localStorage.getItem("token");
         const value = e.target.value;
-        setSearchTerm(value);
+
 
         if (value) {
             const responseFilteredEvents = await axios.get(
                 "http://localhost:8080/api/college/events/searchEvents",
                 {
                     params: {
-                        eventSearchTerm: searchTerm,
+                        eventSearchTerm: value,
                         collegeId: collegeId,
                     },
                     headers: {
@@ -57,7 +58,7 @@ function Events() {
                     },
                 }
             );
-            console.log("Response: ", responseFilteredEvents);
+
             setEvents(responseFilteredEvents.data);
         } else {
             fetchEvents();
@@ -77,7 +78,7 @@ function Events() {
             <Header title="Events"></Header>
             <SearchBar onChange={handleSearchChange} />
 
-            <div className="grid grid-cols-2 mt-4 gap-2">
+            <div className="grid grid-cols-2 md:grid-cols-4 mt-4 gap-2">
                 {events.map((event) => {
                     const eventName = event.name || "";
                     const formattedName = eventName.replace(/\s+/g, "-");
@@ -93,6 +94,7 @@ function Events() {
                             key={event.id}
                         >
                             <div className="dark:bg-zinc-600 bg-slate-100 rounded-md p-2">
+                                <img src={pic} alt="" className="rounded-md"/>
                                 <p className="text-2xl text-black dark:text-white ">
                                     {event.name}
                                 </p>

@@ -5,16 +5,43 @@ import java.util.List;
 import com.project.TeamFinder.model.Team;
 import com.project.TeamFinder.projection.UserProjection;
 
-import lombok.Getter;
-import lombok.Setter;
-
-@Getter
-@Setter
 public class TeamWithMembersDTO {
     private Long teamId;
     private String teamName;
     private Long eventId;
     private List<UserProjection> members;
+
+    public Long getTeamId() {
+        return teamId;
+    }
+
+    public void setTeamId(Long teamId) {
+        this.teamId = teamId;
+    }
+
+    public String getTeamName() {
+        return teamName;
+    }
+
+    public void setTeamName(String teamName) {
+        this.teamName = teamName;
+    }
+
+    public Long getEventId() {
+        return eventId;
+    }
+
+    public void setEventId(Long eventId) {
+        this.eventId = eventId;
+    }
+
+    public List<UserProjection> getMembers() {
+        return members;
+    }
+
+    public void setMembers(List<UserProjection> members) {
+        this.members = members;
+    }
 
     public TeamWithMembersDTO(Team team, List<UserProjection> members) {
         this.teamId = team.getId();

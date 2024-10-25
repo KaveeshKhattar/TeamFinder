@@ -10,7 +10,6 @@ import SearchBar from "../../core/components/SearchBar";
 function HomePage() {
 
     const [colleges, setColleges] = useState<College[]>([]);
-    const [searchTerm, setSearchTerm] = useState("");
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState<string | null>(null);
 
@@ -40,22 +39,21 @@ function HomePage() {
     const handleSearchChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
         const token = localStorage.getItem("token");
         const value = e.target.value;
-        setSearchTerm(value);
-        
-        if (value) {
-            const responseFilteredColleges = await axios.get(
-                "http://localhost:8080/api/colleges/searchColleges",
-                {
-                    params: {
-                        name: searchTerm
-                    },
-                    headers: {
-                        Authorization: `Bearer ${token}`
-                    }
-                }
-            );
 
-            setColleges([...responseFilteredColleges.data])
+
+        if (value) {
+            try {
+                const responseFilteredColleges = await axios.get(
+                    "http://localhost:8080/api/colleges/searchColleges",
+                    {
+                        params: { name: value },
+                        headers: { Authorization: `Bearer ${token}` }
+                    }
+                );
+                setColleges([...responseFilteredColleges.data]);
+            } catch (error) {
+                console.error("Error searching colleges:", error);
+            }
 
         } else {
             fetchColleges();
@@ -75,14 +73,14 @@ function HomePage() {
             <Header title="Colleges"></Header>
             <SearchBar onChange={handleSearchChange} />
 
-            <div className="grid grid-cols-2 mt-4 gap-2">
+            <div className="grid grid-cols-2 md:grid-cols-4 mt-4 gap-2">
                 {colleges.map((college) => {
                     
                     const formattedName = college.name.replace(/\s+/g, '-');
                     const collegeUrl = formattedName.toLowerCase()
 
                     return <Link to={`/${collegeUrl}`} state={{ collegeId: college.id }} key={college.id}>
-                    <div className="rounded-md">
+                    <div className="dark:bg-zinc-600 bg-slate-100 rounded-md p-2">
                         <img src={collegeImg} className="rounded-md" alt="" />
                         <p className="text-black dark:text-white ">{college.name}</p>
                         <p className="text-black dark:text-white ">{college.location}</p>                        

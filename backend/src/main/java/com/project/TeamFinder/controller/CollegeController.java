@@ -48,25 +48,13 @@ public class CollegeController {
         return ResponseEntity.ok(colleges);
     }
 
-    @GetMapping("/colleges/searchColleges")
+    @GetMapping("/colleges/searchColleges")    
     public ResponseEntity<?> getFilteredColleges(@RequestHeader("Authorization") String token, @RequestParam String name) {
 
-
-        final String userEmail = jwtService.extractUsername(token);
-        UserDetails userDetails = this.userDetailsService.loadUserByUsername(userEmail);
-
-        if (userEmail != null) {
-            if (jwtService.isTokenValid(token, userDetails)) {
-                List<College> filteredColleges = collegeService.searchColleges(name);
-                return ResponseEntity.ok(filteredColleges);
-            } else {
-                // Return error for invalid token
-                return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Invalid sign in token");
-            }
-        } else {
-            // Return error if the user is not found in token
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("User not found");
-        }
+        List<College> filteredColleges = collegeService.searchColleges(name);
+        System.out.println(filteredColleges);
+        return ResponseEntity.ok(filteredColleges);
+            
     }
     
 }

@@ -21,4 +21,6 @@ public interface TeamRepository extends CrudRepository<Team, Long> {
     @Transactional
     @Query(value = "UPDATE teams SET name = :name WHERE id = :id", nativeQuery = true)
     void updateTeamNameById(Long id, String name);
+
+
 }

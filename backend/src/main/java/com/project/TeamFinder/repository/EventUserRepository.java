@@ -25,4 +25,11 @@ public interface EventUserRepository extends CrudRepository<EventUser, Long>{
     @Query(value = "SELECT CASE WHEN COUNT(*) > 0 THEN true ELSE false END FROM events_interested_users WHERE event_id = :eventId AND user_id = :id", nativeQuery = true)
     boolean existsByEventIdAndId(@Param("eventId") Long eventId, @Param("id") Long id);
 
+    
+    @Modifying
+    @Transactional
+    @Query(value = "DELETE FROM events_interested_users WHERE event_id = :eventId AND user_id = :id", nativeQuery = true)
+    void removeInterestedUserFromEvent(@Param("eventId") Long eventId, @Param("id") Long id);
+
+
 }

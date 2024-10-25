@@ -15,7 +15,6 @@ import com.project.TeamFinder.projection.UserProjection;
 import com.project.TeamFinder.repository.EventUserRepository;
 import com.project.TeamFinder.repository.TeamMembersRepository;
 import com.project.TeamFinder.repository.TeamRepository;
-import com.project.TeamFinder.repository.TeamUserRepository;
 import com.project.TeamFinder.repository.UserRepository;
 
 @Service
@@ -24,14 +23,12 @@ public class TeamService {
     private final TeamRepository teamRepository;
     private final TeamMembersRepository teamMembersRepository;
     private final UserRepository userRepository;
-    private final TeamUserRepository teamUserRepository;
     private final EventUserRepository eventUserRepository;
 
-    public TeamService(TeamRepository teamRepository, TeamMembersRepository teamMembersRepository, UserRepository userRepository, TeamUserRepository teamUserRepository, EventUserRepository eventUserRepositroy) {
+    public TeamService(TeamRepository teamRepository, TeamMembersRepository teamMembersRepository, UserRepository userRepository, EventUserRepository eventUserRepositroy) {
         this.teamRepository = teamRepository;
         this.teamMembersRepository = teamMembersRepository;
         this.userRepository = userRepository;
-        this.teamUserRepository = teamUserRepository;
         this.eventUserRepository = eventUserRepositroy;
     }
 
@@ -74,10 +71,7 @@ public class TeamService {
         // Loop through the list of users and add each one to the team
 
         for (Long userId : userIds) {
-            if (!teamUserRepository.existsByTeamIdAndUserId(teamId, userId)) {
-                teamUserRepository.addUserToTeam(teamId, userId);
-            }
-            
+            teamMembersRepository.addUserToTeam(teamId, userId);
         }
     }
 
@@ -102,8 +96,13 @@ public class TeamService {
     
     public void addInterestedUser(Long eventId, Long id) {        
         if (!eventUserRepository.existsByEventIdAndId(eventId, id)) {
-            System.out.println("EventID:" + eventId + "ID: " + id);
             eventUserRepository.addInterestedUserToEvent(eventId, id);
+        }
+    }
+
+    public void removeInterestedUser(Long eventId, Long id) {        
+        if (eventUserRepository.existsByEventIdAndId(eventId, id)) {
+            eventUserRepository.removeInterestedUserFromEvent(eventId, id);
         }
     }
 
@@ -112,7 +111,6 @@ public class TeamService {
     }
 
     public List<TeamWithMembersDTO> getTeamsPerUserId(List<Long> teamIds) {
-        System.out.println("Called here.");
 
         List<TeamWithMembersDTO> teamsWithMembers = new ArrayList<>();
 
@@ -153,12 +151,12 @@ public class TeamService {
     public void updateUsersInTeam(Long teamId, List<Long> userIds) {
 
         // Clear existing user mappings (optional based on your requirements)
-        System.out.println("userIds: " + userIds);
-        teamUserRepository.deleteUsersFromTeamByIds(teamId, userIds);
+
+        teamMembersRepository.deleteUsersFromTeamByIds(teamId, userIds);
 
         // Add new user mappings
         for (Long userId : userIds) {
-            teamUserRepository.addUserToTeam(teamId, userId);
+            teamMembersRepository.addUserToTeam(teamId, userId);
         }
     }
 
@@ -168,13 +166,13 @@ public class TeamService {
 
     public void deleteTeam(Long id) {
         // You can perform additional checks here if necessary
-        System.out.println("Deleting team...");
+
         teamRepository.deleteById(id); // This will throw an exception if the ID does not exist
     }
 
     public void deleteTeamMembers(Long id) {
         // You can perform additional checks here if necessary
-        System.out.println("Deleting members...");
+
         teamMembersRepository.deleteMembers(id); // This will throw an exception if the ID does not exist
     }
 }
