@@ -102,20 +102,6 @@ function Profile() {
     }
   };
 
-  // const fetchTeamIdsPerProfile = async () => {
-  //   const responseTeamIds = await axios.get(
-  //     "http://localhost:8080/api/teams/teamIds/profile",
-  //     {
-  //       params: {
-  //         userId: id
-  //       }
-  //     }
-  //   );
-  //   setTeamIds([responseTeamIds.data]); 
-  // }
-
-  // fetchTeamIdsPerProfile();
-
   const fetchTeams = useCallback(async () => {
     if (userId) {  // Ensure userId is set
       console.log("User ID being sent: ", userId);
@@ -130,14 +116,17 @@ function Profile() {
             }
           }
         );
-        setProfileTeams(responseTeams.data);
+        if (responseTeams.status === 200) {
+          setProfileTeams(responseTeams.data);
+          localStorage.setItem("profileTeams", JSON.stringify(profileTeams));
+        }
       } catch (error) {
         console.error("Error fetching teams:", error);
       }
     } else {
       console.log("User ID is not available yet.");
     }
-  }, [userId])
+  }, [profileTeams, userId])
 
   useEffect(() => {
     fetchTeams();

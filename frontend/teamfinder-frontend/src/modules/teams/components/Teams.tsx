@@ -16,6 +16,7 @@ function Teams() {
   const [isViewingTeams, setisViewingTeams] = useState<boolean>(true);
   const [individuals, setIndividuals] = useState<Member[]>([]);
   const [userId, setUserId] = useState(0);
+  const [makeTeamPossible, setMakeTeamPossible] = useState<boolean>(true);
 
   const location = useLocation();
   const { eventId, eventURL } = location.state;
@@ -44,8 +45,6 @@ function Teams() {
   const fetchTeams = useCallback(async () => {
     const token = localStorage.getItem("token");
     try {
-
-
       const response = await axios.get(
         `http://localhost:8080/api/events/${eventId}/teams`,
         {
@@ -111,7 +110,7 @@ function Teams() {
       });
 
       if (response.status === 200) {
-        setUserId(response.data.id)
+        setUserId(response.data.id);
       }
     } catch (err) {
       console.log(err, "Sign up failed!");
@@ -133,12 +132,34 @@ function Teams() {
 
       if (response.status === 200) {
         fetchInterestedIndividuals();
-
       }
     } catch (err) {
       console.log(err);
     }
   };
+
+  const checkIfProfileIsMemberOfTeam = useCallback(async () => {
+    try {
+      console.log("Calling to check if profile has a team in this event...");
+
+      const profilesTeams = JSON.parse(
+        localStorage.getItem("profileTeams") || "[]"
+      );
+      console.log("Profile Teams: ", profilesTeams);
+      const eventExists = profilesTeams.some(
+        (team: { eventId: number }) => team.eventId === eventId
+      );
+      console.log("Event exists: ", eventExists);
+      // Set the link to disabled if the current eventId is found in the array
+      setMakeTeamPossible(eventExists);
+    } catch (err) {
+      console.log(err);
+    }
+  }, [eventId]);
+
+  useEffect(() => {
+    checkIfProfileIsMemberOfTeam();
+  }, [checkIfProfileIsMemberOfTeam]);
 
   if (loading) {
     return <Loading />;
@@ -170,7 +191,9 @@ function Teams() {
             <Link
               to={`${location.pathname}/makeTeam`}
               state={{ eventID: eventId, eventUrl: eventURL }}
-              className="flex justify-center items-center mt-2 p-2 dark:bg-zinc-600 bg-slate-100 text-black dark:text-white rounded-md border-1 border-black dark:border-white w-full"
+              className={`flex justify-center items-center mt-2 p-2 dark:bg-zinc-600 bg-slate-100 text-black dark:text-white rounded-md border-1 border-black dark:border-white w-full ${
+                makeTeamPossible ? "pointer-events-none opacity-50" : ""
+              }`}
             >
               <p className="m-1">Make a Team</p>
               <i className="fa-solid fa-plus"></i>
@@ -188,7 +211,10 @@ function Teams() {
 
       {isViewingTeams ? (
         <div className="grid grid-cols-1 mt-4 gap-2">
-          <TeamsList teams={teams} location={`${location.pathname}`}></TeamsList>
+          <TeamsList
+            teams={teams}
+            location={`${location.pathname}`}
+          ></TeamsList>
         </div>
       ) : (
         <div>
