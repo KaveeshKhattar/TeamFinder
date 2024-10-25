@@ -31,5 +31,10 @@ public interface EventUserRepository extends CrudRepository<EventUser, Long>{
     @Query(value = "DELETE FROM events_interested_users WHERE event_id = :eventId AND user_id = :id", nativeQuery = true)
     void removeInterestedUserFromEvent(@Param("eventId") Long eventId, @Param("id") Long id);
 
+    @Modifying
+    @Transactional
+    @Query(value = "SELECT user_id FROM events_interested_users WHERE event_id = :eventId", nativeQuery = true)
+    List<Long> findUserIdsOfAlreadyInterestedUsers(@Param("eventId") Long eventId);
+
 
 }

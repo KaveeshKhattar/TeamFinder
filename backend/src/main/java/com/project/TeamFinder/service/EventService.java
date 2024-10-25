@@ -7,13 +7,16 @@ import org.springframework.stereotype.Service;
 
 import com.project.TeamFinder.model.Event;
 import com.project.TeamFinder.repository.EventRepository;
+import com.project.TeamFinder.repository.EventUserRepository;
 
 @Service
 public class EventService {
     private final EventRepository eventRepository;
+    private final EventUserRepository eventUserRepository;
 
-    public EventService(EventRepository eventRepository) {
+    public EventService(EventRepository eventRepository, EventUserRepository eventUserRepository) {
         this.eventRepository = eventRepository;
+        this.eventUserRepository = eventUserRepository;
     }
 
     public List<Event> getEventsByCollegeId(Long collegeId) {
@@ -26,4 +29,10 @@ public class EventService {
             .collect(Collectors.toList());
     }
 
+    public List<Long> getUserIdsWhoAreInterestedAlready(Long eventId) {
+        System.out.println("NIGGA AGAIN");
+        List<Long> userIdsWhoAreAlreadyInterested = eventUserRepository.findUserIdsOfAlreadyInterestedUsers(eventId);
+        System.out.println("already niggas: " + userIdsWhoAreAlreadyInterested);
+        return eventUserRepository.findUserIdsOfAlreadyInterestedUsers(eventId);
+    }
 }

@@ -134,7 +134,6 @@ public class TeamController {
     @GetMapping("/isPartOfAny")
     public Boolean getTeamsPerProfile(@RequestParam Long eventId, @RequestParam Long userId) {
         List<TeamWithMembersDTO> globalTeams = teamService.getAllTeamsWithMembers(eventId);
-        System.out.println("Called here");
         for (TeamWithMembersDTO team : globalTeams) {
             if (team.getMembers() != null) {
                 for (UserProjection member : team.getMembers()) {

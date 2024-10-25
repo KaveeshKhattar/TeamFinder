@@ -41,6 +41,15 @@ public class EventController {
         List<Event> filteredEvents = eventService.searchEvents(globalEvents, eventSearchTerm);
         return filteredEvents;
     }
+
+    @GetMapping("/events/isUserInterestedAlready")
+    public Boolean isUserInterestedAlready(@RequestParam Long userId, @RequestParam Long eventId) {
+        System.out.println("NIGGA");
+        List<Long> userIdsWhoAreAlreadyInterested = eventService.getUserIdsWhoAreInterestedAlready(eventId);
+        System.out.println("already niggas: " + userIdsWhoAreAlreadyInterested);
+        return userIdsWhoAreAlreadyInterested.contains(userId);
+    }
+    
     
 }
 

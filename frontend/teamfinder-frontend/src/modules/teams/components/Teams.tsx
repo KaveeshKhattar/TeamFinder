@@ -16,7 +16,7 @@ function Teams() {
   const [individuals, setIndividuals] = useState<Member[]>([]);
   const [userId, setUserId] = useState(0);
   const [isPartOfAnyTeam, setIsPartOfAnyTeam] = useState(false);
-  const [isInterested, setIsInterested] = useState(false);
+  const [IsUserInterestedAlreadyBool, setIsUserInterestedAlreadyBool] = useState<boolean>();
 
   const location = useLocation();
   const { eventId, eventURL } = location.state;
@@ -34,6 +34,9 @@ function Teams() {
       );
 
       setIndividuals([...response.data]);
+      setIsUserInterestedAlreadyBool(individuals.some((individual) => individual.id === userId));
+      console.log("INDIVID: ", individuals);
+      console.log("INDIVID bool: ", IsUserInterestedAlreadyBool);
 
     } catch (err) {
       setError("Error fetching teams");
@@ -55,26 +58,19 @@ function Teams() {
       });
 
       if (profileResponse.status === 200) {
-        const fetchedUserId = profileResponse.data.id; // Assuming userId is in response.data.id
+        const fetchedUserId = profileResponse.data.id;
         setUserId(fetchedUserId); // Update userId state
         console.log("USER ID:" , fetchedUserId);
         // Now check team membership using the fetched userId
-        const membershipResponse = await axios.get("http://localhost:8080/api/isPartOfAny", {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-          params: {
-            eventId: eventId, // Adding eventId as a query parameter
-            userId: fetchedUserId,   // Using fetched userId
-          },
-        });
-
-        setIsPartOfAnyTeam(membershipResponse.data); // Update membership state
+        
+        console.log("Before: ", IsUserInterestedAlreadyBool);
+        setIsPartOfAnyTeam(!IsUserInterestedAlreadyBool); // Update membership state
+        console.log("After: ", IsUserInterestedAlreadyBool);
       }
     } catch (error) {
       console.error('Error in fetching user profile or checking team membership:', error);
     }
-  }, [eventId]);
+  }, []);
 
   // useEffect to run the combined function
   useEffect(() => {
@@ -164,7 +160,7 @@ function Teams() {
       );
 
       if (response.status === 200) {
-        setIsInterested(true);
+        setIsUserInterestedAlreadyBool(true);
         fetchInterestedIndividuals();
       }
     } catch (err) {
@@ -205,13 +201,59 @@ function Teams() {
       );
 
       if (response.status === 200) {
-        setIsInterested(false);
+        setIsUserInterestedAlreadyBool(false)
         fetchInterestedIndividuals();
       }
     } catch (err) {
       console.log(err);
     }
   };
+
+  const isUserInterestedAlready = useCallback(async () => {
+    const token = localStorage.getItem("token");
+    let isUserInterestedUserId = 0;
+    try {
+      const response = await axios.get("http://localhost:8080/users/profile", {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+
+      if (response.status === 200) {
+        console.log("User Interested Already Bool ID: ", response.data.id);
+        isUserInterestedUserId = response.data.id;
+      }
+    } catch (err) {
+      console.log(err, "Sign up failed!");
+    }
+    try {
+      const response = await axios.get(
+        "http://localhost:8080/api/events/isUserInterestedAlready",
+        {
+          params: {
+            userId: isUserInterestedUserId,
+            eventId: eventId
+          }, 
+          headers: {
+            Authorization: `Bearer ${token}`
+          }
+        }
+      );
+
+      if (response.status === 200) {
+        console.log("RESP: ", response)
+        setIsUserInterestedAlreadyBool(response.data)
+      } else {
+        console.log("error");
+      }
+    } catch (err) {
+      console.log(err);
+    }
+  }, [eventId]);
+
+  useEffect(() => {
+    isUserInterestedAlready()
+  }, [isUserInterestedAlready])
 
   if (loading) {
     return <Loading />;
@@ -252,9 +294,9 @@ function Teams() {
           ) : (
             <button
               className="flex justify-center items-center mt-2 p-2 dark:bg-zinc-600 bg-slate-100 text-black dark:text-white rounded-md border-1 border-black dark:border-white w-full"
-              onClick={isInterested ? handleClickNotInterested : handleClickInterested}
+              onClick={IsUserInterestedAlreadyBool ? handleClickNotInterested : handleClickInterested}
             >
-              <p className="m-1">{isInterested ? "I'm Not Interested" : "I'm Interested"}</p>
+              <p className="m-1">Interested / Not Interested</p>
             </button>
           )}
         </div>
