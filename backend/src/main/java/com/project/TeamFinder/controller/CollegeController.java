@@ -2,10 +2,7 @@ package com.project.TeamFinder.controller;
 
 import java.util.List;
 
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestHeader;
@@ -28,11 +25,9 @@ public class CollegeController {
     JwtService jwtService;
 
     private final CollegeService collegeService;
-    private final UserDetailsService userDetailsService;
 
-    public CollegeController(JwtService jwtService, UserDetailsService userDetailsService, CollegeService collegeService) {
+    public CollegeController(JwtService jwtService, CollegeService collegeService) {
         this.jwtService = jwtService;
-        this.userDetailsService = userDetailsService;
         this.collegeService = collegeService;
     }
 

@@ -103,7 +103,6 @@ function Profile() {
 
   const fetchTeams = useCallback(async () => {
     if (userId) {  // Ensure userId is set
-      console.log("User ID being sent: ", userId);
       try {
         const token = localStorage.getItem('token');
         const responseTeams = await axios.get(

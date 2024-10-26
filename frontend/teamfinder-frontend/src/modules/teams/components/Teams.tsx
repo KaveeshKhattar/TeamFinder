@@ -35,7 +35,6 @@ function Teams() {
 
       setIndividuals([...response.data]);
       setIsUserInterestedAlreadyBool(individuals.some((individual) => individual.id === userId));
-      console.log("INDIVID: ", individuals);
       console.log("INDIVID bool: ", IsUserInterestedAlreadyBool);
 
     } catch (err) {
@@ -81,7 +80,7 @@ function Teams() {
       });
 
       if (response.status === 200) {
-        console.log("R:" , response)
+
         setIsPartOfAnyTeam(response.data);
       }
 
@@ -197,7 +196,6 @@ function Teams() {
       });
 
       if (response.status === 200) {
-        console.log("User ID: ", response.data.id);
         setUserId(response.data.id);
       }
     } catch (err) {
@@ -238,7 +236,6 @@ function Teams() {
       });
 
       if (response.status === 200) {
-        console.log("User Interested Already Bool ID: ", response.data.id);
         isUserInterestedUserId = response.data.id;
       }
     } catch (err) {
@@ -259,7 +256,6 @@ function Teams() {
       );
 
       if (response.status === 200) {
-        console.log("RESP: ", response)
         setIsUserInterestedAlreadyBool(response.data)
       } else {
         console.log("error");

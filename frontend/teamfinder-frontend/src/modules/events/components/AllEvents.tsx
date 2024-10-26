@@ -11,7 +11,6 @@ function AllEvents() {
 
     const fetchAllEvents = async () => {
         const token = localStorage.getItem("token");
-        console.log("Fetching all...");
         const fetchAllEventsResponse = await axios.get(
             "http://localhost:8080/api/events",
             {
@@ -23,7 +22,6 @@ function AllEvents() {
         if (fetchAllEventsResponse.status === 200) {
             setAllEvents(fetchAllEventsResponse.data);
         }
-        console.log("Fetched all");
     }
 
     useEffect(() => {

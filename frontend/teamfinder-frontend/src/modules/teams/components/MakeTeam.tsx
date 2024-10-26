@@ -90,7 +90,6 @@ function MakeTeam() {
 
     const team = { name: teamName, eventId: eventID };
     try {
-      console.log("Creating team");
       const response = await axios.post(
         'http://localhost:8080/api/teams/team',  // API endpoint
         team,  // This is the request body (team object)
@@ -116,10 +115,8 @@ function MakeTeam() {
   const createUserTeamMappings = async (teamId: number) => {
 
     const user_ids = members.map((member) => member.id);
-    console.log("UserIDS: ", user_ids)
 
     try {
-      console.log("Creating team mappings");
       const response = await axios.post(
         "http://localhost:8080/api/teams/userTeamMappings",
         {

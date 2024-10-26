@@ -11,10 +11,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.project.TeamFinder.dto.EventUserDTO;
-import com.project.TeamFinder.dto.MemberDTO;
 import com.project.TeamFinder.dto.TeamUserRequestDTO;
 import com.project.TeamFinder.dto.TeamWithMembersDTO;
-import com.project.TeamFinder.model.Event;
 import com.project.TeamFinder.model.Team;
 import com.project.TeamFinder.projection.UserProjection;
 import com.project.TeamFinder.service.TeamService;

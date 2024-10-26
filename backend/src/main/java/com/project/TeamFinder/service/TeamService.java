@@ -8,7 +8,6 @@ import java.util.stream.Collectors;
 import org.springframework.stereotype.Service;
 
 import com.project.TeamFinder.dto.TeamWithMembersDTO;
-import com.project.TeamFinder.model.Event;
 import com.project.TeamFinder.model.EventUser;
 import com.project.TeamFinder.model.Team;
 import com.project.TeamFinder.model.TeamMembers;

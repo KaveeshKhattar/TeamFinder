@@ -30,7 +30,6 @@ public class EventService {
     }
 
     public List<Long> getUserIdsWhoAreInterestedAlready(Long eventId) {
-        List<Long> userIdsWhoAreAlreadyInterested = eventUserRepository.findUserIdsOfAlreadyInterestedUsers(eventId);
         return eventUserRepository.findUserIdsOfAlreadyInterestedUsers(eventId);
     }
 
