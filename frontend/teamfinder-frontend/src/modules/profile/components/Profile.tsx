@@ -25,6 +25,13 @@ function Profile() {
   };
 
   useEffect(() => {
+    if (localStorage.getItem("token") === null) {
+      navigate("/login");
+    }
+     
+  })
+
+  useEffect(() => {
     const token = localStorage.getItem("token");
 
     const fetchUser = async () => {

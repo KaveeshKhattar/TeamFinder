@@ -14,6 +14,7 @@ import com.project.TeamFinder.dto.EventUserDTO;
 import com.project.TeamFinder.dto.MemberDTO;
 import com.project.TeamFinder.dto.TeamUserRequestDTO;
 import com.project.TeamFinder.dto.TeamWithMembersDTO;
+import com.project.TeamFinder.model.Event;
 import com.project.TeamFinder.model.Team;
 import com.project.TeamFinder.projection.UserProjection;
 import com.project.TeamFinder.service.TeamService;
@@ -145,8 +146,18 @@ public class TeamController {
         }
         return false; // User is not part of any teams
     }
-    
 
-    
+    @GetMapping("/teams")
+    public List<TeamWithMembersDTO> getAllTeams() {
+        System.out.println("Called: " + teamService.getAllTeams());
+        return teamService.getAllTeams();
+    }
+
+    @GetMapping("/teams/searchAllTeams")
+    public List<TeamWithMembersDTO> getSearchAllEvents(@RequestHeader("Authorization") String token, @RequestParam String teamSearchTerm) {
+        List<TeamWithMembersDTO> globalTeams = teamService.getAllTeams();
+        List<TeamWithMembersDTO> filteredTeams = teamService.searchTeams(globalTeams, teamSearchTerm);
+        return filteredTeams;
+    }
 
 }

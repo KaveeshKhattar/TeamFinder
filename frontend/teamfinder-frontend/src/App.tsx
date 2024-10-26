@@ -14,6 +14,8 @@ import Loading from './modules/core/components/Loading'
 import TeamDetails from './modules/teams/components/TeamDetails'
 import MakeTeam from './modules/teams/components/MakeTeam'
 import ProfileTeam from './modules/profile/components/ProfileTeam'
+import AllEvents from './modules/events/components/AllEvents'
+import AllTeams from './modules/teams/components/AllTeams'
 
 function App() {
 
@@ -29,6 +31,9 @@ function App() {
             <Route path="/signup" element={<Signup />} />
             <Route path="/verification" element={<Verification />} />
             <Route path="/colleges" element={<HomePage />} />
+            <Route path="/events" element={<AllEvents />} />
+            <Route path="/teams" element={<AllTeams />} />
+            <Route path="/teams/:teamUrl" element={<TeamDetails />} />
             <Route path="/:collegeUrl" element={<Events />} />
             <Route path="/:collegeUrl/:eventUrl" element={<Teams />} />
             <Route path="/:collegeUrl/:eventUrl/:teamUrl" element={<TeamDetails />} />

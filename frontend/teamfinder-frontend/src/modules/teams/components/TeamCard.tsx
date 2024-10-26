@@ -9,7 +9,7 @@ const TeamCard: React.FC<TeamCardProps> = ({ team, location }) => {
     return (
         <div
             key={team.teamId}
-            className="flex flex-col rounded-md text-black dark:text-white dark:bg-zinc-600 bg-slate-100"
+            className="flex flex-col rounded-md text-black dark:text-white dark:bg-zinc-600 bg-slate-100 mb-2"
         >
             <div className="card flex justify-between">
                 <div className="card-left flex w-1/2 flex-col items-start p-2">

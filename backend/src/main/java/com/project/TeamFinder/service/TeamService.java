@@ -8,6 +8,7 @@ import java.util.stream.Collectors;
 import org.springframework.stereotype.Service;
 
 import com.project.TeamFinder.dto.TeamWithMembersDTO;
+import com.project.TeamFinder.model.Event;
 import com.project.TeamFinder.model.EventUser;
 import com.project.TeamFinder.model.Team;
 import com.project.TeamFinder.model.TeamMembers;
@@ -174,4 +175,27 @@ public class TeamService {
 
         teamMembersRepository.deleteMembers(id); // This will throw an exception if the ID does not exist
     }
+
+    public List<TeamWithMembersDTO> getAllTeams() {
+        List<Team> teams = (List<Team>) teamRepository.findAll();
+        List<TeamWithMembersDTO> teamsWithMembers = new ArrayList<>();
+
+        for (Team team: teams) {
+
+            List<TeamMembers> members = teamMembersRepository.findByTeamId(team.getId());
+
+            List<Long> userIds = members.stream()
+            .map(TeamMembers::getUserId) // Use method reference to get userId
+            .collect(Collectors.toList());
+
+            // List<User> users = (List<User>) userRepository.findAllById(userIds);
+            List<UserProjection> users = userRepository.findAllByIdIn(userIds);
+
+            TeamWithMembersDTO teamWithMembersDTO = new TeamWithMembersDTO(team, users);
+            teamsWithMembers.add(teamWithMembersDTO);
+        }
+
+        return teamsWithMembers;
+    }
+    
 }

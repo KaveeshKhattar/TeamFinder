@@ -25,7 +25,12 @@ function Header({ title }: HeaderProps) {
        <div className={`md:hidden fixed top-0 left-0 w-full h-screen bg-slate-100 dark:bg-zinc-700 flex flex-col items-center justify-center space-y-8 transition-transform duration-300 ${isOpen ? 'translate-x-0' : '-translate-x-full'}`}>
       <a href="/" className="text-2xl text-black dark:text-white hover:text-gray-400">Home</a>
       {isSignedIn ? (
-        <a href="/colleges" className="text-2xl p-1 text-black dark:text-white ">Explore Teams</a>
+        <>
+        <a href="/colleges" className="text-2xl p-1 text-black dark:text-white">Colleges</a>
+        <Link to="/events" className="text-2xl p-1 text-black dark:text-white">Events</Link>
+          <Link to="/teams" className="text-2xl p-1 text-black dark:text-white">Teams</Link>
+
+          </>
       ) : (
         <button></button>
       )}
@@ -34,7 +39,9 @@ function Header({ title }: HeaderProps) {
       {/* Links visible on md and above */}
       <div className="hidden md:flex space-x-4 items-center justify-center">
           <Link to="/" className="text-black dark:text-white p-2 rounded">Home</Link>
-          <Link to="/colleges" className="text-black dark:text-white p-2 rounded">Explore Teams</Link>
+          <Link to="/colleges" className="text-black dark:text-white p-2 rounded">Colleges</Link>
+          <Link to="/events" className="text-black dark:text-white p-2 rounded">Events</Link>
+          <Link to="/teams" className="text-black dark:text-white p-2 rounded">Teams</Link>
       </div>
 
       <div className="flex items-center">

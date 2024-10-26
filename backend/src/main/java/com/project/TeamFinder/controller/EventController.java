@@ -47,7 +47,19 @@ public class EventController {
         List<Long> userIdsWhoAreAlreadyInterested = eventService.getUserIdsWhoAreInterestedAlready(eventId);
         return userIdsWhoAreAlreadyInterested.contains(userId);
     }
-    
+
+    @GetMapping("/events")
+    public List<Event> getAllEvents() {
+        System.out.println("Called: " + eventService.getAllEvents());
+        return eventService.getAllEvents();
+    }
+
+    @GetMapping("/events/searchAllEvents")
+    public List<Event> getSearchAllEvents(@RequestHeader("Authorization") String token, @RequestParam String eventSearchTerm) {
+        List<Event> globalEvents = eventService.getAllEvents();
+        List<Event> filteredEvents = eventService.searchEvents(globalEvents, eventSearchTerm);
+        return filteredEvents;
+    }
     
 }
 
