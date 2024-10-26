@@ -62,20 +62,38 @@ function Teams() {
         setUserId(fetchedUserId); // Update userId state
         console.log("USER ID:" , fetchedUserId);
         // Now check team membership using the fetched userId
-        
-        console.log("Before: ", IsUserInterestedAlreadyBool);
-        setIsPartOfAnyTeam(!IsUserInterestedAlreadyBool); // Update membership state
-        console.log("After: ", IsUserInterestedAlreadyBool);
       }
+
     } catch (error) {
       console.error('Error in fetching user profile or checking team membership:', error);
     }
-  }, []);
+
+    try {
+      // Fetch user profile to get userId
+      const response = await axios.get("http://localhost:8080/api/isPartOfAny", {
+        params:{
+          eventId: eventId,
+          userId: userId
+        },
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+
+      if (response.status === 200) {
+        console.log("R:" , response)
+        setIsPartOfAnyTeam(response.data);
+      }
+
+    } catch (error) {
+      console.error('Error in fetching user profile or checking team membership:', error);
+    }
+  }, [eventId, userId]);
 
   // useEffect to run the combined function
   useEffect(() => {
     fetchUserAndCheckMembership(); // Call the combined function on component mount
-  }, [eventId, fetchUserAndCheckMembership]);
+  }, [fetchUserAndCheckMembership]);
 
   const fetchTeams = useCallback(async () => {
     const token = localStorage.getItem("token");
@@ -292,12 +310,20 @@ function Teams() {
               <i className="fa-solid fa-plus"></i>
             </Link>
           ) : (
-            <button
-              className="flex justify-center items-center mt-2 p-2 dark:bg-zinc-600 bg-slate-100 text-black dark:text-white rounded-md border-1 border-black dark:border-white w-full"
-              onClick={IsUserInterestedAlreadyBool ? handleClickNotInterested : handleClickInterested}
+            <div className="flex">
+              <button
+              className="flex justify-center items-center mt-2 p-2 dark:bg-zinc-600 bg-slate-100 text-black dark:text-white rounded-md border-1 border-green-500 dark:border-white w-full mr-2"
+              onClick={handleClickInterested}
             >
-              <p className="m-1">Interested / Not Interested</p>
+              <p className="m-1">Interested</p>
             </button>
+            <button
+              className="flex justify-center items-center mt-2 p-2 dark:bg-zinc-600 bg-slate-100 text-black dark:text-white rounded-md border-1 border-red-500 dark:border-white w-full"
+              onClick={handleClickNotInterested}
+            >
+              <p className="m-1">Not Interested</p>
+            </button>
+            </div>
           )}
         </div>
       </div>

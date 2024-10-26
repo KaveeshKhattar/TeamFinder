@@ -33,8 +33,8 @@ function Header({ title }: HeaderProps) {
 
       {/* Links visible on md and above */}
       <div className="hidden md:flex space-x-4 items-center justify-center">
-          <Link to="/" className="text-white hover:bg-gray-700 p-2 rounded">Home</Link>
-          <Link to="/colleges" className="text-white hover:bg-gray-700 p-2 rounded">Explore Teams</Link>
+          <Link to="/" className="text-black dark:text-white p-2 rounded">Home</Link>
+          <Link to="/colleges" className="text-black dark:text-white p-2 rounded">Explore Teams</Link>
       </div>
 
       <div className="flex items-center">

@@ -30,9 +30,7 @@ public class EventService {
     }
 
     public List<Long> getUserIdsWhoAreInterestedAlready(Long eventId) {
-        System.out.println("NIGGA AGAIN");
         List<Long> userIdsWhoAreAlreadyInterested = eventUserRepository.findUserIdsOfAlreadyInterestedUsers(eventId);
-        System.out.println("already niggas: " + userIdsWhoAreAlreadyInterested);
         return eventUserRepository.findUserIdsOfAlreadyInterestedUsers(eventId);
     }
 }

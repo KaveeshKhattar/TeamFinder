@@ -90,7 +90,6 @@ public class TeamService {
 
         // List<User> users = (List<User>) userRepository.findAllById(userIds);
         List<UserProjection> interestedUsers = userRepository.findAllByIdIn(userIds);
-        System.out.println("Interested NIGGAS: " + interestedUsers);
         return interestedUsers;
     }
     
