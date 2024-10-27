@@ -36,18 +36,13 @@ function Login() {
         <div className="flex flex-col">
             
             <form className="mt-4" onSubmit={handleSubmit}>
-                {/* <select className="p-2" value={role} onChange={(e) => setRole(e.target.value)} required>
-                    <option value="" disabled>Select Role</option>
-                    <option value="STUDENT">Student</option>
-                    <option value="REPRESENTATIVE">Representative</option>
-                </select> */}
                 
-                <div className="flex flex-col m-4">                    
-                    <input className="m-2 p-2 border-2 border-zinc-300 dark:border-slate-600 rounded-md" type="text" id="email" value={email} onChange={(e) => setEmail(e.target.value)} required placeholder="abc@xyz.com"/>
+                <div className="flex flex-col m-4 justify-center items-center">                    
+                    <input className="m-2 p-2 border-2 border-zinc-300 dark:border-slate-600 rounded-md w-96" type="text" id="email" value={email} onChange={(e) => setEmail(e.target.value)} required placeholder="abc@xyz.com"/>
                     
-                    <input className="m-2 p-2 border-2 border-zinc-300 dark:border-slate-600 rounded-md" type="password" id="password" value={password} onChange={(e) => setPassword(e.target.value)} required placeholder="Password"/>
+                    <input className="m-2 p-2 border-2 border-zinc-300 dark:border-slate-600 rounded-md w-96" type="password" id="password" value={password} onChange={(e) => setPassword(e.target.value)} required placeholder="Password"/>
                     
-                    <button className="p-2 dark:bg-zinc-600 bg-slate-100"><input type="submit" /></button>
+                    <button className="p-2 dark:bg-zinc-600 bg-slate-100 w-96"><input type="submit" /></button>
                 </div>
             </form>
             <p>Don't have an account? Sign up <Link to="/signup">here.</Link></p>

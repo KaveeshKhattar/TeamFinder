@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import Header from "../../landingPage/components/Header";
 import axios from "axios";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import collegeImg from '../assets/college.jpg'
 import Loading from "../../core/components/Loading";
 import { College } from "../../../types";
@@ -12,10 +12,14 @@ function HomePage() {
     const [colleges, setColleges] = useState<College[]>([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState<string | null>(null);
+    const navigate = useNavigate();
 
     const fetchColleges = async () => {
         try {
             const token = localStorage.getItem("token");
+            if (token == null) {
+                navigate("/login");
+            }
             const response = await axios.get("http://localhost:8080/api/colleges", {
                 headers: {
                     Authorization: `Bearer ${token}`
@@ -79,7 +83,7 @@ function HomePage() {
                     const formattedName = college.name.replace(/\s+/g, '-');
                     const collegeUrl = formattedName.toLowerCase()
 
-                    return <Link to={`/${collegeUrl}`} state={{ collegeId: college.id }} key={college.id}>
+                    return <Link to={`/${collegeUrl}`} state={{ collegeId: college.id, collegeUrl: `http://localhost:5173/${location.pathname}/${collegeUrl}` }} key={college.id}>
                     <div className="dark:bg-zinc-600 bg-slate-100 rounded-md p-2">
                         <img src={collegeImg} className="rounded-md" alt="" />
                         <p className="text-black dark:text-white ">{college.name}</p>

@@ -53,10 +53,6 @@ public class UserController {
     
     @GetMapping("/profile")
     public ResponseEntity<Optional<User>> profile(@RequestHeader("Authorization") String token) {
-        // Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        // User currentUser = (User) authentication.getPrincipal();
-        // return ResponseEntity.ok(currentUser);
-
 
         final String jwt = token.substring(7);
         final String userEmail = jwtService.extractUsername(jwt);
@@ -80,5 +76,23 @@ public class UserController {
         return filteredUsers;
     }
     
-    
+    @GetMapping("/checkIfRep")
+    public Boolean getIfRep(@RequestHeader("Authorization") String token, @RequestParam("collegeId") Long collegeId) {
+        final String jwt = token.substring(7);
+        final String userEmail = jwtService.extractUsername(jwt);
+
+        Optional<User> profile = userService.findByEmail(userEmail);
+        User profileReal = profile.orElseThrow(() -> new RuntimeException("Team not found"));
+
+        Boolean ans = userService.getIfRep(profileReal.getEmail(), collegeId);
+        return ans;
+    }
+
+    @GetMapping("/checkIfRepProfile")
+    public Boolean getIfRepNoCollegeId(@RequestHeader("Authorization") String token) {
+        final String jwt = token.substring(7);
+        final String userEmail = jwtService.extractUsername(jwt);
+        Boolean ans = userService.getIfRepReal(userEmail);
+        return ans;
+    }
 }

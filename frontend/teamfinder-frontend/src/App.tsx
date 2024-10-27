@@ -16,6 +16,8 @@ import MakeTeam from './modules/teams/components/MakeTeam'
 import ProfileTeam from './modules/profile/components/ProfileTeam'
 import AllEvents from './modules/events/components/AllEvents'
 import AllTeams from './modules/teams/components/AllTeams'
+import MakeEvent from './modules/events/components/MakeEvent'
+import EditEvents from './modules/events/components/EditEvents'
 
 function App() {
 
@@ -35,7 +37,9 @@ function App() {
             <Route path="/teams" element={<AllTeams />} />
             <Route path="/teams/:teamUrl" element={<TeamDetails />} />
             <Route path="/:collegeUrl" element={<Events />} />
+            <Route path="/:collegeUrl/:eventUrl/edit" element={<EditEvents />} />
             <Route path="/:collegeUrl/:eventUrl" element={<Teams />} />
+            <Route path="/:collegeUrl/makeEvent" element={<MakeEvent />} />
             <Route path="/:collegeUrl/:eventUrl/:teamUrl" element={<TeamDetails />} />
             <Route path="/:collegeUrl/:eventUrl/makeTeam" element={<MakeTeam />} />
           </Routes>

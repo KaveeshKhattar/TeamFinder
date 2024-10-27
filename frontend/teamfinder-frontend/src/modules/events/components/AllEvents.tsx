@@ -1,16 +1,20 @@
 import axios from "axios";
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { Event } from "../../../types";
 import Header from "../../landingPage/components/Header";
 import SearchBar from "../../core/components/SearchBar";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 
 function AllEvents() {
 
     const [allEvents, setAllEvents] = useState<Event[]>([]);
+    const navigate = useNavigate();
 
-    const fetchAllEvents = async () => {
+    const fetchAllEvents = useCallback(async () => {
         const token = localStorage.getItem("token");
+        if (token == null) {
+            navigate("/login");
+        }
         const fetchAllEventsResponse = await axios.get(
             "http://localhost:8080/api/events",
             {
@@ -22,11 +26,11 @@ function AllEvents() {
         if (fetchAllEventsResponse.status === 200) {
             setAllEvents(fetchAllEventsResponse.data);
         }
-    }
+    }, [navigate]);
 
     useEffect(() => {
         fetchAllEvents();
-    }, [])
+    }, [fetchAllEvents])
 
     const handleSearchChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
         const token = localStorage.getItem("token");
@@ -56,7 +60,7 @@ function AllEvents() {
         <Header title="All Events"></Header>
         <SearchBar onChange={handleSearchChange} />
         <div className="grid grid-cols-2 md:grid-cols-4 mt-4 gap-2">
-                {allEvents.map((event) => {
+                {allEvents.length > 0 ? allEvents.map((event) => {
                     const eventName = event.name || "";
                     const formattedName = eventName.replace(/\s+/g, "-");
                     const eventUrl = formattedName.toLowerCase();
@@ -84,7 +88,11 @@ function AllEvents() {
                             </div>
                         </Link>
                     );
-                })}
+                }) : (
+                    <>
+                        <p className="flex justify-center items-center">No Events</p>
+                    </>
+                )}
             </div>
         </>
     )

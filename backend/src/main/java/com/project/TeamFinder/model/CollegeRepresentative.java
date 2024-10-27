@@ -15,8 +15,8 @@ public class CollegeRepresentative {
     @GeneratedValue(strategy = GenerationType.IDENTITY)    
     private Long id;
 
-    @Column(unique = true, nullable = false)
-    private Long college_id;
+    @Column(unique = true, nullable = false, name="college_id")
+    private Long collegeId;
 
     @Column(unique = true, nullable = false)
     private String email;
@@ -30,11 +30,11 @@ public class CollegeRepresentative {
     }
 
     public Long getCollege_id() {
-        return college_id;
+        return collegeId;
     }
 
     public void setCollege_id(Long college_id) {
-        this.college_id = college_id;
+        this.collegeId = college_id;
     }
 
     public String getEmail() {

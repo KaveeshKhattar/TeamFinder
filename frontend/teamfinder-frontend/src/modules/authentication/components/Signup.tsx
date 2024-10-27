@@ -61,15 +61,15 @@ function Signup() {
         <Header title="Sign Up"></Header>
         {
             !loading ? (
-                <div className="flex flex-col">
+                <div className="flex flex-col m-4 justify-center items-center">
 
             <form className="mt-4" onSubmit={handleSubmit}>
-                <select className="p-2 border-2 border-zinc-300 dark:border-slate-600 rounded-md" value={role} onChange={(e) => setRole(e.target.value)} required>
+                <select className="p-2 border-2 border-zinc-300 dark:border-slate-600 rounded-md w-96" value={role} onChange={(e) => setRole(e.target.value)} required>
                     <option value="" disabled>Select Role</option>
                     <option value="STUDENT">Student</option>
                     <option value="REPRESENTATIVE">Representative</option>
                 </select>
-                <div className="flex flex-col m-4">
+                <div className="flex flex-col m-4 w-96">
                     
                     <input className="m-2 p-2 border-2 border-zinc-300 dark:border-slate-600 rounded-md" type="text" value={firstName} onChange={(e) => setFirstName(e.target.value)} required placeholder="First Name"/>
                     
@@ -88,7 +88,7 @@ function Signup() {
                     
                     <input className="m-2 p-2 border-2 border-zinc-300 dark:border-slate-600 rounded-md" type="password" value={password} onChange={(e) => setPassword(e.target.value)} placeholder="Confirm Password"/>
 
-                    <button className="p-2 dark:bg-zinc-600 bg-slate-100" disabled={emailExists === true}><input type="submit"/></button>
+                    <button className="p-2 dark:bg-zinc-600 bg-slate-100 w-96" disabled={emailExists === true}><input type="submit"/></button>
                 </div>
                 <p>Already have an account? Log in <a href="/login">here.</a></p>
             </form>

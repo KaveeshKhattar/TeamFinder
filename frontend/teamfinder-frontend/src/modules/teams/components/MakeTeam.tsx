@@ -102,10 +102,10 @@ function MakeTeam() {
 
       if (response.status === 200) {
         const teamId = response.data.id;
-
+        
         // Call the function to map users to the newly created team
         await createUserTeamMappings(teamId);
-        navigate("/");
+        navigate(-1);
       }
     } catch (err) {
       console.log(err, "Making a team failed!")
@@ -146,7 +146,7 @@ function MakeTeam() {
       <Header title="Make a Team"></Header>
 
       <div className="flex flex-col ">
-        <SearchBar onChange={handleSearchChange} />
+        <SearchBar placeholder="Add People" onChange={handleSearchChange} />
 
         {/* Dropdown for filtered people */}
         {divVisible && (

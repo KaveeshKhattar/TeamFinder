@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Header from "../../landingPage/components/Header";
 import axios from "axios";
 import { useLocation, useNavigate } from "react-router-dom";
@@ -21,6 +21,9 @@ function ProfileTeam() {
   const navigate = useNavigate();
   const token = localStorage.getItem("token");
 
+  useEffect(() => {
+    setTeamName(team.teamName || ""); // Initial default value from team.teamName
+  }, [team.teamName]);
 
 
   const handleSearchChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -65,7 +68,7 @@ function ProfileTeam() {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
-    const updatedTeam = { name: teamName, eventId: eventID };
+    const updatedTeam = { name: teamName || team.teamName, eventId: eventID };
 
     try {
       const response = await axios.put(
@@ -103,22 +106,22 @@ function ProfileTeam() {
           }
         }
       );
-    
+
       // Check if the response indicates a successful deletion
       if (response.status === 200) {
 
-        
+
         // Optionally, you can navigate to another page or perform other actions
         navigate("/");
       }
     } catch (err) {
       console.error(err, "Deleting the team failed!");  // Improved error logging
     }
-        
+
   }
 
   const createUserTeamMappings = async (teamId: number) => {
-    
+
     const user_ids = members.map((member) => member.id);
 
 
@@ -147,7 +150,7 @@ function ProfileTeam() {
       <Header title="Edit Team"></Header>
 
       <div className="flex flex-col ">
-        <SearchBar onChange={handleSearchChange} />
+        <SearchBar placeholder="Add People" onChange={handleSearchChange} />
 
         {/* Dropdown for filtered people */}
         {divVisible && (
@@ -178,7 +181,7 @@ function ProfileTeam() {
           </div>
         )}
 
-        <input className="m-2 p-2 border-2 border-zinc-300 dark:border-slate-600 rounded-md" type="text" id="teamName" value={teamName} onChange={(e) => setTeamName(e.target.value)} required placeholder={team.teamName} />
+        <input className="m-2 p-2 border-2 border-zinc-300 dark:border-slate-600 rounded-md" type="text"id="teamName" value={teamName} onChange={(e) => setTeamName(e.target.value)} required placeholder={team.teamName}/>
 
         <div className="flex flex-col p-2">
           <p className="text-left text-xl p-1">Members:</p>

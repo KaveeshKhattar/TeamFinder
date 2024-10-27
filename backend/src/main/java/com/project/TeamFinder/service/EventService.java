@@ -36,4 +36,18 @@ public class EventService {
     public List<Event> getAllEvents() {
         return (List<Event>) eventRepository.findAll();
     }
+
+    public void createEvent(Long collegeId, String eventName, String eventDate, String eventTime, String eventVenue, Long teamSize, String eventDescription) {
+        eventRepository.createEvent(collegeId, eventName, eventDate, eventTime, eventVenue, teamSize, eventDescription);
+    }
+
+    public void deleteEvent(Long eventId) {
+        eventRepository.deleteById(eventId);
+    }
+
+    public void updateEvent(Long eventId, String eventName, String eventDate, String eventTime, Long teamSize, String eventVenue, String eventDescription) {
+        System.out.println("Updating more...");
+        eventRepository.updateEvent(eventId, eventName, eventDate, eventTime, eventVenue, teamSize, eventDescription);
+    }
+
 }

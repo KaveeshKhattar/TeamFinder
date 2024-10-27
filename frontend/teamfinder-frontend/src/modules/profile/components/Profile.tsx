@@ -13,6 +13,8 @@ function Profile() {
   const [userId, setUserId] = useState(0);
   // const [teamIds, setTeamIds] = useState<number[]>([]);
   const [profileTeams, setProfileTeams] = useState<Team[]>([]);
+  const [isRep, setIsRep] = useState<boolean>(false);
+
   const { signOut } = useAuth();
   const navigate = useNavigate();
 
@@ -28,7 +30,7 @@ function Profile() {
     if (localStorage.getItem("token") === null) {
       navigate("/login");
     }
-     
+
   })
 
   useEffect(() => {
@@ -63,7 +65,20 @@ function Profile() {
     fetchUser();
   }, []);
 
+  const checkIfRep = async () => {
+    const token = localStorage.getItem("token");
+    const response = await axios.get("http://localhost:8080/users/checkIfRepProfile", {
+      headers: {
+        Authorization: `Bearer ${token}`
+      }
+    });
+    console.log("response rep2: ", response);
+    setIsRep(response.data);
+  }
 
+  useEffect(() => {
+    checkIfRep();
+  }, [])
 
   const [isEditing, setIsEditing] = useState(false);
 
@@ -140,9 +155,9 @@ function Profile() {
     <>
       <Header title="Profile" />
 
-      <div className="flex flex-col ">
+      <div className="flex flex-col items-center">
         <form className="mt-4">
-          <div className="flex flex-col m-4 justify-center items-center">
+          <div className="flex flex-col m-4 justify-center items-center w-96">
 
             <div className="edit-first-name mb-2">
               {isEditing ? (
@@ -194,7 +209,7 @@ function Profile() {
               Sign Out
             </button>
 
-            <div className="w-full mt-4">
+            {!isRep && <div className="w-full mt-4">
               <p className="text-2xl font-bold">Teams:</p>
               {profileTeams.length > 0 ? (
                 profileTeams.map((profileTeam) => (
@@ -203,7 +218,7 @@ function Profile() {
               ) : (
                 <p className="text-lg text-gray-500">No teams created.</p>
               )}
-            </div>
+            </div>}
 
           </div>
         </form>

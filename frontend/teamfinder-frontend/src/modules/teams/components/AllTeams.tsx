@@ -4,13 +4,18 @@ import axios from "axios";
 import Header from "../../landingPage/components/Header";
 import SearchBar from "../../core/components/SearchBar";
 import TeamsList from "./TeamsList";
+import { useNavigate } from "react-router-dom";
 
 function AllTeams() {
 
     const [allTeams, setAllTeams] = useState<Team[]>([]);
+    const navigate = useNavigate();
 
     const fetchAllTeams = async () => {
         const token = localStorage.getItem("token");
+        if (token == null) {
+            navigate("/login");
+        }
         console.log("Fetching all...");
         const fetchAllTeamsResponse = await axios.get(
             "http://localhost:8080/api/teams",
@@ -59,7 +64,7 @@ function AllTeams() {
         <Header title="All Teams"></Header>
         <SearchBar onChange={handleSearchChange} />
         
-        <div className="grid grid-cols-1 mt-4 gap-2">
+        <div className="grid grid-cols-1 md:grid-cols-3 mt-4 gap-2">
           <TeamsList
             teams={allTeams}
             location={`${location.pathname}`}

@@ -30,7 +30,7 @@ public class CollegeService {
     @Transactional
     public List<College> searchColleges(String name) {
         List<College> searchResults = collegeRepository.findByNameContainingIgnoreCase(name);
-        System.out.println("Search Results: " + searchResults);
+
         return searchResults;
     }
 

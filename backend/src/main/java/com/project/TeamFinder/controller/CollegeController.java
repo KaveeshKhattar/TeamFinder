@@ -47,7 +47,6 @@ public class CollegeController {
     public ResponseEntity<?> getFilteredColleges(@RequestHeader("Authorization") String token, @RequestParam String name) {
 
         List<College> filteredColleges = collegeService.searchColleges(name);
-        System.out.println(filteredColleges);
         return ResponseEntity.ok(filteredColleges);
             
     }

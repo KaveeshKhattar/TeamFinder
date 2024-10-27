@@ -1,7 +1,6 @@
 import { useState } from "react";
 import { useAuth } from "../../core/hooks/useAuth";
 import { HeaderProps } from "../../../types";
-import profilePic from "../../profile/assets/profile-pic.jpg"
 import { Link } from "react-router-dom";
 
 function Header({ title }: HeaderProps) {
@@ -47,7 +46,7 @@ function Header({ title }: HeaderProps) {
       <div className="flex items-center">
         {isSignedIn ? (
           <button className="text-sm p-2 mr-2"><a href="/profile">
-            <img src={profilePic} alt="" className="w-10 rounded-md" />
+            <p>Profile</p>
           </a></button>
         ) : (
           <button className="p-2"><a href="/login">Sign In</a></button>

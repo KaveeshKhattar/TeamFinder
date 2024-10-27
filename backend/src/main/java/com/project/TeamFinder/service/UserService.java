@@ -8,6 +8,7 @@ import org.springframework.stereotype.Service;
 
 import com.project.TeamFinder.dto.UpdateUserDTO;
 import com.project.TeamFinder.model.User;
+import com.project.TeamFinder.repository.CollegeRepresentativeRepository;
 import com.project.TeamFinder.repository.UserRepository;
 
 import jakarta.transaction.Transactional;
@@ -16,9 +17,11 @@ import jakarta.transaction.Transactional;
 public class UserService {
     
     private final UserRepository userRepository;
+    private final CollegeRepresentativeRepository collegeRepresentativeRepository;
     
-    public UserService(UserRepository userRepository, EmailService emailService) {
+    public UserService(UserRepository userRepository, EmailService emailService, CollegeRepresentativeRepository collegeRepresentativeRepository) {
         this.userRepository = userRepository;
+        this.collegeRepresentativeRepository = collegeRepresentativeRepository;
     }
 
     public List<User> allUsers() {
@@ -52,6 +55,28 @@ public class UserService {
     public List<User> getUsersByFullName(String firstNameSearch) {
         List<User> searchResults = userRepository.findByFullNameContainingIgnoreCase(firstNameSearch);
         return searchResults;
+    }
+
+    public Boolean getIfRep(String email, Long collegeId) {
+        Optional<Long> collegeNameOpt = collegeRepresentativeRepository.findByEmailAndCollege(email, collegeId);
+
+        if (collegeNameOpt.isPresent()) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    public Boolean getIfRepReal(String email) {
+        String aayera = "aayera khattar";
+        System.out.println(aayera);
+        Optional<String> collegeNameOpt = collegeRepresentativeRepository.findCollegeByEmail(email);
+        System.out.println("college: " + collegeNameOpt);
+        if (collegeNameOpt.isPresent()) {
+            return true; 
+        } else {
+            return false;
+        }
     }
 
 }

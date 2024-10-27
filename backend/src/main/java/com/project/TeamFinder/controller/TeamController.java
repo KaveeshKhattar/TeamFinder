@@ -64,7 +64,7 @@ public class TeamController {
 
     @PostMapping("/teams/userTeamMappings")
     public ResponseEntity<TeamUserRequestDTO> postTeamUserMappings(@RequestBody TeamUserRequestDTO request) {
-        System.out.println("Adding these guys: " + request.getUserIds() + " to this team: " + request.getTeamId());
+
         teamService.addUsersToTeam(request.getTeamId(), request.getUserIds());
         return ResponseEntity.ok(request);
     }
@@ -101,7 +101,6 @@ public class TeamController {
 
     @GetMapping("/teams/searchTeams")
     public List<TeamWithMembersDTO> getFilteredTeams(@RequestHeader("Authorization") String token, @RequestParam String name, @RequestParam Long eventId) {
-        
         List<TeamWithMembersDTO> globalTeams = teamService.getAllTeamsWithMembers(eventId);
         
         List<TeamWithMembersDTO> filteredTeams = teamService.searchTeams(globalTeams, name);
@@ -119,7 +118,6 @@ public class TeamController {
     @DeleteMapping("/teams/team/{id}")
     public ResponseEntity<Void> deleteTeam(@PathVariable Long id) {
         // You can optionally check if the team exists before attempting to delete
-        System.out.println("Deleting...");
         Team existingTeam = teamService.getTeamById(id);
         if (existingTeam == null) {
             return ResponseEntity.notFound().build(); // Team not found
@@ -147,7 +145,7 @@ public class TeamController {
 
     @GetMapping("/teams")
     public List<TeamWithMembersDTO> getAllTeams() {
-        System.out.println("Called: " + teamService.getAllTeams());
+
         return teamService.getAllTeams();
     }
 

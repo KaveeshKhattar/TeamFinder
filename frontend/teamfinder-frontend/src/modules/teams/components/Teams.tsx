@@ -120,24 +120,27 @@ function Teams() {
 
   const handleSearchChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const value = e.target.value;
-
-    try {
-      // Filter the fetched teams based on the search term
-      const filteredTeams = teams.filter((team) =>
-        team.members.some((member) =>
-          member.fullName.toLowerCase().includes(value.toLowerCase()) // Use value instead of searchTerm
-        )
-      );
-
-      // Check if there are any filtered teams and update state
-      if (filteredTeams.length > 0) {
+    if (value) {
+      try {
+        // Filter the fetched teams based on the search term
+        console.log("Trying...", teams, value)
+        const filteredTeams = teams.filter((team) =>
+          team.members.some((member) =>
+            member.fullName.toLowerCase().includes(value.toLowerCase()) // Use value instead of searchTerm
+          )
+        );
+        console.log("Filtered teams:" , filteredTeams);
+  
         setTeams(filteredTeams);
+      } catch (error) {
+        console.error("Error fetching teams:", error);
+        // Optionally, you can handle errors here
+        // e.g., show an error message or fallback to default state
       }
-    } catch (error) {
-      console.error("Error fetching teams:", error);
-      // Optionally, you can handle errors here
-      // e.g., show an error message or fallback to default state
+    } else {
+      await fetchTeams();
     }
+    
   };
 
 
@@ -325,7 +328,7 @@ function Teams() {
       </div>
 
       {isViewingTeams ? (
-        <div className="grid grid-cols-1 mt-4 gap-2">
+        <div className="grid grid-cols-1 md:grid-cols-3 mt-4 gap-2">
           <TeamsList
             teams={teams}
             location={`${location.pathname}`}
