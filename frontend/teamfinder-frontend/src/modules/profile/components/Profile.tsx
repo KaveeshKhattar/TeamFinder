@@ -2,7 +2,7 @@ import { SetStateAction, useCallback, useEffect, useState } from "react";
 import Header from "../../landingPage/components/Header";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
-import profilePic from "../assets/profile-pic.jpg";
+import profilePic from "../assets/blank-profile-picture-973460_1280.webp";
 import { useAuth } from "../../core/hooks/useAuth";
 import { Team } from "../../../types";
 import TeamCard from "../../teams/components/TeamCard";
@@ -77,7 +77,6 @@ function Profile() {
         Authorization: `Bearer ${token}`
       }
     });
-    console.log("response rep2: ", response);
     setIsRep(response.data);
   }
 
@@ -141,8 +140,6 @@ function Profile() {
       } catch (error) {
         console.error("Error fetching teams:", error);
       }
-    } else {
-      console.log("User ID is not available yet.");
     }
   }, [userId])
 
@@ -171,7 +168,7 @@ function Profile() {
         <div className="relative flex flex-col justify-center items-center">
           <img src={profilePicUrl} alt="" className="rounded-full h-[150px] mb-8" />
           {/* <input type="file" className="border-2 border-black"/> */}
-          <button onClick={() => setModalOpen(true)}>Upload Profile Picture</button>
+          <button className="p-2" onClick={() => setModalOpen(true)}>Upload Profile Picture</button>
         </div>
 
         {modalOpen && (

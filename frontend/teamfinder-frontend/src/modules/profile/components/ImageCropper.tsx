@@ -104,7 +104,7 @@ const ImageCropper: React.FC<ImageCropperProps> = ({updateProfilePic, closeModal
                         minWidth={MIN_DIMENSION}>
                         <img ref={imgRef} src={imageSrc} alt="" className='max-h-56' onLoad={onImageLoad} />
                     </ReactCrop>
-                    <button className='bg-blue-500 text-white' onClick={handleSetProfilePicture}>
+                    <button className='mt-4 p-2 bg-blue-500 text-white' onClick={handleSetProfilePicture}>
                         Set as Profile Picture
                     </button>
                 </div>
