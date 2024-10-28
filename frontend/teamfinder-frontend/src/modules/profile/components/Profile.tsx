@@ -157,7 +157,7 @@ function Profile() {
 
       <div className="flex flex-col items-center">
         <form className="mt-4">
-          <div className="flex flex-col m-4 justify-center items-center w-96">
+          <div className="flex flex-col m-4 justify-center items-center w-64 md:w-96">
 
             <div className="edit-first-name mb-2">
               {isEditing ? (

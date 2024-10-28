@@ -34,7 +34,7 @@ const TeamCard: React.FC<TeamCardProps> = ({ team, location }) => {
                 </div>
             </div>
 
-            <div className="flex justify-around border-dotted border-t-2 border-gray-400">
+            <div className="flex justify-around border-t-2 border-gray-400">
                 <Link
                     className="w-full p-2 m-2 text-black dark:text-white border-2 dark:border-white border-text-black rounded-md"
                     to={`${location}/${teamUrl}`}

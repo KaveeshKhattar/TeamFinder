@@ -4,6 +4,7 @@ import { Event } from "../../../types";
 import Header from "../../landingPage/components/Header";
 import SearchBar from "../../core/components/SearchBar";
 import { Link, useNavigate } from "react-router-dom";
+import pic from "../assets/halloween.jpg"
 
 function AllEvents() {
 
@@ -75,6 +76,7 @@ function AllEvents() {
                             key={event.id}
                         >
                             <div className="dark:bg-zinc-600 bg-slate-100 rounded-md p-2">
+                                <img src={pic} alt="" className="rounded-md" />
                                 <p className="text-2xl text-black dark:text-white ">
                                     {event.name}
                                 </p>
@@ -85,6 +87,16 @@ function AllEvents() {
                                     </p>
                                     <p className="text-black dark:text-white">{event.teamSize}</p>
                                 </div>
+
+                                <p className="text-sm text-black dark:text-white ">
+                                    Venue: {event.venue}
+                                </p>
+                                {/* <p className="text-sm text-black dark:text-white ">
+                                    Date: {event.date}
+                                </p> */}
+                                <p className="text-sm mt-4 text-black dark:text-white ">
+                                    Fun Facts: {event.description}
+                                </p>
                             </div>
                         </Link>
                     );

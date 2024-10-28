@@ -291,7 +291,7 @@ function Teams() {
           <button
             type="button"
             onClick={handleViewingTeamsOrIndividuals}
-            className="w-full bg-orange-500 mt-1 p-2 dark:text-white text-black"
+            className="w-full bg-blue-500 mt-1 p-2 text-white"
           >
             <p>{isViewingTeams ? "View Individuals" : "View Teams"}</p>
           </button>
@@ -302,7 +302,7 @@ function Teams() {
             <Link
               to={`${location.pathname}/makeTeam`}
               state={{ eventID: eventId, eventUrl: eventURL }}
-              className={`flex justify-center items-center mt-2 p-2 dark:bg-zinc-600 bg-slate-100 text-black dark:text-white rounded-md border-1 border-black dark:border-white w-full ${isPartOfAnyTeam ? "pointer-events-none opacity-50" : ""
+              className={`flex justify-center items-center mt-2 p-2 text-white rounded-md border-1 border-black dark:border-white w-full bg-indigo-500 ${isPartOfAnyTeam ? "pointer-events-none bg-gray-400" : ""
                 }`}
             >
               <p className="m-1">Make a Team</p>
@@ -311,13 +311,13 @@ function Teams() {
           ) : (
             <div className="flex">
               <button
-              className="flex justify-center items-center mt-2 p-2 dark:bg-zinc-600 bg-slate-100 text-black dark:text-white rounded-md border-1 border-green-500 dark:border-white w-full mr-2"
+              className="flex justify-center items-center mt-2 p-2 rounded-md border-1 border-green-500 dark:border-white w-full bg-green-500 text-white mr-2"
               onClick={handleClickInterested}
             >
               <p className="m-1">Interested</p>
             </button>
             <button
-              className="flex justify-center items-center mt-2 p-2 dark:bg-zinc-600 bg-slate-100 text-black dark:text-white rounded-md border-1 border-red-500 dark:border-white w-full"
+              className="flex justify-center items-center mt-2 p-2rounded-md border-1 border-red-500 dark:border-white w-full bg-red-500 text-white"
               onClick={handleClickNotInterested}
             >
               <p className="m-1">Not Interested</p>

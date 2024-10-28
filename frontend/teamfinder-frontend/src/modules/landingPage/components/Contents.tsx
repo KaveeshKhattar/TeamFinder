@@ -2,6 +2,7 @@ import { useNavigate } from 'react-router-dom';
 import sectionOneImg from '../assets/join-a-team.webp'
 import sectionTwoImg from '../assets/team-searching-ideas-boy-search-flat-people-finding-inspiration-brain-storming-group-holding-magnifying-glass-look-around-utter-vector-concept_53562-17385.avif'
 import sectionThreeImg from '../assets/img.jpg'
+import sectionFourImage from '../assets/friends-meeting-cartoon-vector-22493228.jpg'
 
 function Contents() {
     const navigate = useNavigate();
@@ -33,7 +34,7 @@ function Contents() {
 
             <div className='p-4 flex flex-col items-center'>
                 <p className="text-3xl mb-4"> Meet new people, or reconnect with <span className="font-bold">old acquaintances</span></p>
-                <img src={sectionOneImg} alt=""/>
+                <img src={sectionFourImage} alt="" className='rounded-md'/>
             </div>
 
         </div>

@@ -86,7 +86,7 @@ function ProfileTeam() {
 
         // Call the function to map users to the newly created team
         await createUserTeamMappings(teamId);
-        navigate("/");
+        navigate("/profile");
       }
     } catch (err) {
       console.log(err, "Making a team failed!")
@@ -112,7 +112,7 @@ function ProfileTeam() {
 
 
         // Optionally, you can navigate to another page or perform other actions
-        navigate("/");
+        navigate("/profile");
       }
     } catch (err) {
       console.error(err, "Deleting the team failed!");  // Improved error logging
