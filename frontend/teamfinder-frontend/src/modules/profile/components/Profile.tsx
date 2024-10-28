@@ -1,19 +1,24 @@
-import { useCallback, useEffect, useState } from "react";
+import { SetStateAction, useCallback, useEffect, useState } from "react";
 import Header from "../../landingPage/components/Header";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
-// import profilePic from "../assets/profile-pic.jpg";
+import profilePic from "../assets/profile-pic.jpg";
 import { useAuth } from "../../core/hooks/useAuth";
 import { Team } from "../../../types";
 import TeamCard from "../../teams/components/TeamCard";
+// import Crop from 'react-image-crop';
+import 'react-image-crop/dist/ReactCrop.css';
+import Modal from "./Modal";
 
 function Profile() {
   const [firstName, setFirstName] = useState("");
   const [lastName, setLastName] = useState("");
   const [userId, setUserId] = useState(0);
+  const [profilePicUrl, setProfilePicUrl] = useState(profilePic);
   // const [teamIds, setTeamIds] = useState<number[]>([]);
   const [profileTeams, setProfileTeams] = useState<Team[]>([]);
   const [isRep, setIsRep] = useState<boolean>(false);
+  const [modalOpen, setModalOpen] = useState(false);
 
   const { signOut } = useAuth();
   const navigate = useNavigate();
@@ -151,13 +156,31 @@ function Profile() {
     }
   }, [profileTeams]);
 
+  // const profilePic = useRef("frontend/teamfinder-frontend/src/modules/profile/assets/profile-pic.jpg");
+  const updateProfilePic = (imgSrc: SetStateAction<string>) => {
+    setProfilePicUrl(imgSrc);
+  }
+
+
   return (
     <>
       <Header title="Profile" />
 
       <div className="flex flex-col items-center">
+
+        <div className="relative flex flex-col justify-center items-center">
+          <img src={profilePicUrl} alt="" className="rounded-full h-[150px] mb-8" />
+          {/* <input type="file" className="border-2 border-black"/> */}
+          <button onClick={() => setModalOpen(true)}>Upload Profile Picture</button>
+        </div>
+
+        {modalOpen && (
+        <Modal updateProfilePic={updateProfilePic} closeModal={() => setModalOpen(false)}/>
+      )}
+
         <form className="mt-4">
-          <div className="flex flex-col m-4 justify-center items-center w-64 md:w-96">
+
+          <div className="flex flex-col justify-center items-center w-64 md:w-96">
 
             <div className="edit-first-name mb-2">
               {isEditing ? (

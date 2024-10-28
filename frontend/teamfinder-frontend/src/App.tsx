@@ -18,6 +18,7 @@ import AllEvents from './modules/events/components/AllEvents'
 import AllTeams from './modules/teams/components/AllTeams'
 import MakeEvent from './modules/events/components/MakeEvent'
 import EditEvents from './modules/events/components/EditEvents'
+import 'react-image-crop/dist/ReactCrop.css'
 
 function App() {
 
