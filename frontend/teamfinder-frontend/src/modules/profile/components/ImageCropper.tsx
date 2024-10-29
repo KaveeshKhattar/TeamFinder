@@ -2,6 +2,8 @@ import ReactCrop, { centerCrop, convertToPixelCrop, makeAspectCrop } from 'react
 import { useEffect, useRef, useState } from "react";
 import setCanvasPreview from '../setCanvasPreview';
 import profilePicture from '../assets/profile-pic.jpg'
+import axios from 'axios';
+import { jwtDecode } from 'jwt-decode';
 
 const ASPECT_RATIO = 1;
 const MIN_DIMENSION = 150;
@@ -60,7 +62,7 @@ const ImageCropper: React.FC<ImageCropperProps> = ({updateProfilePic, closeModal
         setCrop(centeredCrop);
     }
 
-    const handleSetProfilePicture = () => {
+    const handleSetProfilePicture = async () => {
         if (imgRef.current && previewCanvasRef.current) {
             setCanvasPreview(
                 imgRef.current,
@@ -70,7 +72,56 @@ const ImageCropper: React.FC<ImageCropperProps> = ({updateProfilePic, closeModal
         }
         const dataURL = previewCanvasRef.current ? previewCanvasRef.current.toDataURL() : "";
         updateProfilePic(dataURL);
+    
+        // Prepare the form data for the API request
+        const token = localStorage.getItem("token");
+        const { sub } = jwtDecode(token);
+        
+        const index = sub.indexOf(".com");
+        const slicedEmail = sub.slice(0, index);
+
+        const formData = new FormData();
+        formData.append('file', dataURLtoBlob(dataURL), `${slicedEmail}.png`); // Convert data URL to Blob
+
+        try {
+            const response = await axios.post('http://localhost:8080/users/upload', formData, {
+                headers: {
+                    'Content-Type': 'multipart/form-data',
+                    'Authorization': `Bearer ${token}`
+                },
+            });
+            console.log('Image uploaded successfully:', response.data);
+        } catch (error) {
+            console.error('Error uploading image:', error);
+        }
+
         closeModal();
+    };
+
+    const dataURLtoBlob = (dataURL: string): Blob | null => {
+        // Split the data URL into parts
+        const parts = dataURL.split(',');
+        if (parts.length !== 2) {
+            console.error('Invalid data URL');
+            return null; // Return null if the data URL is not in the expected format
+        }
+    
+        const byteString = atob(parts[1]);
+        const mimeStringMatch = parts[0].match(/:(.*?);/);
+        if (!mimeStringMatch) {
+            console.error('Could not extract mime type');
+            return null; // Return null if mime type extraction fails
+        }
+    
+        const mimeString = mimeStringMatch[1]; // Safe to access mimeString now
+        const ab = new ArrayBuffer(byteString.length);
+        const ia = new Uint8Array(ab);
+        
+        for (let i = 0; i < byteString.length; i++) {
+            ia[i] = byteString.charCodeAt(i);
+        }
+        
+        return new Blob([ab], { type: mimeString });
     };
     
     const profilePic = profilePicture
@@ -102,7 +153,7 @@ const ImageCropper: React.FC<ImageCropperProps> = ({updateProfilePic, closeModal
                         keepSelection
                         aspect={ASPECT_RATIO}
                         minWidth={MIN_DIMENSION}>
-                        <img ref={imgRef} src={imageSrc} alt="" className='max-h-56' onLoad={onImageLoad} />
+                        <img ref={imgRef} src={imageSrc} alt="" className='max-h-96' onLoad={onImageLoad} />
                     </ReactCrop>
                     <button className='mt-4 p-2 bg-blue-500 text-white' onClick={handleSetProfilePicture}>
                         Set as Profile Picture

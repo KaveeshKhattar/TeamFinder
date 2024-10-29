@@ -3,25 +3,37 @@ package com.project.TeamFinder.controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.multipart.MultipartFile;
 
 import com.project.TeamFinder.dto.UpdateUserDTO;
 import com.project.TeamFinder.model.User;
+import com.project.TeamFinder.service.ImageHandlerService;
 import com.project.TeamFinder.service.JwtService;
 import com.project.TeamFinder.service.UserService;
+import org.springframework.core.io.Resource;
+import org.springframework.http.MediaType;
 
 import org.springframework.security.core.Authentication;
 
+import java.io.File;
+import java.util.Base64;
 import java.util.List;
 import java.util.Optional;
 
+import org.springframework.core.io.ByteArrayResource;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestHeader;
+import org.springframework.web.bind.annotation.PostMapping;
 
+import java.io.IOException;
 
 
 @RestController
@@ -30,12 +42,13 @@ import org.springframework.web.bind.annotation.RequestHeader;
 public class UserController {
     
     private final UserService userService;
-    
-    private JwtService jwtService;
+    private final JwtService jwtService;
+    private final ImageHandlerService imageHandlerService;
 
-    public UserController(UserService userService, JwtService jwtService) {
+    public UserController(UserService userService, JwtService jwtService, ImageHandlerService imageHandlerService) {
         this.userService = userService;
         this.jwtService = jwtService;
+        this.imageHandlerService = imageHandlerService;
     }
 
     @GetMapping("/me")
@@ -95,4 +108,91 @@ public class UserController {
         Boolean ans = userService.getIfRepReal(userEmail);
         return ans;
     }
+
+    @PostMapping("/upload")
+    public String uploadImage(@RequestHeader("Authorization") String token, @RequestParam("file") MultipartFile file) {
+        System.out.println("uploading...");
+        final String jwt = token.substring(7);
+        final String userEmail = jwtService.extractUsername(jwt);
+        if (userEmail == null) {
+            return "Invalid token";
+        }
+
+        // final String fileName = userEmail + ".png";
+        // if (filename in connection then delete that then post this )
+
+        try {
+
+            // Convert MultipartFile to File
+            File tempFile = File.createTempFile("upload-", file.getOriginalFilename());
+            file.transferTo(tempFile);
+            System.out.println("Image name: " + tempFile.getName());
+            String result = imageHandlerService.uploadFile(tempFile, "image-store", file.getOriginalFilename());
+            
+            System.out.println(result);
+            return "Passed";
+        } catch (IOException e) {
+            return "Failed";
+        }
+    }
+    
+    @DeleteMapping("/deleteProfilePicture")
+    public ResponseEntity<String> deleteImage(@RequestHeader("Authorization") String token) {
+
+        final String jwt = token.substring(7);
+        final String userEmail = jwtService.extractUsername(jwt);
+        if (userEmail == null) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Invalid token");
+        }
+        
+        String prefix = "";
+        int index = userEmail.indexOf('@');
+        if (index != -1) {
+            prefix = userEmail.substring(0, index + 1) + userEmail.substring(index + 1, userEmail.indexOf('.', index)); // Include '@' and select until '.'
+        }
+
+        final String fileName = prefix + ".png";
+        
+        try {
+            System.out.println("Calling service to delete file");
+            String result = imageHandlerService.deleteFile("image-store", fileName);
+            System.out.println("Delete result: " + result);
+            return ResponseEntity.ok("File deleted successfully");
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Failed to delete file");
+        }
+    }
+
+    @GetMapping("/fetchProfilePic")
+    public String getImage(@RequestHeader("Authorization") String token) {
+        final String jwt = token.substring(7);
+        final String userEmail = jwtService.extractUsername(jwt);
+
+        String prefix = "";
+        int index = userEmail.indexOf('@');
+        if (index != -1) {
+            prefix = userEmail.substring(0, index + 1) + userEmail.substring(index + 1, userEmail.indexOf('.', index)); // Include '@' and select until '.'
+        }
+        
+        final String fileName = prefix + ".png";
+        System.out.println(fileName);
+        
+        try {
+            byte[] data = imageHandlerService.getFile("image-store", fileName);
+            if (data == null || data.length == 0) {
+                // return ResponseEntity.notFound().build();
+                return "Fail";
+            }
+            String base64String = Base64.getEncoder().encodeToString(data); // Convert to Base64
+            return "data:image/png;base64," + base64String;
+            // return ResponseEntity.ok()
+            //         .contentType(MediaType.IMAGE_PNG) // Set the content type for PNG
+            //         .body(data); // Return the image data directly
+
+        } catch (Exception e) {
+            // return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
+            return "Fail";
+        }
+    }
+
 }

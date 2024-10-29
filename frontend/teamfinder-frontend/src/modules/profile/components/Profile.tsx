@@ -158,6 +158,36 @@ function Profile() {
     setProfilePicUrl(imgSrc);
   }
 
+  const deleteProfilePicture = async () => {
+    const token = localStorage.getItem("token");
+    try {
+      await axios.delete("http://localhost:8080/users/deleteProfilePicture", {
+        headers: {
+          Authorization: `Bearer ${token}`
+        }
+      })
+    } catch (err) {
+      console.log(err);
+    }
+    setProfilePicUrl(profilePic);
+  }
+
+  const fetchProfilPic = async () => {
+    const token = localStorage.getItem("token");
+    const response = await axios.get("http://localhost:8080/users/fetchProfilePic", {
+      headers: {
+        Authorization: `Bearer ${token}`
+      }
+    })
+
+    if (response.status === 200) {
+        setProfilePicUrl(response.data);
+      }
+  }
+
+  useEffect(() => {
+    fetchProfilPic();
+  }, [])
 
   return (
     <>
@@ -169,6 +199,7 @@ function Profile() {
           <img src={profilePicUrl} alt="" className="rounded-full h-[150px] mb-8" />
           {/* <input type="file" className="border-2 border-black"/> */}
           <button className="p-2" onClick={() => setModalOpen(true)}>Upload Profile Picture</button>
+          <button className="mt-2 p-2" onClick={deleteProfilePicture}>Delete Profile Picture</button>
         </div>
 
         {modalOpen && (

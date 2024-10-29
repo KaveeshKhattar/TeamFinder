@@ -13,7 +13,7 @@ function Contents() {
 
     return (
         <>
-        <div className='grid m-4 min-h-screen w-full'>
+        <div className='grid m-4 min-h-screen max-w-xl'>
 
             <div className='p-4 flex flex-col items-center'>
                 <p className="text-3xl mb-4">For people looking to <span className="font-bold">join teams,</span></p>

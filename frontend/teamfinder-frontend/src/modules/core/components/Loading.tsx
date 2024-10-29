@@ -1,11 +1,13 @@
-import { BarLoader } from "react-spinners"
+import { Loader2 } from "lucide-react"
+
+import { Button } from "../../../../src/components/ui/button"
 
 const Loading = () => {
     return (
-        <div className="flex flex-col p-2 items-center justify-center h-screen">
-            <BarLoader></BarLoader>
-            <p className="p-2">Loading...</p>
-        </div>
+        <Button disabled>
+          <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+          Please wait
+        </Button>
     )
 }
 
