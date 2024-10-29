@@ -19,11 +19,13 @@ import AllTeams from './modules/teams/components/AllTeams'
 import MakeEvent from './modules/events/components/MakeEvent'
 import EditEvents from './modules/events/components/EditEvents'
 import 'react-image-crop/dist/ReactCrop.css'
+import { ThemeProvider } from './components/themeProvider'
 
 function App() {
 
   return (
     <AuthProvider> 
+      <ThemeProvider defaultTheme="dark" storageKey="vite-ui-theme">
       <Router>
         <Suspense fallback={<Loading />}>
           <Routes>
@@ -46,6 +48,7 @@ function App() {
           </Routes>
         </Suspense>
       </Router>
+      </ThemeProvider>
     </AuthProvider>
   )
 }

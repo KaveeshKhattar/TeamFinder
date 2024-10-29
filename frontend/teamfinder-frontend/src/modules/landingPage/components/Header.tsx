@@ -22,7 +22,7 @@ function Header({ title }: HeaderProps) {
       </div>
 
       {/* Hamburger */}
-      <div className={`md:hidden fixed top-0 left-0 w-full h-screen bg-white dark:bg-zinc-700 flex flex-col items-center justify-center space-y-8 transition-transform duration-300 ${isOpen ? 'translate-x-0' : '-translate-x-full'}`}>
+      <div className={`md:hidden fixed top-0 left-0 w-full h-screen bg-white dark:bg-black flex flex-col items-center justify-center space-y-8 transition-transform duration-300 ${isOpen ? 'translate-x-0' : '-translate-x-full'}`}>
 
         <Link to="/signup" className="text-2xl text-black dark:text-white hover:text-gray-400">
           <Button>Sign Up</Button>
