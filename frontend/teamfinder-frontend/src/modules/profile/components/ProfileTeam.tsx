@@ -147,7 +147,7 @@ function ProfileTeam() {
 
   return (
     <>
-      <Header title="Edit Team"></Header>
+      <Header></Header>
 
       <div className="flex flex-col ">
         <SearchBar placeholder="Add People" onChange={handleSearchChange} />

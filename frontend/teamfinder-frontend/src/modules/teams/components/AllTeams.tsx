@@ -61,7 +61,7 @@ function AllTeams() {
 
     return (
         <>
-        <Header title="All Teams"></Header>
+        <Header></Header>
         <SearchBar onChange={handleSearchChange} />
         
         <div className="grid grid-cols-1 md:grid-cols-3 mt-4 gap-2">

@@ -1,7 +1,12 @@
-import CloseIcon from "./Closeicon";
+import CloseIcon from "./CloseIcon";
 import ImageCropper from "./ImageCropper";
 
-const Modal = ({ updateProfilePic, closeModal }) => {
+interface ModalProps {
+  updateProfilePic: (imgSrc: string) => void; // Adjust based on the actual parameter type
+  closeModal: () => void; // Adjust based on the actual parameter type
+}
+
+const Modal: React.FC<ModalProps> = ({ updateProfilePic, closeModal }) => {
   return (
     <div
       className="relative z-10"

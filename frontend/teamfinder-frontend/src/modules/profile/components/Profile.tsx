@@ -191,7 +191,7 @@ function Profile() {
 
   return (
     <>
-      <Header title="Profile" />
+      <Header />
 
       <div className="flex flex-col items-center">
 

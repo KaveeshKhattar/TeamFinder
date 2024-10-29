@@ -34,8 +34,8 @@ function Login() {
 
     return (
         <>
-        <Header title="Login"></Header>
-        <div className="flex flex-col">
+        <Header></Header>
+        <div className="flex flex-col min-h-screen">
             <p className="mt-8 text-lg font-bold">Log in to TeamFinder</p>
             <form className="mt-4" onSubmit={handleSubmit}>
                 

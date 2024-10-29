@@ -282,7 +282,7 @@ function Teams() {
 
   return (
     <>
-      <Header title={isViewingTeams ? "Teams" : "Individuals"}></Header>
+      <Header></Header>
 
       <div className="flex flex-col ">
         <SearchBar onChange={handleSearchChange} />

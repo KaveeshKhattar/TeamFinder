@@ -143,7 +143,7 @@ function MakeTeam() {
 
   return (
     <>
-      <Header title="Make a Team"></Header>
+      <Header></Header>
 
       <div className="flex flex-col ">
         <SearchBar placeholder="Add People" onChange={handleSearchChange} />

@@ -135,7 +135,7 @@ function Events() {
 
     return (
         <>
-            <Header title="Events"></Header>
+            <Header ></Header>
             <SearchBar onChange={handleSearchChange} />
 
             {isRep && (

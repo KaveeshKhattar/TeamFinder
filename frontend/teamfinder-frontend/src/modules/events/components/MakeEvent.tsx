@@ -45,7 +45,7 @@ function MakeEvent() {
     
     return (
         <>
-        <Header title="Make an Event"></Header>
+        <Header></Header>
 
         <div className="flex flex-col">
         <input className="m-2 p-2 border-2 border-zinc-300 dark:border-slate-600 rounded-md" type="text" id="eventName" value={eventName} onChange={(e) => setEventName(e.target.value)} required placeholder="Event Name" />

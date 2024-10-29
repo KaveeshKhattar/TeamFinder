@@ -8,6 +8,11 @@ import { jwtDecode } from 'jwt-decode';
 const ASPECT_RATIO = 1;
 const MIN_DIMENSION = 150;
 
+interface JwtPayload {
+    sub: string;
+    // Add other properties based on your JWT claims
+  }
+
 interface ImageCropperProps {
     updateProfilePic: (imgSrc: string) => void; // Specify the expected type for updateProfilePic
     closeModal: () => void; // Specify the expected type for closeModal
@@ -72,27 +77,36 @@ const ImageCropper: React.FC<ImageCropperProps> = ({updateProfilePic, closeModal
         }
         const dataURL = previewCanvasRef.current ? previewCanvasRef.current.toDataURL() : "";
         updateProfilePic(dataURL);
-    
+
         // Prepare the form data for the API request
-        const token = localStorage.getItem("token");
-        const { sub } = jwtDecode(token);
-        
-        const index = sub.indexOf(".com");
-        const slicedEmail = sub.slice(0, index);
+        const token: string | null = localStorage.getItem("token");
+        let sub: string | undefined;
+        if (token) {
+            const decodedToken = jwtDecode<JwtPayload>(token);
+            sub = decodedToken.sub;
+        }        
+        if (sub) {
+            const index = sub.indexOf(".com");
+            const slicedEmail = sub.slice(0, index);
+            const formData = new FormData();
+            const blob = dataURLtoBlob(dataURL);
+            if (blob) {
+                formData.append('file', blob, `${slicedEmail}.png`); // Append only if blob is not null
+            } else {
+                console.error('Could not create blob from data URL.'); // Handle the error appropriately
+            }
 
-        const formData = new FormData();
-        formData.append('file', dataURLtoBlob(dataURL), `${slicedEmail}.png`); // Convert data URL to Blob
-
-        try {
-            const response = await axios.post('http://localhost:8080/users/upload', formData, {
-                headers: {
-                    'Content-Type': 'multipart/form-data',
-                    'Authorization': `Bearer ${token}`
-                },
-            });
-            console.log('Image uploaded successfully:', response.data);
-        } catch (error) {
-            console.error('Error uploading image:', error);
+            try {
+                const response = await axios.post('http://localhost:8080/users/upload', formData, {
+                    headers: {
+                        'Content-Type': 'multipart/form-data',
+                        'Authorization': `Bearer ${token}`
+                    },
+                });
+                console.log('Image uploaded successfully:', response.data);
+            } catch (error) {
+                console.error('Error uploading image:', error);
+            }
         }
 
         closeModal();

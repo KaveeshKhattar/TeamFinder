@@ -59,10 +59,10 @@ function Signup() {
 
     return (
         <>
-        <Header title="Sign Up"></Header>
+        <Header></Header>
         {
             !loading ? (
-                <div className="flex flex-col m-4 justify-center items-center">
+                <div className="flex flex-col m-4 justify-center items-center min-h-screen">
 
                     <p className="text-lg font-bold mt-8">
                         Your next event is <br />

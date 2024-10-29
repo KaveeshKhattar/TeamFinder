@@ -58,7 +58,7 @@ function AllEvents() {
 
     return (
         <>
-        <Header title="All Events"></Header>
+        <Header></Header>
         <SearchBar onChange={handleSearchChange} />
         <div className="grid grid-cols-2 md:grid-cols-4 mt-4 gap-2">
                 {allEvents.length > 0 ? allEvents.map((event) => {

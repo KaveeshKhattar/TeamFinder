@@ -28,8 +28,8 @@ function Verification() {
 
     return(
         <>
-        <Header title="Verification"></Header>
-            <form className="flex flex-col" onSubmit={handleSubmit}>
+        <Header></Header>
+            <form className="flex flex-col min-h-screen" onSubmit={handleSubmit}>
                 <p className="text-2xl m-2">Verification code has been sent to: <span className="font-bold text-blue-500">{email}</span></p>
                 <input type="text" value={verificationCode} onChange={(e) => setVerificationCode(e.target.value)} className="m-2 p-2" placeholder="Enter Verification Code"/>
                 <button><input type="submit" className="m-2"/></button>

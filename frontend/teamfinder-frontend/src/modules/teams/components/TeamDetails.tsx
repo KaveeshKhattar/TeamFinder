@@ -9,7 +9,7 @@ function TeamDetails() {
 
   return (
     <>
-      <Header title={team.teamName}></Header>
+      <Header></Header>
 
       <div className="flex flex-col">
         {team.members.map((member: Member) => {

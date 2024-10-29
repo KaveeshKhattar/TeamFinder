@@ -74,7 +74,7 @@ function HomePage() {
 
     return(
         <>
-            <Header title="Colleges"></Header>
+            <Header></Header>
             <SearchBar onChange={handleSearchChange} />
 
             <div className="grid grid-cols-2 md:grid-cols-4 mt-4 gap-2">
