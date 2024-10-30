@@ -9,6 +9,10 @@ import TeamCard from "../../teams/components/TeamCard";
 // import Crop from 'react-image-crop';
 import 'react-image-crop/dist/ReactCrop.css';
 import Modal from "./Modal";
+import { Button } from "../../../components/ui/button";
+import { Label } from "../../../components/ui/label"
+import { Input } from "../../../components/ui/input";
+
 
 function Profile() {
   const [firstName, setFirstName] = useState("");
@@ -195,11 +199,11 @@ function Profile() {
 
       <div className="flex flex-col items-center">
 
-        <div className="relative flex flex-col justify-center items-center">
+        <div className="relative flex flex-col justify-center items-center gap-2">
           <img src={profilePicUrl} alt="" className="rounded-full h-[150px] mb-8" />
           {/* <input type="file" className="border-2 border-black"/> */}
-          <button className="p-2" onClick={() => setModalOpen(true)}>Upload Profile Picture</button>
-          <button className="mt-2 p-2" onClick={deleteProfilePicture}>Delete Profile Picture</button>
+          <Button onClick={() => setModalOpen(true)}>Upload Profile Picture</Button>
+          <Button variant="destructive" onClick={deleteProfilePicture}>Delete Profile Picture</Button>
         </div>
 
         {modalOpen && (
@@ -208,13 +212,17 @@ function Profile() {
 
         <form className="mt-4">
 
-          <div className="flex flex-col justify-center items-center w-64 md:w-96">
+          <div className="flex flex-col justify-center items-center">
 
             <div className="edit-first-name mb-2">
+              
+              
+              <div className="flex items-center">
+              <Label htmlFor="firstName" className="mr-2">First Name:</Label>
               {isEditing ? (
-                <div className="flex justify-center items-center">
-                  <p className="mr-2">First Name: </p>
-                  <input
+                <div>
+                  <Input
+                  id="firstName"
                     className="p-2 rounded-md dark:bg-zinc-800 bg-slate-100"
                     type="text"
                     name="firstName"
@@ -224,41 +232,40 @@ function Profile() {
                   />
                 </div>
               ) : (
-                <div className="flex justify-center items-center">
-                  <p className="mr-2">First Name: </p>
                   <p className="p-2 rounded-md">{firstName}</p>
-                </div>
               )}
             </div>
+              </div>
 
-            <div className="edit-last-name mb-2">
+            <div className="edit-last-name mb-2">            
+              <div className="flex items-center">
+              <Label htmlFor="lastName" className="mr-2">Last Name:</Label>
               {isEditing ? (
-                <div className="flex justify-center items-center">
-                  <p className="mr-2">Last Name: </p>
-                  <input
-                    className="p-2 rounded-md dark:bg-zinc-800 bg-slate-100"
-                    type="text"
-                    name="lastName"
-                    value={lastName}
-                    onChange={(e) => setLastName(e.target.value)}
-                    placeholder="Last Name"
-                  />
-                </div>
-              ) : (
-                <div className="flex justify-center items-center">
-                  <p className="mr-2">Last Name: </p>
-                  <p className="mr-2 p-2 rounded-md">{lastName}</p>
-                </div>
-              )}
+                
+                <Input
+                  className="p-2 rounded-md dark:bg-zinc-800 bg-slate-100"
+                  id="lastName"
+                  type="text"
+                  name="lastName"
+                  value={lastName}
+                  onChange={(e) => setLastName(e.target.value)}
+                  placeholder="Last Name"
+                />
+            ) : (
+                <p className="p-2 rounded-md">{lastName}</p>
+            )}
+              </div>
             </div>
 
-            <button onClick={saveChanges} className="mt-4 p-2 w-full">
-              {isEditing ? 'Save Changes' : 'Edit Profile'}
-            </button>
+            <div className="flex gap-2">
+              <Button onClick={saveChanges}>
+                {isEditing ? 'Save Changes' : 'Edit Profile'}
+              </Button>
 
-            <button onClick={handleSignOut} type="button" className="mt-4 p-2 w-full text-red-500">
-              Sign Out
-            </button>
+              <Button onClick={handleSignOut} variant="destructive">
+                Sign Out
+              </Button>
+            </div>
 
             {!isRep && <div className="w-full mt-4">
               <p className="text-2xl font-bold">Teams:</p>

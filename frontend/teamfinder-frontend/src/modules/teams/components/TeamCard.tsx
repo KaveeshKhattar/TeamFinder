@@ -26,6 +26,7 @@ const TeamCard: React.FC<TeamCardProps> = ({ team, location }) => {
                                 className="flex items-center mb-2 p-2"
                             >
                                 <p className="">
+                                    
                                     {member.firstName} {member.lastName}
                                 </p>
                             </div>

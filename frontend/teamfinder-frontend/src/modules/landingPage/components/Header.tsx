@@ -32,18 +32,18 @@ function Header() {
           </Link>
 
           <Link to="/" >
-            <Button variant="link" className="w-full">Home</Button>
+            <Button variant="outline" className="w-full">Home</Button>
           </Link>
 
           <Link to="/colleges" >
-            <Button variant="link" className="w-full">Colleges</Button>
+            <Button variant="outline" className="w-full">Colleges</Button>
 
           </Link>
           <Link to="/events">
-            <Button variant="link" className="w-full">Events</Button>
+            <Button variant="outline" className="w-full">Events</Button>
           </Link>
           <Link to="/teams">
-            <Button variant="link" className="w-full">Teams</Button>
+            <Button variant="outline" className="w-full">Teams</Button>
           </Link>
         </div>
         </div>
