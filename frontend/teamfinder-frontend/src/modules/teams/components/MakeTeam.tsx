@@ -4,6 +4,7 @@ import axios from "axios";
 import { useLocation, useNavigate } from "react-router-dom";
 import { Member } from "../../../types";
 import SearchBar from "../../core/components/SearchBar";
+import { Button } from "../../../components/ui/button";
 
 function MakeTeam() {
 
@@ -145,7 +146,7 @@ function MakeTeam() {
     <>
       <Header></Header>
 
-      <div className="flex flex-col ">
+      <div className="flex flex-col">
         <SearchBar placeholder="Add People" onChange={handleSearchChange} />
 
         {/* Dropdown for filtered people */}
@@ -188,10 +189,10 @@ function MakeTeam() {
               <div key={`${member.id}-${member.email}`} className="flex justify-between items-center mb-4 p-2">
                 <p>{member.firstName} {member.lastName}</p>
 
-                <button className="flex items-center p-1 text-white dark:text-black bg-red-500" type="button" onClick={() => removeMember(member.id)}>
-                  <i className="fa-solid fa-minus p-1"></i>
-                  <p>Remove</p>
-                </button>
+                  <Button variant="outline" onClick={() => removeMember(member.id)}>
+                    <i className="fa-solid fa-minus p-1"></i>
+                    <p>Add</p>
+                  </Button>
               </div>
             )
           })}

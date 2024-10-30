@@ -5,209 +5,253 @@ import { Link, useLocation, useNavigate } from "react-router-dom";
 import Loading from "../../core/components/Loading";
 import { Event } from "../../../types";
 import SearchBar from "../../core/components/SearchBar";
-import pic from "../assets/halloween.jpg"
+import pic from "../assets/halloween.jpg";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardFooter,
+  CardHeader,
+  CardTitle,
+} from "../../../components/ui/card";
+import { Button } from "../../../components/ui/button";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "../../../components/ui/dropdown-menu";
 
 function Events() {
-    const [events, setEvents] = useState<Event[]>([]);
-    const [isRep, setIsRep] = useState<boolean>(false);
-    const [menuVisibleId, setMenuVisibleId] = useState<number | null>(null);
+  const [events, setEvents] = useState<Event[]>([]);
+  const [isRep, setIsRep] = useState<boolean>(false);
+  const [menuVisibleId, setMenuVisibleId] = useState<number | null>(null);
 
-    const [loading, setLoading] = useState(true);
-    const [error, setError] = useState<string | null>(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
 
-    const location = useLocation();
-    const { collegeId, collegeUrl } = location.state;
-    const navigate = useNavigate();
+  const location = useLocation();
+  const { collegeId, collegeUrl } = location.state;
+  const navigate = useNavigate();
 
-    const fetchEvents = useCallback(async () => {
-        try {
-            const token = localStorage.getItem("token");
-            const response = await axios.get(
-                `http://localhost:8080/api/${collegeId}/events`,
-                {
-                    headers: {
-                        Authorization: `Bearer ${token}`,
-                    },
-                }
-            );
-            setEvents([...response.data]);
-        } catch (err) {
-            setError("Error fetching events");
-            console.error(err);
-        } finally {
-            setLoading(false);
+  const fetchEvents = useCallback(async () => {
+    try {
+      const token = localStorage.getItem("token");
+      const response = await axios.get(
+        `http://localhost:8080/api/${collegeId}/events`,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
         }
-    }, [collegeId]);
+      );
+      setEvents([...response.data]);
+    } catch (err) {
+      setError("Error fetching events");
+      console.error(err);
+    } finally {
+      setLoading(false);
+    }
+  }, [collegeId]);
 
-    useEffect(() => {
+  useEffect(() => {
+    fetchEvents();
+  }, [fetchEvents]);
+
+  const handleSearchChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const token = localStorage.getItem("token");
+    const value = e.target.value;
+
+    if (value) {
+      const responseFilteredEvents = await axios.get(
+        "http://localhost:8080/api/college/events/searchEvents",
+        {
+          params: {
+            eventSearchTerm: value,
+            collegeId: collegeId,
+          },
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+
+      setEvents(responseFilteredEvents.data);
+    } else {
+      fetchEvents();
+    }
+  };
+
+  const checkIfRep = useCallback(async () => {
+    const token = localStorage.getItem("token");
+    const response = await axios.get("http://localhost:8080/users/checkIfRep", {
+      params: {
+        collegeId: collegeId,
+      },
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
+    setIsRep(response.data);
+  }, [collegeId]);
+
+  useEffect(() => {
+    checkIfRep();
+  }, [checkIfRep]);
+
+  const toggleMenu = (id: number | null) => {
+    setMenuVisibleId((prevId) => (prevId === id ? null : id));
+  };
+
+  // Dummy handlers for edit/delete (replace with actual functionality)
+  const onEdit = (id: number) => {
+    const eventDetails = events.find((event) => event.id === id);
+
+    const eventName = eventDetails?.name || "";
+    const formattedName = eventName.replace(/\s+/g, "-");
+    const eventUrl = formattedName.toLowerCase();
+    navigate(`${location.pathname}/${eventUrl}/edit`, {
+      state: { event: eventDetails },
+    });
+    // Implement edit functionality here
+  };
+
+  const onDelete = async (id: number) => {
+    console.log("Delete event with id:", id);
+    const token = localStorage.getItem("token");
+
+    try {
+      // Make the DELETE request to the API endpoint with the team ID in the URL
+      const response = await axios.delete(
+        `http://localhost:8080/api/events/event/${id}`, // API endpoint with team ID
+        {
+          headers: {
+            Authorization: `Bearer ${token}`, // Authorization headers
+          },
+        }
+      );
+
+      // Check if the response indicates a successful deletion
+      if (response.status === 200) {
         fetchEvents();
-    }, [fetchEvents]);
-
-    const handleSearchChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
-        const token = localStorage.getItem("token");
-        const value = e.target.value;
-
-        if (value) {
-            const responseFilteredEvents = await axios.get(
-                "http://localhost:8080/api/college/events/searchEvents",
-                {
-                    params: {
-                        eventSearchTerm: value,
-                        collegeId: collegeId,
-                    },
-                    headers: {
-                        Authorization: `Bearer ${token}`,
-                    },
-                }
-            );
-
-            setEvents(responseFilteredEvents.data);
-        } else {
-            fetchEvents();
-        }
-    };
-
-    const checkIfRep = useCallback(async () => {
-        const token = localStorage.getItem("token");
-        const response = await axios.get("http://localhost:8080/users/checkIfRep", {
-            params: {
-                collegeId: collegeId
-            },
-            headers: {
-                Authorization: `Bearer ${token}`
-            }
-        });
-        setIsRep(response.data);
-    }, [collegeId]);
-
-    useEffect(() => {
-        checkIfRep();
-    }, [checkIfRep]);
-
-    const toggleMenu = (id: number | null) => {
-        setMenuVisibleId((prevId) => (prevId === id ? null : id));
-    };
-
-    // Dummy handlers for edit/delete (replace with actual functionality)
-    const onEdit = (id: number) => {
-        const eventDetails = events.find(event => event.id === id)
-
-        const eventName = eventDetails?.name || "";
-        const formattedName = eventName.replace(/\s+/g, "-");
-        const eventUrl = formattedName.toLowerCase();
-        navigate(`${location.pathname}/${eventUrl}/edit`, {
-            state: { event: eventDetails },
-        });
-        // Implement edit functionality here
-    };
-
-    const onDelete = async (id: number) => {
-        console.log("Delete event with id:", id);
-        const token = localStorage.getItem("token");
-
-        try {
-        // Make the DELETE request to the API endpoint with the team ID in the URL
-        const response = await axios.delete(
-            `http://localhost:8080/api/events/event/${id}`,  // API endpoint with team ID
-            {
-            headers: {
-                Authorization: `Bearer ${token}`,  // Authorization headers
-            }
-            }
-        );
-
-        // Check if the response indicates a successful deletion
-        if (response.status === 200) {
-            fetchEvents();
-        }
-        } catch (err) {
-        console.error(err, "Deleting the team failed!");  // Improved error logging
-        }
-    };
-
-    if (loading) {
-        return <Loading />;
+      }
+    } catch (err) {
+      console.error(err, "Deleting the team failed!"); // Improved error logging
     }
+  };
 
-    if (error) {
-        return <div>Error: {error}</div>;
-    }
+  if (loading) {
+    return <Loading />;
+  }
 
-    return (
-        <>
-            <Header ></Header>
-            <SearchBar onChange={handleSearchChange} />
+  if (error) {
+    return <div>Error: {error}</div>;
+  }
 
-            {isRep && (
-                <Link
-                    to={`${location.pathname}/makeEvent`}
-                    state={{ collegeId: collegeId, collegeUrl }}
-                    className="flex justify-center items-center mt-2 p-2 dark:bg-zinc-600 bg-slate-100 text-black dark:text-white rounded-md border-1 border-black dark:border-white w-full"
-                >
-                    <p className="m-1">Create an Event</p>
-                    <i className="fa-solid fa-plus"></i>
-                </Link>
-            )}
+  return (
+    <>
+      <Header></Header>
+      <SearchBar onChange={handleSearchChange} />
 
-            <div className="grid grid-cols-2 md:grid-cols-4 mt-4 gap-2">
-                {events.map((event) => {
-                    const eventName = event.name || "";
-                    const formattedName = eventName.replace(/\s+/g, "-");
-                    const eventUrl = formattedName.toLowerCase();
+      {isRep && (
+        <Link
+          to={`${location.pathname}/makeEvent`}
+          state={{ collegeId: collegeId, collegeUrl }}
+          className="flex justify-center items-center mt-2 p-2 dark:bg-zinc-600 bg-slate-100 text-black dark:text-white rounded-md border-1 border-black dark:border-white w-full"
+        >
+          <p className="m-1">Create an Event</p>
+          <i className="fa-solid fa-plus"></i>
+        </Link>
+      )}
 
-                    return (
-                        <div key={event.id} className="relative">
-                            <Link
-                                to={`${location.pathname}/${eventUrl}`}
-                                state={{
-                                    eventId: event.id,
-                                    eventURL: `http://localhost:5173/${location.pathname}/${eventUrl}`,
-                                }}
-                            >
-                                <div className="dark:bg-zinc-600 bg-slate-100 rounded-md p-2">
-                                    <img src={pic} alt="" className="rounded-md" />
-                                    <p className="text-2xl text-black dark:text-white">
-                                        {event.name}
-                                    </p>
-                                    <div className="flex justify-center items-center">
-                                        <p className="font-bold mr-4 text-black dark:text-white">
-                                            Team Size:{" "}
-                                        </p>
-                                        <p className="text-black dark:text-white">{event.teamSize}</p>
-                                    </div>
-                                </div>
-                            </Link>
+      <div className="grid grid-cols-1 md:grid-cols-3 mt-4 gap-2">
+        {events.map((event) => {
+          const eventName = event.name || "";
+          const formattedName = eventName.replace(/\s+/g, "-");
+          const eventUrl = formattedName.toLowerCase();
+          const oldDate = event.date;
+          const date = new Date(oldDate);
+          const day = date.getDate();
+          const month = date.toLocaleString("default", { month: "short" });
+          const year = date.getFullYear();
+          const time = date.toLocaleString("en-US", {
+            hour: "numeric",
+            minute: "numeric",
+            hour12: true,
+          });
 
-                            {isRep && (
-                                <div className="absolute top-2 right-2">
-                                    <button onClick={() => toggleMenu(event.id)} className="p-2">
-                                        <i className="fa-solid fa-ellipsis"></i>
-                                    </button>
+          // Create the formatted date string
+          const formattedDate = `${day} ${month} ${year}`;
+          const formattedTime = `${time}`;
 
-                                    {menuVisibleId === event.id && (
-                                        <div className="absolute top-10 right-2 bg-white dark:bg-zinc-800 p-2 rounded-md shadow-md">
-                                            <button
-                                                onClick={() => onEdit(event.id)}
-                                                className="block text-left text-black dark:text-white mb-2"
-                                            >
-                                                Edit
-                                            </button>
-                                            <button
-                                                onClick={() => onDelete(event.id)}
-                                                className="block text-left text-red-500"
-                                            >
-                                                Delete
-                                            </button>
-                                        </div>
-                                    )}
-                                </div>
-                            )}
-                        </div>
-                    );
-                })}
+          return (
+            <div key={event.id} className="flex flex-col">
+              <Link
+                to={`${location.pathname}/${eventUrl}`}
+                state={{
+                  eventId: event.id,
+                  eventURL: `http://localhost:5173/${location.pathname}/${eventUrl}`,
+                }}
+              >
+                <Card className="w-full">
+                  <CardHeader>
+                    <img src={pic} alt="" className="rounded-md" />
+                    <CardTitle className="text-left">{event.name}</CardTitle>
+                    <CardDescription className="text-left">
+                      Event
+                    </CardDescription>
+                  </CardHeader>
+                  <CardContent>
+                    <div className="flex items-center">
+                      <p className="text-sm mr-1">Team Size:</p>
+                      <p className="text-sm">{event.teamSize}</p>
+                    </div>
+
+                    <div className="flex items-center">
+                      <p className="text-sm mr-1">Date:</p>
+                      <p className="text-sm">{formattedDate}</p>
+                    </div>
+
+                    <div className="flex items-center">
+                      <p className="text-sm mr-1">Time:</p>
+                      <p className="text-sm">{formattedTime}</p>
+                    </div>
+
+                    <div className="flex items-center">
+                      <p className="text-sm mr-1">Venue:</p>
+                      <p className="text-sm">{event.venue}</p>
+                    </div>
+                  </CardContent>
+                
+              <CardFooter className="flex justify-center items-center">
+                {isRep && (
+
+                    <DropdownMenu>
+                      <DropdownMenuTrigger
+                        onClick={() => toggleMenu(event.id)}
+                        className="p-2 rounded-md bg-black text-white"
+                      >
+                        Manage Event
+                      </DropdownMenuTrigger>
+                      <DropdownMenuContent className="flex flex-col items-center">
+                        <DropdownMenuItem onClick={() => onEdit(event.id)}>
+                          <Button>Edit Event</Button>
+                        </DropdownMenuItem>
+                        <DropdownMenuItem onClick={() => onDelete(event.id)}>
+                          <Button variant="destructive">Delete Event</Button>
+                        </DropdownMenuItem>
+                      </DropdownMenuContent>
+                    </DropdownMenu>                  
+                )}
+              </CardFooter>
+              </Card>
+              </Link>
             </div>
-        </>
-    );
+          );
+        })}
+      </div>
+    </>
+  );
 }
 
 export default Events;

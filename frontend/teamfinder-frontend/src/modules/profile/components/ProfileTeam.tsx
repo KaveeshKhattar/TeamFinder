@@ -1,9 +1,18 @@
-import { useEffect, useState } from "react";
+import { SetStateAction, useEffect, useState } from "react";
 import Header from "../../landingPage/components/Header";
 import axios from "axios";
 import { useLocation, useNavigate } from "react-router-dom";
 import { Member } from "../../../types";
 import SearchBar from "../../core/components/SearchBar";
+import { Button } from "../../../components/ui/button";
+import { Input } from "../../../components/ui/input";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "../../../components/ui/card";
 
 function ProfileTeam() {
 
@@ -149,12 +158,12 @@ function ProfileTeam() {
     <>
       <Header></Header>
 
-      <div className="flex flex-col ">
+      <div className="flex flex-col relative">
         <SearchBar placeholder="Add People" onChange={handleSearchChange} />
 
         {/* Dropdown for filtered people */}
         {divVisible && (
-          <div className=" w-full border-2 border-gray-300 mt-2 dark:bg-zinc-600 bg-slate-100 text-black dark:text-white rounded-md">
+          <div className="absolute w-full border-2 border-gray-300 mt-10 bg-white text-black dark:text-white rounded-md mb-2 max-h-[200px] overflow-auto">
 
             {filteredPeople.length > 0 ? (
               filteredPeople.map((person: Member) => {
@@ -167,47 +176,61 @@ function ProfileTeam() {
                   >
                     <p> {person.firstName} {person.lastName} </p>
 
-                    <button className="flex items-center p-1 text-white dark:text-black bg-green-500" type="button" onClick={() => addMember(person)}>
+                    <Button className="bg-green-500" onClick={() => addMember(person)}>
                       <i className="fa-solid fa-plus p-1"></i>
                       <p>Add</p>
-                    </button>
+                    </Button>
 
                   </div>
                 )
               })
             ) : (
-              <div className=" p-2">No results found</div>
+              <div className="p-2">No results found</div>
             )}
           </div>
         )}
 
-        <input className="m-2 p-2 border-2 border-zinc-300 dark:border-slate-600 rounded-md" type="text"id="teamName" value={teamName} onChange={(e) => setTeamName(e.target.value)} required placeholder={team.teamName}/>
+        
 
-        <div className="flex flex-col p-2">
-          <p className="text-left text-xl p-1">Members:</p>
+        <div className="flex flex-col ">
 
-
+          <Card className="mb-2 mt-2">
+        <CardHeader>
+          <CardTitle className="text-left text-lg">Edit Team</CardTitle>
+          
+        </CardHeader>
+        <CardContent>
+          <div className="flex items-center">
+            <p className="mr-2">Team&nbsp;Name: </p>
+            <Input value={teamName} onChange={(e: { target: { value: SetStateAction<string>; }; }) => setTeamName(e.target.value)} required  id="teamName" />
+          </div>        
+          
+          <div className="mt-4">
+            <p className="text-muted-foreground text-left">Members</p>
           {members.map((member: Member) => {
             return (
-              <div key={`${member.id}-${member.email}`} className="flex justify-between items-center mb-4 p-2">
+              <div key={`${member.id}-${member.email}`} className="flex justify-between items-center mb-2">
                 <p>{member.firstName} {member.lastName}</p>
 
-                <button className="flex items-center p-1 text-white dark:text-black bg-red-500" type="button" onClick={() => removeMember(member.id)}>
-                  <i className="fa-solid fa-minus p-1"></i>
-                  <p>Remove</p>
-                </button>
+                <Button variant="destructive" onClick={() => removeMember(member.id)}>
+                    <i className="fa-solid fa-minus p-1"></i>
+                    <p>Remove</p>
+                  </Button>
               </div>
             )
           })}
+          </div>
+        </CardContent>
+        </Card>
         </div>
+        
+        <Button onClick={handleSubmit} className="mb-2">
+          Submit
+          </Button>
 
-        <button className="p-2 dark:bg-zinc-600 bg-slate-100" onClick={handleSubmit}>
-          <input type="submit" />
-        </button>
-
-        <button className="dark:bg-zinc-600 bg-slate-100 mt-2" onClick={handleDelete}>
-          <p className="p-2 text-red-600">Delete</p>
-        </button>
+        <Button variant="destructive" onClick={handleDelete}>
+          Delete Team
+          </Button>
 
       </div>
 

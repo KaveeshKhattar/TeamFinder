@@ -36,33 +36,42 @@ function AllTeams() {
     }, [])
 
     const handleSearchChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
-        const token = localStorage.getItem("token");
         const value = e.target.value;
-        
         if (value) {
-            const responseFilteredTeams = await axios.get(
-                "http://localhost:8080/api/teams/searchAllTeams",
-                {
-                    params: {
-                        teamSearchTerm: value,
-                    },
-                    headers: {
-                        Authorization: `Bearer ${token}`,
-                    },
-                }
-            );
-
-            setAllTeams(responseFilteredTeams.data);
+            const filteredTeams = allTeams.filter((team) =>
+                team.members.some((member) =>
+                  member.fullName.toLowerCase().includes(value.toLowerCase()) // Use value instead of searchTerm
+                )
+              );
+            setAllTeams(filteredTeams);
         } else {
             await fetchAllTeams();
-        }
+          }
+        
+        // if (value) {
+        //     const responseFilteredTeams = await axios.get(
+        //         "http://localhost:8080/api/teams/searchAllTeams",
+        //         {
+        //             params: {
+        //                 teamSearchTerm: value,
+        //             },
+        //             headers: {
+        //                 Authorization: `Bearer ${token}`,
+        //             },
+        //         }
+        //     );
+
+        //     setAllTeams(responseFilteredTeams.data);
+        // } else {
+        //     await fetchAllTeams();
+        // }
     };
 
 
     return (
         <>
         <Header></Header>
-        <SearchBar onChange={handleSearchChange} />
+        <SearchBar placeholder="Find teams by your friends' name" onChange={handleSearchChange} />
         
         <div className="grid grid-cols-1 md:grid-cols-3 mt-4 gap-2">
           <TeamsList

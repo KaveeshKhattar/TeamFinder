@@ -7,6 +7,7 @@ import { Member, Team } from "../../../types";
 import TeamsList from "./TeamsList";
 import IndividualList from "./IndividualList";
 import SearchBar from "../../core/components/SearchBar";
+import { Button } from "../../../components/ui/button";
 
 function Teams() {
   const [teams, setTeams] = useState<Team[]>([]);
@@ -285,43 +286,31 @@ function Teams() {
       <Header></Header>
 
       <div className="flex flex-col ">
-        <SearchBar onChange={handleSearchChange} />
+        <SearchBar placeholder="Find teams by your friends' name" onChange={handleSearchChange} />
 
-        <div>
-          <button
-            type="button"
-            onClick={handleViewingTeamsOrIndividuals}
-            className="w-full bg-blue-500 mt-1 p-2 text-white"
-          >
-            <p>{isViewingTeams ? "View Individuals" : "View Teams"}</p>
-          </button>
-        </div>
+        <Button onClick={handleViewingTeamsOrIndividuals}>
+          <p>{isViewingTeams ? "View Individuals" : "View Teams"}</p>
+        </Button>
 
         <div>
           {isViewingTeams ? (
             <Link
               to={`${location.pathname}/makeTeam`}
-              state={{ eventID: eventId, eventUrl: eventURL }}
-              className={`flex justify-center items-center mt-2 p-2 text-white rounded-md border-1 border-black dark:border-white w-full bg-indigo-500 ${isPartOfAnyTeam ? "pointer-events-none bg-gray-400" : ""
-                }`}
-            >
-              <p className="m-1">Make a Team</p>
-              <i className="fa-solid fa-plus"></i>
+              state={{ eventID: eventId, eventUrl: eventURL }}>
+                <Button onClick={handleViewingTeamsOrIndividuals} className={`${isPartOfAnyTeam ? "pointer-events-none bg-gray-400" : ""} mt-2 w-full`}>
+                  <p className="m-1">Make a Team</p>
+                  <i className="fa-solid fa-plus"></i>
+                </Button>
             </Link>
           ) : (
-            <div className="flex">
-              <button
-              className="flex justify-center items-center mt-2 p-2 rounded-md border-1 border-green-500 dark:border-white w-full bg-green-500 text-white mr-2"
-              onClick={handleClickInterested}
-            >
-              <p className="m-1">Interested</p>
-            </button>
-            <button
-              className="flex justify-center items-center mt-2 p-2rounded-md border-1 border-red-500 dark:border-white w-full bg-red-500 text-white"
-              onClick={handleClickNotInterested}
-            >
-              <p className="m-1">Not Interested</p>
-            </button>
+            <div className="flex mt-2 justify-between">
+              <Button className="bg-green-500 w-1/2 mr-2" onClick={handleClickInterested}>
+                <p className="m-1">Interested</p>
+              </Button>
+
+              <Button variant="destructive" className="w-1/2" onClick={handleClickNotInterested}>
+                <p className="m-1">Not Interested</p>
+              </Button>
             </div>
           )}
         </div>

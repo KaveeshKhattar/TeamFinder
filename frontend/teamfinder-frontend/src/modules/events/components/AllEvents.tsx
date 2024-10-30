@@ -5,6 +5,13 @@ import Header from "../../landingPage/components/Header";
 import SearchBar from "../../core/components/SearchBar";
 import { Link, useNavigate } from "react-router-dom";
 import pic from "../assets/halloween.jpg"
+import {
+    Card,
+    CardContent,
+    CardDescription,
+    CardHeader,
+    CardTitle,
+  } from "../../../components/ui/card";
 
 function AllEvents() {
 
@@ -60,11 +67,21 @@ function AllEvents() {
         <>
         <Header></Header>
         <SearchBar onChange={handleSearchChange} />
-        <div className="grid grid-cols-2 md:grid-cols-4 mt-4 gap-2">
+        <div className="grid grid-cols-1 md:grid-cols-3 mt-4 gap-2">
                 {allEvents.length > 0 ? allEvents.map((event) => {
                     const eventName = event.name || "";
                     const formattedName = eventName.replace(/\s+/g, "-");
                     const eventUrl = formattedName.toLowerCase();
+                    const oldDate = event.date;
+                    const date = new Date(oldDate);
+                    const day = date.getDate();
+                    const month = date.toLocaleString("default", { month: "short" });
+                    const year = date.getFullYear();
+                    const time = date.toLocaleString('en-US', { hour: 'numeric', minute: 'numeric', hour12: true })
+
+                    // Create the formatted date string
+                    const formattedDate = `${day} ${month} ${year}`;
+                    const formattedTime = `${time}`;
 
                     return (
                         <Link
@@ -75,29 +92,36 @@ function AllEvents() {
                             }}
                             key={event.id}
                         >
-                            <div className="dark:bg-zinc-600 bg-slate-100 rounded-md p-2">
-                                <img src={pic} alt="" className="rounded-md" />
-                                <p className="text-2xl text-black dark:text-white ">
-                                    {event.name}
-                                </p>
+                            <Card className="w-full">
+                  <CardHeader>
+                    <img src={pic} alt="" className="rounded-md" />
+                    <CardTitle className="text-left">{event.name}</CardTitle>
+                    <CardDescription className="text-left">
+                      Event
+                    </CardDescription>
+                  </CardHeader>
+                  <CardContent>
+                    <div className="flex items-center">
+                      <p className="text-sm mr-1">Team Size:</p>
+                      <p className="text-sm">{event.teamSize}</p>
+                    </div>
 
-                                <div className="flex justify-center items-center">
-                                    <p className="font-bold mr-4 text-black dark:text-white">
-                                        Team Size:{" "}
-                                    </p>
-                                    <p className="text-black dark:text-white">{event.teamSize}</p>
-                                </div>
+                    <div className="flex items-center">
+                      <p className="text-sm mr-1">Date:</p>
+                      <p className="text-sm">{formattedDate}</p>
+                    </div>
 
-                                <p className="text-sm text-black dark:text-white ">
-                                    Venue: {event.venue}
-                                </p>
-                                {/* <p className="text-sm text-black dark:text-white ">
-                                    Date: {event.date}
-                                </p> */}
-                                <p className="text-sm mt-4 text-black dark:text-white ">
-                                    Fun Facts: {event.description}
-                                </p>
-                            </div>
+                    <div className="flex items-center">
+                      <p className="text-sm mr-1">Time:</p>
+                      <p className="text-sm">{formattedTime}</p>
+                    </div>
+
+                    <div className="flex items-center">
+                      <p className="text-sm mr-1">Venue:</p>
+                      <p className="text-sm">{event.venue}</p>
+                    </div>
+                  </CardContent>
+                </Card>
                         </Link>
                     );
                 }) : (
