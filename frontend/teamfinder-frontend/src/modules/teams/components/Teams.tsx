@@ -27,7 +27,7 @@ function Teams() {
     const token = localStorage.getItem("token");
     try {
       const response = await axios.get(
-        `http://localhost:8080/api/events/${eventId}/InterestedIndividuals`,
+        `https://teamfinder-wpal.onrender.com/api/events/${eventId}/InterestedIndividuals`,
         {
           headers: {
             Authorization: `Bearer ${token}`,
@@ -54,7 +54,7 @@ function Teams() {
     try {
       // Fetch user profile to get userId
       const profileResponse = await axios.get(
-        "http://localhost:8080/users/profile",
+        "https://teamfinder-wpal.onrender.com/users/profile",
         {
           headers: {
             Authorization: `Bearer ${token}`,
@@ -78,7 +78,7 @@ function Teams() {
     try {
       // Fetch user profile to get userId
       const response = await axios.get(
-        "http://localhost:8080/api/isPartOfAny",
+        "https://teamfinder-wpal.onrender.com/api/isPartOfAny",
         {
           params: {
             eventId: eventId,
@@ -110,7 +110,7 @@ function Teams() {
     const token = localStorage.getItem("token");
     try {
       const response = await axios.get(
-        `http://localhost:8080/api/events/${eventId}/teams`,
+        `https://teamfinder-wpal.onrender.com/api/events/${eventId}/teams`,
         {
           headers: {
             Authorization: `Bearer ${token}`,
@@ -163,7 +163,7 @@ function Teams() {
   const handleClickInterested = async () => {
     const token = localStorage.getItem("token");
     try {
-      const response = await axios.get("http://localhost:8080/users/profile", {
+      const response = await axios.get("https://teamfinder-wpal.onrender.com/users/profile", {
         headers: {
           Authorization: `Bearer ${token}`,
         },
@@ -178,7 +178,7 @@ function Teams() {
 
     try {
       const response = await axios.post(
-        "http://localhost:8080/api/events/InterestedIndividual",
+        "https://teamfinder-wpal.onrender.com/api/events/InterestedIndividual",
         {
           userId: userId,
           eventId: eventId,
@@ -217,7 +217,7 @@ function Teams() {
 
     try {
       const response = await axios.delete(
-        "http://localhost:8080/api/events/InterestedIndividual",
+        "https://teamfinder-wpal.onrender.com/api/events/InterestedIndividual",
         {
           params: {
             userID: userId,
@@ -242,7 +242,7 @@ function Teams() {
     const token = localStorage.getItem("token");
     let isUserInterestedUserId = 0;
     try {
-      const response = await axios.get("http://localhost:8080/users/profile", {
+      const response = await axios.get("https://teamfinder-wpal.onrender.com/users/profile", {
         headers: {
           Authorization: `Bearer ${token}`,
         },
@@ -256,7 +256,7 @@ function Teams() {
     }
     try {
       const response = await axios.get(
-        "http://localhost:8080/api/events/isUserInterestedAlready",
+        "https://teamfinder-wpal.onrender.com/api/events/isUserInterestedAlready",
         {
           params: {
             userId: isUserInterestedUserId,

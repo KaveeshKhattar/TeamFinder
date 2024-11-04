@@ -18,7 +18,7 @@ function AllTeams() {
         }
         console.log("Fetching all...");
         const fetchAllTeamsResponse = await axios.get(
-            "http://localhost:8080/api/teams",
+            "https://teamfinder-wpal.onrender.com/api/teams",
             {
                 headers: {
                     Authorization: `Bearer ${token}`
