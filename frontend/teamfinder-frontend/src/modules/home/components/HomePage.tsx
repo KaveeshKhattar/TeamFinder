@@ -79,7 +79,7 @@ function HomePage() {
       <Header></Header>
       <SearchBar onChange={handleSearchChange} />
 
-      <div className="grid grid-cols-1 md:grid-cols-4 mt-4 gap-2">
+      <div className="grid grid-cols-1 md:grid-cols-4 mt-4 gap-2 min-h-screen">
         {colleges.map((college) => {
           const formattedName = college.name.replace(/\s+/g, "-");
           const collegeUrl = formattedName.toLowerCase();
