@@ -59,7 +59,7 @@ function Signup() {
 
         <form className="mt-4 mb-4 w-full md:w-2/5" onSubmit={handleSubmit}>
           <select
-            className="p-2 border-2 dark:bg-zinc-700 border-zinc-300 dark:border-slate-600 rounded-md"
+            className="p-2 border-2 bg-white dark:bg-zinc-700 border-zinc-300 dark:border-slate-600 rounded-md"
             value={role}
             onChange={(e) => setRole(e.target.value)}
             required
