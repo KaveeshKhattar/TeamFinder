@@ -80,7 +80,7 @@ function ProfileTeam() {
 
     try {
       const response = await axios.put(
-        `http://localhost:8080/api/teams/team/${team.teamId}`,  // API endpoint with team ID in the URL
+        `https://teamfinder-frontend.vercel.app//api/teams/team/${team.teamId}`,  // API endpoint with team ID in the URL
         updatedTeam,  // This is the request body (team object)
         {
           headers: {

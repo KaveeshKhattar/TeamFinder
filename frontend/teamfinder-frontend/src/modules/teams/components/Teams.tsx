@@ -202,7 +202,7 @@ function Teams() {
   const handleClickNotInterested = async () => {
     const token = localStorage.getItem("token");
     try {
-      const response = await axios.get("http://localhost:8080/users/profile", {
+      const response = await axios.get("https://teamfinder-frontend.vercel.app//users/profile", {
         headers: {
           Authorization: `Bearer ${token}`,
         },
