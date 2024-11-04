@@ -11,7 +11,7 @@ const TeamsList: React.FC<TeamsListProps> = ({ teams }) => {
             {teams.length > 0 ? teams.map((team) => (
                 <TeamCard key={team.teamId} team={team} location={`${location.pathname}`} />
             )) : (
-                <p className='mt-4'>No teams yet.</p>
+                <p className='flex items-center justify center mt-4'>No teams yet.</p>
             )}
         </div>
     );

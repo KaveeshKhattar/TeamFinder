@@ -123,7 +123,7 @@ public class UserController {
             File tempFile = File.createTempFile("upload-", file.getOriginalFilename());
             file.transferTo(tempFile);
             System.out.println("Image name: " + tempFile.getName());
-            String result = imageHandlerService.uploadFile(tempFile, "image-store", file.getOriginalFilename());
+            String result = imageHandlerService.uploadFile(userEmail, tempFile, "image-store", file.getOriginalFilename());
             
             System.out.println(result);
             return "Passed";
@@ -171,24 +171,38 @@ public class UserController {
         }
         
         final String fileName = prefix + ".png";
-        System.out.println(fileName);
+        System.out.println("Filename being searched for: " + fileName);
         
         try {
             byte[] data = imageHandlerService.getFile("image-store", fileName);
             if (data == null || data.length == 0) {
-                // return ResponseEntity.notFound().build();
                 return "Fail";
             }
-            String base64String = Base64.getEncoder().encodeToString(data); // Convert to Base64
+            String base64String = Base64.getEncoder().encodeToString(data);
             return "data:image/png;base64," + base64String;
-            // return ResponseEntity.ok()
-            //         .contentType(MediaType.IMAGE_PNG) // Set the content type for PNG
-            //         .body(data); // Return the image data directly
 
         } catch (Exception e) {
-            // return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
             return "Fail";
         }
     }
+
+    @PostMapping("/uploadImageURL")
+    public void postImageURL(@RequestHeader("Authorization") String token, @RequestBody String fileURL) {
+        final String jwt = token.substring(7);
+        final String userEmail = jwtService.extractUsername(jwt);
+        System.out.println(userEmail + " Controller " + fileURL);
+        userService.saveFileURL(userEmail, fileURL);
+    }
+
+
+    @DeleteMapping("/deleteImageURL")
+    public void deleteImageURL(@RequestHeader("Authorization") String token) {
+        final String jwt = token.substring(7);
+        final String userEmail = jwtService.extractUsername(jwt);
+        System.out.println(userEmail + " Controller ");
+        userService.deleteFileURL(userEmail);
+    }
+    
+
 
 }

@@ -4,7 +4,7 @@ import IndividualCard from './IndividualCard'; // Adjust the import path as nece
 const IndividualList: React.FC<IndividualListProps> = ({ individuals }) => {
     
     return (
-        <div>
+        <div className='min-h-screen'>
             {individuals.length > 0 ? individuals.map((individual) => (
                 <IndividualCard key={individual.id} individual={individual} />
             )) : (

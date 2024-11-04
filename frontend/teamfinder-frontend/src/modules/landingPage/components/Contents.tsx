@@ -1,12 +1,16 @@
-import { Link } from 'react-router-dom';
+// import { Link } from 'react-router-dom';
 // import sectionOneImg from '../assets/join-a-team.webp'
 // import sectionTwoImg from '../assets/team-searching-ideas-boy-search-flat-people-finding-inspiration-brain-storming-group-holding-magnifying-glass-look-around-utter-vector-concept_53562-17385.avif'
 // import sectionThreeImg from '../assets/img.jpg'
 // import sectionFourImage from '../assets/friends-meeting-cartoon-vector-22493228.jpg'
+// import { Button } from "../../../components/ui/button";
+
+import { Link } from "react-router-dom";
 import { Button } from "../../../components/ui/button";
 
 function Contents() {
     return (
+
         <>
         <div className='grid m-4 min-h-screen max-w-xl'>
 

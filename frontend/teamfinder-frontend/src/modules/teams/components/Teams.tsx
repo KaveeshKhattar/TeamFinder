@@ -17,7 +17,8 @@ function Teams() {
   const [individuals, setIndividuals] = useState<Member[]>([]);
   const [userId, setUserId] = useState(0);
   const [isPartOfAnyTeam, setIsPartOfAnyTeam] = useState(false);
-  const [IsUserInterestedAlreadyBool, setIsUserInterestedAlreadyBool] = useState<boolean>();
+  const [IsUserInterestedAlreadyBool, setIsUserInterestedAlreadyBool] =
+    useState<boolean>();
 
   const location = useLocation();
   const { eventId, eventURL } = location.state;
@@ -35,9 +36,10 @@ function Teams() {
       );
 
       setIndividuals([...response.data]);
-      setIsUserInterestedAlreadyBool(individuals.some((individual) => individual.id === userId));
+      setIsUserInterestedAlreadyBool(
+        individuals.some((individual) => individual.id === userId)
+      );
       console.log("INDIVID bool: ", IsUserInterestedAlreadyBool);
-
     } catch (err) {
       setError("Error fetching teams");
       console.error(err);
@@ -51,42 +53,51 @@ function Teams() {
 
     try {
       // Fetch user profile to get userId
-      const profileResponse = await axios.get("http://localhost:8080/users/profile", {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      });
+      const profileResponse = await axios.get(
+        "http://localhost:8080/users/profile",
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
 
       if (profileResponse.status === 200) {
         const fetchedUserId = profileResponse.data.id;
         setUserId(fetchedUserId); // Update userId state
-        console.log("USER ID:" , fetchedUserId);
+        console.log("USER ID:", fetchedUserId);
         // Now check team membership using the fetched userId
       }
-
     } catch (error) {
-      console.error('Error in fetching user profile or checking team membership:', error);
+      console.error(
+        "Error in fetching user profile or checking team membership:",
+        error
+      );
     }
 
     try {
       // Fetch user profile to get userId
-      const response = await axios.get("http://localhost:8080/api/isPartOfAny", {
-        params:{
-          eventId: eventId,
-          userId: userId
-        },
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      });
+      const response = await axios.get(
+        "http://localhost:8080/api/isPartOfAny",
+        {
+          params: {
+            eventId: eventId,
+            userId: userId,
+          },
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
 
       if (response.status === 200) {
-
         setIsPartOfAnyTeam(response.data);
       }
-
     } catch (error) {
-      console.error('Error in fetching user profile or checking team membership:', error);
+      console.error(
+        "Error in fetching user profile or checking team membership:",
+        error
+      );
     }
   }, [eventId, userId]);
 
@@ -124,14 +135,15 @@ function Teams() {
     if (value) {
       try {
         // Filter the fetched teams based on the search term
-        console.log("Trying...", teams, value)
+        console.log("Trying...", teams, value);
         const filteredTeams = teams.filter((team) =>
-          team.members.some((member) =>
-            member.fullName.toLowerCase().includes(value.toLowerCase()) // Use value instead of searchTerm
+          team.members.some(
+            (member) =>
+              member.fullName.toLowerCase().includes(value.toLowerCase()) // Use value instead of searchTerm
           )
         );
-        console.log("Filtered teams:" , filteredTeams);
-  
+        console.log("Filtered teams:", filteredTeams);
+
         setTeams(filteredTeams);
       } catch (error) {
         console.error("Error fetching teams:", error);
@@ -141,9 +153,7 @@ function Teams() {
     } else {
       await fetchTeams();
     }
-    
   };
-
 
   const handleViewingTeamsOrIndividuals = () => {
     setisViewingTeams(!isViewingTeams);
@@ -190,7 +200,6 @@ function Teams() {
   };
 
   const handleClickNotInterested = async () => {
-
     const token = localStorage.getItem("token");
     try {
       const response = await axios.get("http://localhost:8080/users/profile", {
@@ -221,7 +230,7 @@ function Teams() {
       );
 
       if (response.status === 200) {
-        setIsUserInterestedAlreadyBool(false)
+        setIsUserInterestedAlreadyBool(false);
         fetchInterestedIndividuals();
       }
     } catch (err) {
@@ -251,16 +260,16 @@ function Teams() {
         {
           params: {
             userId: isUserInterestedUserId,
-            eventId: eventId
-          }, 
+            eventId: eventId,
+          },
           headers: {
-            Authorization: `Bearer ${token}`
-          }
+            Authorization: `Bearer ${token}`,
+          },
         }
       );
 
       if (response.status === 200) {
-        setIsUserInterestedAlreadyBool(response.data)
+        setIsUserInterestedAlreadyBool(response.data);
       } else {
         console.log("error");
       }
@@ -270,8 +279,8 @@ function Teams() {
   }, [eventId]);
 
   useEffect(() => {
-    isUserInterestedAlready()
-  }, [isUserInterestedAlready])
+    isUserInterestedAlready();
+  }, [isUserInterestedAlready]);
 
   if (loading) {
     return <Loading />;
@@ -286,7 +295,10 @@ function Teams() {
       <Header></Header>
 
       <div className="flex flex-col ">
-        <SearchBar placeholder="Find teams by your friends' name" onChange={handleSearchChange} />
+        <SearchBar
+          placeholder="Find teams by your friends' name"
+          onChange={handleSearchChange}
+        />
 
         <Button onClick={handleViewingTeamsOrIndividuals}>
           <p>{isViewingTeams ? "View Individuals" : "View Teams"}</p>
@@ -294,23 +306,38 @@ function Teams() {
 
         <div>
           {isViewingTeams ? (
+            <>
             <Link
               to={`${location.pathname}/makeTeam`}
-              state={{ eventID: eventId, eventUrl: eventURL }}>
-                <Button onClick={handleViewingTeamsOrIndividuals} className={`${isPartOfAnyTeam ? "pointer-events-none bg-gray-400" : ""} mt-2 w-full`}>
-                  <p className="m-1">Make a Team</p>
-                  <i className="fa-solid fa-plus"></i>
-                </Button>
+              state={{ eventID: eventId, eventUrl: eventURL }}
+            >
+              <Button
+                onClick={handleViewingTeamsOrIndividuals}
+                className={`${
+                  isPartOfAnyTeam ? "pointer-events-none bg-gray-400" : ""
+                } mt-2 w-full`}
+              >
+                <p className="m-1">Make a Team</p>
+                <i className="fa-solid fa-plus"></i>
+              </Button>
             </Link>
+            </>
+            
           ) : (
             <div className="flex mt-2 justify-between">
-              <Button className="bg-green-500 w-1/2 mr-2" onClick={handleClickInterested}>
+              <button
+                className="bg-green-500 w-1/2 mr-2 rounded-md text-white"
+                onClick={handleClickInterested}
+              >
                 <p className="m-1">Interested</p>
-              </Button>
+              </button>
 
-              <Button variant="destructive" className="w-1/2" onClick={handleClickNotInterested}>
+              <button
+                className="w-1/2 bg-red-500 rounded-md text-white"
+                onClick={handleClickNotInterested}
+              >
                 <p className="m-1">Not Interested</p>
-              </Button>
+              </button>
             </div>
           )}
         </div>

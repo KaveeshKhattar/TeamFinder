@@ -127,7 +127,6 @@ public class TeamService {
 
             // List<User> users = (List<User>) userRepository.findAllById(userIds);
             List<UserProjection> users = userRepository.findAllByIdIn(userIds);
-
             TeamWithMembersDTO teamWithMembersDTO = new TeamWithMembersDTO(team, users);
             teamsWithMembers.add(teamWithMembersDTO);
         }

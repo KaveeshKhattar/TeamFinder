@@ -32,6 +32,17 @@ public class User implements UserDetails {
     @Column(nullable = false)
     private String password;
 
+    @Column(name="picture_url")
+    private String pictureURL;
+
+    public String getPictureURL() {
+        return pictureURL;
+    }
+
+    public void setPictureURL(String pictureURL) {
+        this.pictureURL = pictureURL;
+    }
+
     @Enumerated(EnumType.STRING)
     private Role role;
 

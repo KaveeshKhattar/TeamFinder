@@ -6,4 +6,5 @@ public interface UserProjection {
     String getLastName();
     String getFullName();
     String getEmail();
+    String getPictureURL();
 }

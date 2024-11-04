@@ -42,7 +42,8 @@ function Profile() {
   const { signOut } = useAuth();
   const navigate = useNavigate();
 
-  const handleSignOut = () => {
+  const handleSignOut = (event: React.MouseEvent<HTMLButtonElement>) => {
+    event.preventDefault();
     signOut();
     localStorage.removeItem("token");
     localStorage.setItem("isSignedIn", "false");
@@ -164,11 +165,6 @@ function Profile() {
     fetchTeams();
   }, [fetchTeams]);
 
-  useEffect(() => {
-    if (profileTeams.length) {
-      localStorage.setItem("profileTeams", JSON.stringify(profileTeams));
-    }
-  }, [profileTeams]);
 
   // const profilePic = useRef("frontend/teamfinder-frontend/src/modules/profile/assets/profile-pic.jpg");
   const updateProfilePic = (imgSrc: SetStateAction<string>) => {
@@ -187,9 +183,19 @@ function Profile() {
       console.log(err);
     }
     setProfilePicUrl(profilePic);
+    try {
+      await axios.delete("http://localhost:8080/users/deleteImageURL", {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+    } catch (err) {
+      console.log(err);
+    }
   };
 
   const fetchProfilPic = async () => {
+    console.log("Fetching profile pic...");
     const token = localStorage.getItem("token");
     const response = await axios.get(
       "http://localhost:8080/users/fetchProfilePic",
@@ -200,7 +206,9 @@ function Profile() {
       }
     );
 
-    if (response.status === 200) {
+    if (response.data === "Fail") {
+      setProfilePicUrl(profilePic);
+    } else {
       setProfilePicUrl(response.data);
     }
   };
@@ -213,8 +221,8 @@ function Profile() {
     <>
       <Header />
 
-      <div className="flex flex-col items-center">
-        <div className="relative flex flex-col justify-center items-center gap-2">
+      <div className="flex flex-col items-center min-h-screen dark:bg-black bg-white">
+        <div className="flex flex-col justify-center items-center gap-2">
           <img
             src={profilePicUrl}
             alt=""
@@ -224,8 +232,8 @@ function Profile() {
 
           <div className="">
             <DropdownMenu>
-              <DropdownMenuTrigger>
-                <div className="flex items-center p-2">
+              <DropdownMenuTrigger className="bg-zinc-700">
+                <div className="flex items-center p-2 bg-zinc-700 text-white rounded-md">
                   <i className="fa-solid fa-pen"></i>
                   <p className="p-1">Edit Picture</p>
                   </div>
@@ -233,8 +241,11 @@ function Profile() {
               <DropdownMenuContent>
                 <DropdownMenuItem onClick={() => setModalOpen(true)}>
                   <Button>
-                  Upload Profile Picture
-                  </Button>
+                    <div className="">
+                    <p>Upload Profile Picture</p>
+                    <p className="text-sm text-muted-foreground">Max Size: 5MB</p>
+                    </div>                  
+                  </Button>                  
                     
                 </DropdownMenuItem>
                 <DropdownMenuItem onClick={deleteProfilePicture}>

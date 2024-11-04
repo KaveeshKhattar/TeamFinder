@@ -33,8 +33,11 @@ const TeamCard: React.FC<TeamCardProps> = ({ team, location }) => {
               {team.members.map((member) => (
                 <div key={member.id}>
                   <div className="flex items-center">
-                    <img src={teamMemberPic} alt="" className="w-14 rounded-full mr-2 mt-2"/>
-                    {member.firstName} {member.lastName}
+                    <img src={member.pictureURL ? member.pictureURL : teamMemberPic} alt="" className="w-14 rounded-full mr-2 mt-2"/>
+                    <div className="flex flex-col">
+                      <p className="text-sm font-bold">{member.firstName} {member.lastName}</p>
+                      <p className="text-muted-foreground text-sm">{member.email}</p>
+                    </div>                    
                   </div>
                 </div>
               ))}

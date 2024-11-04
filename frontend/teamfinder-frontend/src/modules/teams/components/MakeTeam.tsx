@@ -189,9 +189,9 @@ function MakeTeam() {
               <div key={`${member.id}-${member.email}`} className="flex justify-between items-center mb-4 p-2">
                 <p>{member.firstName} {member.lastName}</p>
 
-                  <Button variant="outline" onClick={() => removeMember(member.id)}>
+                  <Button variant="destructive" onClick={() => removeMember(member.id)}>
                     <i className="fa-solid fa-minus p-1"></i>
-                    <p>Add</p>
+                    <p>Remove</p>
                   </Button>
               </div>
             )

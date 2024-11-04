@@ -10,18 +10,27 @@ import java.net.URL;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
+import org.springframework.web.client.RestTemplate;
 
-import javax.sql.DataSource;
+import com.project.TeamFinder.repository.UserRepository;
 
 @Service
 public class ImageHandlerService {
+
+    private final UserRepository userRepository;
+    private final RestTemplate restTemplate = new RestTemplate();
+
+    public ImageHandlerService(UserRepository userRepository) {
+        this.userRepository = userRepository;
+    }
+
     @Value("${supabase.url}")
     private String supabaseUrl;
 
     @Value("${supabase.service_key}")
     private String serviceKey;
 
-    public String uploadFile(File file, String bucketName, String fileName) throws IOException {
+    public String uploadFile(String email, File file, String bucketName, String fileName) throws IOException {
 
         if (fileExists(bucketName, fileName)) {
             // Optionally delete the existing file before uploading
@@ -30,6 +39,7 @@ public class ImageHandlerService {
 
         String urlString = supabaseUrl + "/storage/v1/object/" + bucketName + "/" + fileName;
         System.out.println("Connection URL: " + urlString);
+        System.out.println("Sending image to store...");
         HttpURLConnection connection = (HttpURLConnection) new URL(urlString).openConnection();
         connection.setRequestMethod("POST");
         connection.setDoOutput(true);
@@ -38,13 +48,13 @@ public class ImageHandlerService {
         
         // Write file data to output stream
         try (OutputStream os = connection.getOutputStream(); FileInputStream fis = new FileInputStream(file)) {
-            byte[] buffer = new byte[4096];
+            byte[] buffer = new byte[16000];
             int bytesRead;
             while ((bytesRead = fis.read(buffer)) != -1) {
                 os.write(buffer, 0, bytesRead);
             }
         }
-        
+        System.out.println("Image written to store...");
         // Check the response code
         int responseCode = connection.getResponseCode();
         if (responseCode == HttpURLConnection.HTTP_OK) {

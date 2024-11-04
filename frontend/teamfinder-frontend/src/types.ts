@@ -29,6 +29,7 @@ export interface User {
     fullName: string;
     role: string;
     enabled: boolean;
+    pictureURL: string;
 }
 
 export interface Team {

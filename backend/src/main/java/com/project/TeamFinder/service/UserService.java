@@ -79,4 +79,14 @@ public class UserService {
         }
     }
 
+    public void saveFileURL(String userEmail, String fileURL) {
+        System.out.println(userEmail + " Service " + fileURL);
+        userRepository.addPictureURL(userEmail, fileURL);
+    }
+
+    public void deleteFileURL(String userEmail) {
+        System.out.println(userEmail + " Service");
+        userRepository.removePictureURL(userEmail);
+    }
+
 }

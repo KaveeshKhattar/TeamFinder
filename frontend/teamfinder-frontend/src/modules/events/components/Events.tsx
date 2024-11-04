@@ -25,7 +25,6 @@ import {
 function Events() {
   const [events, setEvents] = useState<Event[]>([]);
   const [isRep, setIsRep] = useState<boolean>(false);
-  const [menuVisibleId, setMenuVisibleId] = useState<number | null>(null);
 
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -99,10 +98,6 @@ function Events() {
     checkIfRep();
   }, [checkIfRep]);
 
-  const toggleMenu = (id: number | null) => {
-    setMenuVisibleId((prevId) => (prevId === id ? null : id));
-  };
-
   // Dummy handlers for edit/delete (replace with actual functionality)
   const onEdit = (id: number) => {
     const eventDetails = events.find((event) => event.id === id);
@@ -154,14 +149,95 @@ function Events() {
       <SearchBar onChange={handleSearchChange} />
 
       {isRep && (
-        <Link
-          to={`${location.pathname}/makeEvent`}
-          state={{ collegeId: collegeId, collegeUrl }}
-          className="flex justify-center items-center mt-2 p-2 dark:bg-zinc-600 bg-slate-100 text-black dark:text-white rounded-md border-1 border-black dark:border-white w-full"
-        >
-          <p className="m-1">Create an Event</p>
-          <i className="fa-solid fa-plus"></i>
-        </Link>
+        <>
+          <Link
+            to={`${location.pathname}/makeEvent`}
+            state={{ collegeId: collegeId, collegeUrl }}
+            className="flex justify-center items-center mt-2 p-2 dark:bg-zinc-600 bg-slate-100 text-black dark:text-white rounded-md border-1 border-black dark:border-white w-full"
+          >
+            <p className="m-1">Create an Event</p>
+            <i className="fa-solid fa-plus"></i>
+          </Link>
+
+          {/* <Dialog>
+            <DialogTrigger asChild>
+              <Button variant="outline">Create an Event</Button>
+            </DialogTrigger>
+            <DialogContent className="sm:max-w-full">
+              <DialogHeader>
+                <DialogTitle>Create an Event</DialogTitle>
+                <DialogDescription>
+                  Create a new event for your university here. Click save when
+                  you're done.
+                </DialogDescription>
+              </DialogHeader>
+              <div className="grid gap-4 py-4">
+                <div className="grid grid-cols-4 items-center gap-4">
+                  <Label htmlFor="eventName" className="text-right">
+                    Name
+                  </Label>
+                  <Input
+                    className="col-span-3"
+                    type="text"
+                    id="eventName"
+                    value={eventName}
+                    onChange={(e) => setEventName(e.target.value)}
+                    required
+                    placeholder="Event Name"
+                  />
+                </div>
+                <div className="grid grid-cols-4 items-center gap-4">
+                  <Label htmlFor="eventName" className="text-right">
+                    Date
+                  </Label>
+                  
+                  <Popover>
+                    <PopoverTrigger asChild>
+                      <Button
+                        variant={"outline"}
+                        className={cn(
+                          "w-[240px] justify-start text-left font-normal",
+                          !eventDate && "text-muted-foreground"
+                        )}
+                      >
+                        <CalendarIcon />
+                        {eventDate ? format(eventDate, "PPP") : <span>Pick a date</span>}
+                      </Button>
+                    </PopoverTrigger>
+                    <PopoverContent className="w-auto p-0" align="start">
+                      <Calendar
+                        mode="single"
+                        selected={eventDate}
+                        onSelect={setEventDate}
+                        initialFocus
+                      />
+                    </PopoverContent>
+                  </Popover>
+
+
+                  <Input
+                    className="col-span-3"
+                    type="date"
+                    id="eventDate"
+                    value={eventDate}
+                    onChange={(e) => setEventDate(e.target.value)}
+                    required
+                    placeholder="Event Date"
+                  />
+                </div>
+                <div className="grid grid-cols-4 items-center gap-4">
+                  <Label htmlFor="eventName" className="text-right">
+                    Time
+                  </Label>
+                  <Input className="col-span-3" type="time" id="eventTime" value={eventTime} onChange={(e) => setEventTime(e.target.value)} required placeholder="Event Date" />
+                </div>
+              </div>
+              <DialogFooter>
+                <Button type="submit">Save changes</Button>
+              </DialogFooter>
+            </DialogContent>
+          </Dialog> */}
+        </>
       )}
 
       <div className="grid grid-cols-1 md:grid-cols-3 mt-4 gap-2">
@@ -185,67 +261,64 @@ function Events() {
           const formattedTime = `${time}`;
 
           return (
-            <div key={event.id} className="flex flex-col">
-              <Link
-                to={`${location.pathname}/${eventUrl}`}
-                state={{
-                  eventId: event.id,
-                  eventURL: `http://localhost:5173/${location.pathname}/${eventUrl}`,
-                }}
-              >
-                <Card className="w-full">
-                  <CardHeader>
-                    <img src={pic} alt="" className="rounded-md" />
-                    <CardTitle className="text-left">{event.name}</CardTitle>
-                    <CardDescription className="text-left">
-                      Event
-                    </CardDescription>
-                  </CardHeader>
-                  <CardContent>
-                    <div className="flex items-center">
-                      <p className="text-sm mr-1">Team Size:</p>
-                      <p className="text-sm">{event.teamSize}</p>
-                    </div>
+            <div key={event.id}>
+              <Card className="w-full">
+                <CardHeader>
+                  <img src={pic} alt="" className="rounded-md" />
+                  <CardTitle className="text-left">{event.name}</CardTitle>
+                  <CardDescription className="text-left">Event</CardDescription>
+                </CardHeader>
+                <CardContent>
+                  <div className="flex items-center">
+                    <p className="text-sm mr-1">Team Size:</p>
+                    <p className="text-sm">{event.teamSize}</p>
+                  </div>
 
-                    <div className="flex items-center">
-                      <p className="text-sm mr-1">Date:</p>
-                      <p className="text-sm">{formattedDate}</p>
-                    </div>
+                  <div className="flex items-center">
+                    <p className="text-sm mr-1">Date:</p>
+                    <p className="text-sm">{formattedDate}</p>
+                  </div>
 
-                    <div className="flex items-center">
-                      <p className="text-sm mr-1">Time:</p>
-                      <p className="text-sm">{formattedTime}</p>
-                    </div>
+                  <div className="flex items-center">
+                    <p className="text-sm mr-1">Time:</p>
+                    <p className="text-sm">{formattedTime}</p>
+                  </div>
 
-                    <div className="flex items-center">
-                      <p className="text-sm mr-1">Venue:</p>
-                      <p className="text-sm">{event.venue}</p>
-                    </div>
-                  </CardContent>
-                
-              <CardFooter className="flex justify-center items-center">
-                {isRep && (
+                  <div className="flex items-center">
+                    <p className="text-sm mr-1">Venue:</p>
+                    <p className="text-sm">{event.venue}</p>
+                  </div>
+                </CardContent>
 
-                    <DropdownMenu>
-                      <DropdownMenuTrigger
-                        onClick={() => toggleMenu(event.id)}
-                        className="p-2 rounded-md bg-black text-white"
-                      >
-                        Manage Event
-                      </DropdownMenuTrigger>
-                      <DropdownMenuContent className="flex flex-col items-center">
-                        <DropdownMenuItem onClick={() => onEdit(event.id)}>
-                          <Button>Edit Event</Button>
-                        </DropdownMenuItem>
-                        <DropdownMenuItem onClick={() => onDelete(event.id)}>
-                          <Button variant="destructive">Delete Event</Button>
-                        </DropdownMenuItem>
-                      </DropdownMenuContent>
-                    </DropdownMenu>                  
-                )}
-              </CardFooter>
+                <CardFooter className="flex justify-center items-center">
+                  <Link
+                    to={`${location.pathname}/${eventUrl}`}
+                    state={{
+                      eventId: event.id,
+                      eventURL: `http://localhost:5173/${location.pathname}/${eventUrl}`,
+                    }}
+                  >
+                    <Button className="p-5 mr-2">View Event</Button>
+                  </Link>
+                  {isRep && (
+                    <>
+                      <DropdownMenu>
+                        <DropdownMenuTrigger className="p-2 rounded-md bg-black text-white">
+                          Manage Event
+                        </DropdownMenuTrigger>
+                        <DropdownMenuContent className="flex flex-col items-center">
+                          <DropdownMenuItem onClick={() => onEdit(event.id)}>
+                            <Button>Edit Event</Button>
+                          </DropdownMenuItem>
+                          <DropdownMenuItem onClick={() => onDelete(event.id)}>
+                            <Button variant="destructive">Delete Event</Button>
+                          </DropdownMenuItem>
+                        </DropdownMenuContent>
+                      </DropdownMenu>
+                    </>
+                  )}
+                </CardFooter>
               </Card>
-              </Link>
             </div>
           );
         })}

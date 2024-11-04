@@ -2,6 +2,8 @@ import { useState } from "react";
 import Header from "../../landingPage/components/Header";
 import { useLocation, useNavigate } from "react-router-dom";
 import axios from "axios";
+import { Input } from "../../../components/ui/input";
+import { Button } from "../../../components/ui/button";
 
 function MakeEvent() {
     
@@ -48,21 +50,21 @@ function MakeEvent() {
         <Header></Header>
 
         <div className="flex flex-col">
-        <input className="m-2 p-2 border-2 border-zinc-300 dark:border-slate-600 rounded-md" type="text" id="eventName" value={eventName} onChange={(e) => setEventName(e.target.value)} required placeholder="Event Name" />
+        <Input className="mb-2" type="text" id="eventName" value={eventName} onChange={(e) => setEventName(e.target.value)} required placeholder="Event Name" />
         
-        <input className="m-2 p-2 border-2 border-zinc-300 dark:border-slate-600 rounded-md" type="date" id="eventDate" value={eventDate} onChange={(e) => setEventDate(e.target.value)} required placeholder="Event Date" />
+        <Input className="mb-2" type="date" id="eventDate" value={eventDate} onChange={(e) => setEventDate(e.target.value)} required placeholder="Event Date" />
         
-        <input className="m-2 p-2 border-2 border-zinc-300 dark:border-slate-600 rounded-md" type="time" id="eventTime" value={eventTime} onChange={(e) => setEventTime(e.target.value)} required placeholder="Event Date" />
+        <Input className="mb-2" type="time" id="eventTime" value={eventTime} onChange={(e) => setEventTime(e.target.value)} required placeholder="Event Date" />
         
-        <input className="m-2 p-2 border-2 border-zinc-300 dark:border-slate-600 rounded-md" type="text" id="eventVenue" value={eventVenue} onChange={(e) => setEventVenue(e.target.value)} required placeholder="Event Venue" />
+        <Input className="mb-2" type="text" id="eventVenue" value={eventVenue} onChange={(e) => setEventVenue(e.target.value)} required placeholder="Event Venue" />
 
-        <input className="m-2 p-2 border-2 border-zinc-300 dark:border-slate-600 rounded-md" type="number" id="teamSize" value={teamSize} onChange={(e) => setTeamSize(e.target.value)} required placeholder="Team Size" />
+        <Input className="mb-2" type="number" id="teamSize" value={teamSize} onChange={(e) => setTeamSize(e.target.value)} required placeholder="Team Size" />
 
-        <input className="m-2 p-2 border-2 border-zinc-300 dark:border-slate-600 rounded-md" type="textarea" id="eventDescription" value={eventDescription} onChange={(e) => setEventDescription(e.target.value)} required placeholder="Event Description" />
+        <Input className="mb-2" type="textarea" id="eventDescription" value={eventDescription} onChange={(e) => setEventDescription(e.target.value)} required placeholder="Event Description" />
         
-        <button className="p-2 dark:bg-zinc-600 bg-slate-100" onClick={handleSubmit}>
+        <Button onClick={handleSubmit}>
         <input type="submit" />
-        </button>
+        </Button>
         </div>
         </>
 

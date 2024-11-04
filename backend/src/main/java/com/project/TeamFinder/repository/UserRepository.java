@@ -3,6 +3,8 @@ package com.project.TeamFinder.repository;
 import java.util.List;
 import java.util.Optional;
 
+import org.springframework.data.jpa.repository.Modifying;
+import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.stereotype.Repository;
 
@@ -17,4 +19,14 @@ public interface UserRepository extends CrudRepository<User, Long> {
     Boolean existsByEmailContainingIgnoreCase(String email);
     List<UserProjection> findAllByIdIn(List<Long> userIds);
     List<User> findByFullNameContainingIgnoreCase(String firstName);
+    
+    @Modifying
+    @Query(value="UPDATE users SET picture_url = :url WHERE email = :user_email", nativeQuery = true)
+    void addPictureURL(String user_email, String url);
+
+    @Modifying
+    @Query(value="UPDATE users SET picture_url = NULL WHERE email = :user_email", nativeQuery = true)
+    void removePictureURL(String user_email);
+
+
 }

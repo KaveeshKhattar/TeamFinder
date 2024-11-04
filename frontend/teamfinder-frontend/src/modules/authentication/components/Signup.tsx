@@ -4,38 +4,45 @@ import { Link, useNavigate } from "react-router-dom";
 import Header from "../../landingPage/components/Header";
 import { Input } from "../../../components/ui/input";
 import { Button } from "../../../components/ui/button";
+import { ReloadIcon } from "@radix-ui/react-icons";
+import Error from "../../core/components/Error";
 
 function Signup() {
   const [firstName, setFirstName] = useState("");
   const [lastName, setLastName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [confirmPassword, setConfirmPassword] = useState('');
+  const [confirmPassword, setConfirmPassword] = useState("");
   const [role, setRole] = useState("");
+
+  const [loading, setLoading] = useState<boolean | null>(null);
   const navigate = useNavigate();
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    
-    if (password !== confirmPassword) {      
-      console.log("Passwords don't match")
+
+    if (password !== confirmPassword) {
+      <Error message="Passwords don't match" />
+      console.log("Passwords don't match");
       return;
     }
 
-
     try {
+      setLoading(true);
       const response = await axios.post("http://localhost:8080/auth/signup", {
         firstName,
         lastName,
         email,
-        password,
+        confirmPassword,
         role,
       });
 
       if (response.status === 200) {
+        setLoading(false);
         navigate("/verification", { state: { email } });
       }
     } catch (err) {
+      <Error message="Sign Up Failed" />
       console.log(err, "Sign up failed!");
     }
   };
@@ -52,7 +59,7 @@ function Signup() {
 
         <form className="mt-4 mb-4 w-full md:w-2/5" onSubmit={handleSubmit}>
           <select
-            className="p-2 border-2 border-zinc-300 dark:border-slate-600 rounded-md"
+            className="p-2 border-2 dark:bg-zinc-700 border-zinc-300 dark:border-slate-600 rounded-md"
             value={role}
             onChange={(e) => setRole(e.target.value)}
             required
@@ -91,8 +98,14 @@ function Signup() {
               required
             />
 
-            <Input type="password" id="password" placeholder="Password" value={password}
-              onChange={(e) => setPassword(e.target.value)} required />
+            <Input
+              type="password"
+              id="password"
+              placeholder="Password"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              required
+            />
 
             <Input
               type="password"
@@ -103,7 +116,14 @@ function Signup() {
               required
             />
 
-            <Button>Submit</Button>
+            {loading ? (
+              <Button disabled>
+                <ReloadIcon className="mr-2 h-4 w-4 animate-spin" />
+                Please wait
+              </Button>
+            ) : (
+              <Button>Submit</Button>
+            )}
           </div>
 
           <p className="md:text-xl">
