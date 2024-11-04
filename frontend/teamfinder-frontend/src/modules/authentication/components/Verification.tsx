@@ -14,7 +14,7 @@ function Verification() {
             e.preventDefault();
     
             try {
-                const response = await axios.post('http://localhost:8080/auth/verify', {
+                const response = await axios.post('https://teamfinder-wpal.onrender.com/auth/verify', {
                     email, verificationCode
                 });            
                 

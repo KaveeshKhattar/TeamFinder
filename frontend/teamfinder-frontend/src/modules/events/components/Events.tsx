@@ -63,7 +63,7 @@ function Events() {
 
     if (value) {
       const responseFilteredEvents = await axios.get(
-        "http://localhost:8080/api/college/events/searchEvents",
+        "https://teamfinder-wpal.onrender.com/api/college/events/searchEvents",
         {
           params: {
             eventSearchTerm: value,
@@ -83,7 +83,7 @@ function Events() {
 
   const checkIfRep = useCallback(async () => {
     const token = localStorage.getItem("token");
-    const response = await axios.get("http://localhost:8080/users/checkIfRep", {
+    const response = await axios.get("https://teamfinder-wpal.onrender.com/users/checkIfRep", {
       params: {
         collegeId: collegeId,
       },
@@ -118,7 +118,7 @@ function Events() {
     try {
       // Make the DELETE request to the API endpoint with the team ID in the URL
       const response = await axios.delete(
-        `http://localhost:8080/api/events/event/${id}`, // API endpoint with team ID
+        `https://teamfinder-wpal.onrender.com/api/events/event/${id}`, // API endpoint with team ID
         {
           headers: {
             Authorization: `Bearer ${token}`, // Authorization headers
@@ -295,7 +295,7 @@ function Events() {
                     to={`${location.pathname}/${eventUrl}`}
                     state={{
                       eventId: event.id,
-                      eventURL: `http://localhost:5173/${location.pathname}/${eventUrl}`,
+                      eventURL: `https://teamfinder-frontend.vercel.app/${location.pathname}/${eventUrl}`,
                     }}
                   >
                     <Button className="p-5 mr-2">View Event</Button>

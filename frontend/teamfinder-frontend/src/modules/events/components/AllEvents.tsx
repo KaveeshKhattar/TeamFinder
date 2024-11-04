@@ -25,7 +25,7 @@ function AllEvents() {
       navigate("/login");
     }
     const fetchAllEventsResponse = await axios.get(
-      "http://localhost:8080/api/events",
+      "https://teamfinder-wpal.onrender.com/api/events",
       {
         headers: {
           Authorization: `Bearer ${token}`,
@@ -47,7 +47,7 @@ function AllEvents() {
 
     if (value) {
       const responseFilteredEvents = await axios.get(
-        "http://localhost:8080/api/events/searchAllEvents",
+        "https://teamfinder-wpal.onrender.com/api/events/searchAllEvents",
         {
           params: {
             eventSearchTerm: value,

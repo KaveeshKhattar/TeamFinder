@@ -26,7 +26,7 @@ function HomePage() {
       if (token == null) {
         navigate("/login");
       }
-      const response = await axios.get("http://localhost:8080/api/colleges", {
+      const response = await axios.get("https://teamfinder-wpal.onrender.com/api/colleges", {
         headers: {
           Authorization: `Bearer ${token}`,
         },
@@ -51,7 +51,7 @@ function HomePage() {
     if (value) {
       try {
         const responseFilteredColleges = await axios.get(
-          "http://localhost:8080/api/colleges/searchColleges",
+          "https://teamfinder-wpal.onrender.com/api/colleges/searchColleges",
           {
             params: { name: value },
             headers: { Authorization: `Bearer ${token}` },
@@ -89,7 +89,7 @@ function HomePage() {
               to={`/${collegeUrl}`}
               state={{
                 collegeId: college.id,
-                collegeUrl: `http://localhost:5173/${location.pathname}/${collegeUrl}`,
+                collegeUrl: `https://teamfinder-frontend.vercel.app/${location.pathname}/${collegeUrl}`,
               }}
               key={college.id}
             >

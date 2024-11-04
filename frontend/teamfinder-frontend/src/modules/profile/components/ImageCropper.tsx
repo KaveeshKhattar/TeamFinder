@@ -127,7 +127,7 @@ const ImageCropper: React.FC<ImageCropperProps> = ({
 
       try {
         const response = await axios.post(
-          "http://localhost:8080/users/upload",
+          "https://teamfinder-wpal.onrender.com/users/upload",
           formData,
           {
             headers: {
@@ -156,7 +156,7 @@ const ImageCropper: React.FC<ImageCropperProps> = ({
         }
 
         const response = await axios.post(
-          "http://localhost:8080/users/uploadImageURL",
+          "https://teamfinder-wpal.onrender.com/users/uploadImageURL",
           { fileURL: fileURL }, // Pass fileURL in the data
           {
             headers: {
