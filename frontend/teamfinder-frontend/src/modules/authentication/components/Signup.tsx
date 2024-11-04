@@ -29,7 +29,7 @@ function Signup() {
 
     try {
       setLoading(true);
-      const response = await axios.post("http://localhost:8080/auth/signup", {
+      const response = await axios.post("https://teamfinder-wpal.onrender.com/auth/signup", {
         firstName,
         lastName,
         email,
