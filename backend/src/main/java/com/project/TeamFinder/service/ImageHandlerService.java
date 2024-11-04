@@ -10,19 +10,9 @@ import java.net.URL;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
-import org.springframework.web.client.RestTemplate;
-
-import com.project.TeamFinder.repository.UserRepository;
 
 @Service
 public class ImageHandlerService {
-
-    private final UserRepository userRepository;
-    private final RestTemplate restTemplate = new RestTemplate();
-
-    public ImageHandlerService(UserRepository userRepository) {
-        this.userRepository = userRepository;
-    }
 
     @Value("${supabase.url}")
     private String supabaseUrl;
