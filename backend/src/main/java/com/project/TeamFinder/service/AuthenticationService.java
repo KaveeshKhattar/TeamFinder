@@ -12,6 +12,9 @@ import org.springframework.stereotype.Service;
 import com.project.TeamFinder.dto.LoginUserDTO;
 import com.project.TeamFinder.dto.RegisterUserDTO;
 import com.project.TeamFinder.dto.VerifyUserDTO;
+import com.project.TeamFinder.exception.AccountNotVerifiedException;
+import com.project.TeamFinder.exception.IncorrectEmailException;
+import com.project.TeamFinder.exception.IncorrectPasswordException;
 import com.project.TeamFinder.model.Role;
 import com.project.TeamFinder.model.User;
 import com.project.TeamFinder.repository.CollegeRepresentativeRepository;
@@ -90,19 +93,20 @@ public class AuthenticationService {
 
     public User authenticate(LoginUserDTO input) {
         
-        // if (input.getRole() == Role.REPRESENTATIVE) {
-        //     Boolean repAllowed = collegeRepresentativeRepository.existsByEmail(input.getEmail());
-        //     if (!repAllowed) {
-        //         throw new RuntimeException("You ain't no rep!");
-        //     }
-        // }
-
         User user = userRepository.findByEmail(input.getEmail())
-                .orElseThrow(() -> new RuntimeException("User not found"));
+                .orElseThrow(() -> new IncorrectEmailException("Incorrect email"));
 
         if (!user.isEnabled()) {
-            throw new RuntimeException("Account not verified. Please verify your account.");
+            throw new AccountNotVerifiedException("Account not verified. Please verify your account.");
         }
+        
+        boolean isPasswordMatch = passwordEncoder.matches(input.getPassword(), user.getPassword());
+
+        if (!isPasswordMatch) {
+            throw new IncorrectPasswordException("Password is incorrect.");
+        }
+
+        System.out.println("User password: ");
         authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(
                         input.getEmail(),

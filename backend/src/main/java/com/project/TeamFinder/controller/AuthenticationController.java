@@ -3,6 +3,7 @@ package com.project.TeamFinder.controller;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -15,6 +16,7 @@ import com.project.TeamFinder.dto.LoginUserDTO;
 import com.project.TeamFinder.dto.RegisterUserDTO;
 import com.project.TeamFinder.dto.VerifyUserDTO;
 import com.project.TeamFinder.model.User;
+import com.project.TeamFinder.responses.ApiResponse;
 import com.project.TeamFinder.responses.LoginResponse;
 import com.project.TeamFinder.service.AuthenticationService;
 import com.project.TeamFinder.service.JwtService;
@@ -40,13 +42,17 @@ public class AuthenticationController {
         return ResponseEntity.ok(registeredUser);
     }
 
-    @PostMapping("/login")
-    public ResponseEntity<LoginResponse> authenticate(@RequestBody LoginUserDTO loginUserDto){
+    @PostMapping(value="/login", produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<ApiResponse<LoginResponse>> authenticate(@RequestBody LoginUserDTO loginUserDto){
         System.out.println("*** Log in got called ***");
+        
         User authenticatedUser = authenticationService.authenticate(loginUserDto);
         String jwtToken = jwtService.generateToken(authenticatedUser);
+        
         LoginResponse loginResponse = new LoginResponse(jwtToken, jwtService.getExpirationTime());
-        return ResponseEntity.ok(loginResponse);
+        ApiResponse<LoginResponse> response = new ApiResponse<LoginResponse>(true, loginResponse, "Login Successful");
+        
+        return ResponseEntity.ok(response);
     }
 
     @PostMapping("/verify")
