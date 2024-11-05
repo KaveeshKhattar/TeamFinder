@@ -29,7 +29,7 @@ function MakeTeam() {
     if (value) {
       setDivVisible(true);
 
-      const response = await axios.get(`https://teamfinder-wpal.onrender.com/users/searchUsersByFullName`, {
+      const response = await axios.get(`https://teamfinder-production.up.railway.app/users/searchUsersByFullName`, {
         params: {
           name: value
         },
@@ -51,7 +51,7 @@ function MakeTeam() {
 
     try {
       const response = await axios.get(
-        "https://teamfinder-wpal.onrender.com/users/profile",
+        "https://teamfinder-production.up.railway.app/users/profile",
         {
           headers: {
             Authorization: `Bearer ${token}`,
@@ -92,7 +92,7 @@ function MakeTeam() {
     const team = { name: teamName, eventId: eventID };
     try {
       const response = await axios.post(
-        'https://teamfinder-wpal.onrender.com/api/teams/team',  // API endpoint
+        'https://teamfinder-production.up.railway.app/api/teams/team',  // API endpoint
         team,  // This is the request body (team object)
         {
           headers: {
@@ -119,7 +119,7 @@ function MakeTeam() {
 
     try {
       const response = await axios.post(
-        "https://teamfinder-wpal.onrender.com/api/teams/userTeamMappings",
+        "https://teamfinder-production.up.railway.app/api/teams/userTeamMappings",
         {
           teamId: teamId,
           userIds: user_ids

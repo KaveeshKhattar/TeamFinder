@@ -43,7 +43,7 @@ function ProfileTeam() {
     if (value) {
       setDivVisible(true);
 
-      const response = await axios.get(`https://teamfinder-wpal.onrender.com/users/searchUsersByFullName`, {
+      const response = await axios.get(`https://teamfinder-production.up.railway.app/users/searchUsersByFullName`, {
         params: {
           name: value
         },
@@ -107,7 +107,7 @@ function ProfileTeam() {
     try {
       // Make the DELETE request to the API endpoint with the team ID in the URL
       const response = await axios.delete(
-        `https://teamfinder-wpal.onrender.com/api/teams/team/${team.teamId}`,  // API endpoint with team ID
+        `https://teamfinder-production.up.railway.app/api/teams/team/${team.teamId}`,  // API endpoint with team ID
         {
           headers: {
             Authorization: `Bearer ${token}`,  // Authorization headers
@@ -136,7 +136,7 @@ function ProfileTeam() {
     try {
 
       await axios.put(
-        "https://teamfinder-wpal.onrender.com/api/teams/userTeamMappings",
+        "https://teamfinder-production.up.railway.app/api/teams/userTeamMappings",
         {
           teamId: teamId,
           userIds: user_ids

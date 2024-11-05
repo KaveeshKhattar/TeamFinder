@@ -18,7 +18,7 @@ function AllTeams() {
         }
         console.log("Fetching all...");
         const fetchAllTeamsResponse = await axios.get(
-            "https://teamfinder-wpal.onrender.com/api/teams",
+            "https://teamfinder-production.up.railway.app/api/teams",
             {
                 headers: {
                     Authorization: `Bearer ${token}`

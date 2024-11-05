@@ -52,7 +52,7 @@ function HomePage() {
     if (value) {
       try {
         const responseFilteredColleges = await axios.get(
-          "teamfinder-production.up.railway.app/api/colleges/searchColleges",
+          "https://teamfinder-production.up.railway.app/api/colleges/searchColleges",
           {
             params: { name: value },
             headers: { Authorization: `Bearer ${token}` },

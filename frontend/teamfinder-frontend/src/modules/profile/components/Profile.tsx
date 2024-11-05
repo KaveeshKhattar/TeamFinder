@@ -62,7 +62,7 @@ function Profile() {
     const fetchUser = async () => {
       try {
         const response = await axios.get(
-          "teamfinder-production.up.railway.app/users/profile",
+          "https://teamfinder-production.up.railway.app/users/profile",
           {
             headers: {
               Authorization: `Bearer ${token}`,
@@ -89,7 +89,7 @@ function Profile() {
   const checkIfRep = async () => {
     const token = localStorage.getItem("token");
     const response = await axios.get(
-      "teamfinder-production.up.railway.app/users/checkIfRepProfile",
+      "https://teamfinder-production.up.railway.app/users/checkIfRepProfile",
       {
         headers: {
           Authorization: `Bearer ${token}`,
@@ -112,7 +112,7 @@ function Profile() {
 
     if (isEditing) {
       try {
-        const response = await fetch("teamfinder-production.up.railway.app/users/update", {
+        const response = await fetch("https://teamfinder-production.up.railway.app/users/update", {
           method: "PUT",
           headers: {
             Authorization: `Bearer ${token}`,
@@ -143,7 +143,7 @@ function Profile() {
       try {
         const token = localStorage.getItem("token");
         const responseTeams = await axios.get(
-          "teamfinder-production.up.railway.app/api/teams/profile",
+          "https://teamfinder-production.up.railway.app/api/teams/profile",
           {
             params: { userId: userId },
             headers: {
@@ -174,7 +174,7 @@ function Profile() {
   const deleteProfilePicture = async () => {
     const token = localStorage.getItem("token");
     try {
-      await axios.delete("teamfinder-production.up.railway.app/users/deleteProfilePicture", {
+      await axios.delete("https://teamfinder-production.up.railway.app/users/deleteProfilePicture", {
         headers: {
           Authorization: `Bearer ${token}`,
         },
@@ -184,7 +184,7 @@ function Profile() {
     }
     setProfilePicUrl(profilePic);
     try {
-      await axios.delete("teamfinder-production.up.railway.app/users/deleteImageURL", {
+      await axios.delete("https://teamfinder-production.up.railway.app/users/deleteImageURL", {
         headers: {
           Authorization: `Bearer ${token}`,
         },
@@ -198,7 +198,7 @@ function Profile() {
     console.log("Fetching profile pic...");
     const token = localStorage.getItem("token");
     const response = await axios.get(
-      "teamfinder-production.up.railway.app/users/fetchProfilePic",
+      "https://teamfinder-production.up.railway.app/users/fetchProfilePic",
       {
         headers: {
           Authorization: `Bearer ${token}`,
