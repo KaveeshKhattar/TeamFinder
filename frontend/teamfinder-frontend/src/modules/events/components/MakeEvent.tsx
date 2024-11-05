@@ -28,7 +28,7 @@ function MakeEvent() {
         }
         try {
             console.log("Starting...", collegeId, eventName, eventDate, eventTime, eventVenue, parsedTeamSize, eventDescription);
-            const response = await axios.post("https://teamfinder-wpal.onrender.com/api/events/createEvent", {
+            const response = await axios.post("https://teamfinder-production.up.railway.app/api/events/createEvent", {
                 collegeId, eventName, eventDate, eventTime, eventVenue, teamSize: parsedTeamSize, eventDescription
             }, {
                 headers: {

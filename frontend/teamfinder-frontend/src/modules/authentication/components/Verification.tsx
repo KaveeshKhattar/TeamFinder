@@ -17,7 +17,7 @@ function Verification() {
         e.preventDefault();
 
         try {
-            const response = await axios.post('https://teamfinder-wpal.onrender.com/auth/verify', {
+            const response = await axios.post('https://teamfinder-production.up.railway.app/auth/verify', {
                 email, verificationCode
             });
             const { success, message } = response.data;

@@ -28,7 +28,7 @@ function Signup() {
 
     try {
       setLoading(true);
-      const response = await axios.post("https://teamfinder-wpal.onrender.com/auth/signup", {
+      const response = await axios.post("https://teamfinder-production.up.railway.app/auth/signup", {
         role,
         firstName,
         lastName,

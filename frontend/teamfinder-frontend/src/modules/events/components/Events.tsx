@@ -63,7 +63,7 @@ function Events() {
 
     if (value) {
       const responseFilteredEvents = await axios.get(
-        "https://teamfinder-wpal.onrender.com/api/college/events/searchEvents",
+        "https://teamfinder-production.up.railway.app/api/college/events/searchEvents",
         {
           params: {
             eventSearchTerm: value,
@@ -83,7 +83,7 @@ function Events() {
 
   const checkIfRep = useCallback(async () => {
     const token = localStorage.getItem("token");
-    const response = await axios.get("https://teamfinder-wpal.onrender.com/users/checkIfRep", {
+    const response = await axios.get("https://teamfinder-production.up.railway.app/users/checkIfRep", {
       params: {
         collegeId: collegeId,
       },
@@ -118,7 +118,7 @@ function Events() {
     try {
       // Make the DELETE request to the API endpoint with the team ID in the URL
       const response = await axios.delete(
-        `https://teamfinder-wpal.onrender.com/api/events/event/${id}`, // API endpoint with team ID
+        `https://teamfinder-production.up.railway.app/api/events/event/${id}`, // API endpoint with team ID
         {
           headers: {
             Authorization: `Bearer ${token}`, // Authorization headers

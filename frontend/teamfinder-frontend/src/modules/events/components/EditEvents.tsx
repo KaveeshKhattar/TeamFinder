@@ -22,7 +22,7 @@ function EditEvents() {
       try {
         console.log("calling..");
         const response = await axios.put(
-          `https://teamfinder-wpal.onrender.com/api/events/event/${event.id}`, null, 
+          `https://teamfinder-production.up.railway.app/api/events/event/${event.id}`, null, 
           {
             params: {
               eventName: eventName,

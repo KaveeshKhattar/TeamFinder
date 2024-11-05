@@ -20,7 +20,7 @@ function Login() {
         setLoading(true);
         try {
             const response = await axios.post(
-                "https://teamfinder-wpal.onrender.com/auth/login",
+                "https://teamfinder-production.up.railway.app/auth/login",
                 {
                     email,
                     password,

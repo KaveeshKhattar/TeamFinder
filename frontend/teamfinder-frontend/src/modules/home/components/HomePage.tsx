@@ -27,7 +27,7 @@ function HomePage() {
         navigate("/login");
       }
       setLoading(true);
-      const response = await axios.get("https://teamfinder-wpal.onrender.com/api/colleges", {
+      const response = await axios.get("https://teamfinder-production.up.railway.app/api/colleges", {
         headers: {
           Authorization: `Bearer ${token}`,
         },
@@ -52,7 +52,7 @@ function HomePage() {
     if (value) {
       try {
         const responseFilteredColleges = await axios.get(
-          "https://teamfinder-wpal.onrender.com/api/colleges/searchColleges",
+          "teamfinder-production.up.railway.app/api/colleges/searchColleges",
           {
             params: { name: value },
             headers: { Authorization: `Bearer ${token}` },
