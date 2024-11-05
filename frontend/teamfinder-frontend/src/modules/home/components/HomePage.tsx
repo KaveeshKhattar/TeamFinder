@@ -1,9 +1,8 @@
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import Header from "../../landingPage/components/Header";
 import axios from "axios";
 import { Link, useNavigate } from "react-router-dom";
 import collegeImg from "../assets/college.jpg";
-import Loading from "../../core/components/Loading";
 import { College } from "../../../types";
 import SearchBar from "../../core/components/SearchBar";
 import {
@@ -13,6 +12,7 @@ import {
   CardHeader,
   CardTitle,
 } from "../../../components/ui/card";
+import { Skeleton } from "../../../components/ui/skeleton";
 
 function HomePage() {
   const [colleges, setColleges] = useState<College[]>([]);
@@ -20,12 +20,13 @@ function HomePage() {
   const [error, setError] = useState<string | null>(null);
   const navigate = useNavigate();
 
-  const fetchColleges = async () => {
+  const fetchColleges = useCallback(async () => {
     try {
       const token = localStorage.getItem("token");
       if (token == null) {
         navigate("/login");
       }
+      setLoading(true);
       const response = await axios.get("https://teamfinder-wpal.onrender.com/api/colleges", {
         headers: {
           Authorization: `Bearer ${token}`,
@@ -38,11 +39,11 @@ function HomePage() {
     } finally {
       setLoading(false);
     }
-  };
+  }, [navigate]);
 
   useEffect(() => {
     fetchColleges();
-  }, []);
+  }, [fetchColleges]);
 
   const handleSearchChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const token = localStorage.getItem("token");
@@ -67,7 +68,21 @@ function HomePage() {
   };
 
   if (loading) {
-    return <Loading />;
+    return (
+      <>
+        <Header></Header>
+        <SearchBar onChange={handleSearchChange} />
+        { }
+
+        <div className="grid grid-cols-1 md:grid-cols-4 mt-4 gap-4">
+          <Card className="flex flex-col items-center justify-center">
+            <Skeleton className="h-[125px] w-[80%] m-4 rounded-md" />
+            <Skeleton className=" h-4 w-[80%] mt-2" />
+            <Skeleton className="h-4 w-[80%] mt-2 mb-8" />
+          </Card>
+        </div>
+      </>
+    );
   }
 
   if (error) {
@@ -102,10 +117,10 @@ function HomePage() {
                   </CardDescription>
                 </CardHeader>
                 <CardContent>
-                <div className="flex items-center">
-                      <p className="text-sm mr-1">Location:</p>
-                      <p className="text-sm">{college.location}</p>
-                    </div>
+                  <div className="flex items-center">
+                    <p className="text-sm mr-1">Location:</p>
+                    <p className="text-sm">{college.location}</p>
+                  </div>
                 </CardContent>
               </Card>
             </Link>

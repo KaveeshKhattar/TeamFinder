@@ -1,5 +1,6 @@
 com/project/TeamFinder/model/Event.class
 com/project/TeamFinder/TeamFinderApplication.class
+com/project/TeamFinder/exception/NotRepresentativeException.class
 com/project/TeamFinder/controller/UserController.class
 com/project/TeamFinder/dto/LoginUserDTO.class
 com/project/TeamFinder/dto/UpdateUserDTO.class
@@ -40,6 +41,7 @@ com/project/TeamFinder/service/JwtService.class
 com/project/TeamFinder/model/College.class
 com/project/TeamFinder/model/Team.class
 com/project/TeamFinder/controller/TeamController.class
+com/project/TeamFinder/exception/AccountAlreadyExists.class
 com/project/TeamFinder/controller/AuthenticationController.class
 com/project/TeamFinder/model/Role.class
 com/project/TeamFinder/service/EmailService.class

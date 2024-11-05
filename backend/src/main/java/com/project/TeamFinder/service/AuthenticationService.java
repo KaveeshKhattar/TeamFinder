@@ -77,7 +77,7 @@ public class AuthenticationService {
         if (optionalUser.isPresent()) {
             User user = optionalUser.get();
             if (user.getVerificationCodeExpiresAt().isBefore(LocalDateTime.now())) {
-                throw new RuntimeException("Verification code has expired");
+                throw new AccountNotVerifiedException("Token has expired.");
             }
             if (user.getVerificationCode().equals(input.getVerificationCode())) {
                 user.setEnabled(true);
@@ -85,10 +85,10 @@ public class AuthenticationService {
                 user.setVerificationCodeExpiresAt(null);
                 userRepository.save(user);
             } else {
-                throw new RuntimeException("Invalid verification code");
+                throw new AccountNotVerifiedException("Wrong token.");
             }
         } else {
-            throw new RuntimeException("User not found");
+            throw new AccountNotVerifiedException("User not found.");
         }
     }
 

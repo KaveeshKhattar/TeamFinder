@@ -57,14 +57,11 @@ public class AuthenticationController {
     }
 
     @PostMapping("/verify")
-    public ResponseEntity<?> verifyUser(@RequestBody VerifyUserDTO verifyUserDto) {
-        try {
-            System.out.println("*** Verify got called ***");
-            authenticationService.verifyUser(verifyUserDto);
-            return ResponseEntity.ok("Account verified successfully");
-        } catch (RuntimeException e) {
-            return ResponseEntity.badRequest().body(e.getMessage());
-        }
+    public ResponseEntity<ApiResponse<String>> verifyUser(@RequestBody VerifyUserDTO verifyUserDto) {
+        System.out.println("*** Verify got called ***");
+        authenticationService.verifyUser(verifyUserDto);
+        ApiResponse<String> response = new ApiResponse<String>(true, "User Verified", "Verification Successful");
+        return ResponseEntity.ok(response);
     }
 
     @PostMapping("/resend")
