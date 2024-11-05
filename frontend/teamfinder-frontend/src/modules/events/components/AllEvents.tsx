@@ -127,7 +127,7 @@ function AllEvents() {
                       to={`${location.pathname}/${eventUrl}`}
                       state={{
                         eventId: event.id,
-                        eventURL: `http://localhost:5173/${location.pathname}/${eventUrl}`,
+                        eventURL: `http://teamfinder-frontend.vercel.app/${location.pathname}/${eventUrl}`,
                       }}
                     >
                     <Button>

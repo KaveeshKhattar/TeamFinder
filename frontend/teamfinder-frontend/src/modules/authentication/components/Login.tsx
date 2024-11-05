@@ -43,6 +43,7 @@ function Login() {
                 setError("Unexpected error:" + error);
             }
         }
+        setLoading(false);
     };
 
     return (
@@ -75,15 +76,15 @@ function Login() {
                             required
                         />
                         {
-                            loading ? 
-                            <Button disabled>
-                                <ReloadIcon className="mr-2 h-4 w-4 animate-spin" /> Please wait
-                            </Button>
-                            :
-                            <Button>
-                                Submit
-                            </Button>
-                        }                        
+                            loading ?
+                                <Button disabled>
+                                    <ReloadIcon className="mr-2 h-4 w-4 animate-spin" /> Please wait
+                                </Button>
+                                :
+                                <Button>
+                                    Submit
+                                </Button>
+                        }
                     </div>
                     {error && <p style={{ color: "red" }}>{error}</p>}
                 </form>
