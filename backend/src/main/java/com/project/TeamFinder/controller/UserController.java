@@ -87,13 +87,11 @@ public class UserController {
     
     @GetMapping("/checkIfRep")
     public Boolean getIfRep(@RequestHeader("Authorization") String token, @RequestParam("collegeId") Long collegeId) {
+        System.out.println("Calling me!");
         final String jwt = token.substring(7);
         final String userEmail = jwtService.extractUsername(jwt);
-
-        Optional<User> profile = userService.findByEmail(userEmail);
-        User profileReal = profile.orElseThrow(() -> new RuntimeException("Team not found"));
-
-        Boolean ans = userService.getIfRep(profileReal.getEmail(), collegeId);
+        System.out.println("Checking me!");
+        Boolean ans = userService.getIfRep(userEmail, collegeId);
         return ans;
     }
 

@@ -59,7 +59,7 @@ public class UserService {
 
     public Boolean getIfRep(String email, Long collegeId) {
         Optional<Long> collegeNameOpt = collegeRepresentativeRepository.findByEmailAndCollege(email, collegeId);
-
+        System.out.println("Ola: " + collegeNameOpt);
         if (collegeNameOpt.isPresent()) {
             return true;
         } else {

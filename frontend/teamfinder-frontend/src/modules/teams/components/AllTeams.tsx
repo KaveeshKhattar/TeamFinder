@@ -1,24 +1,25 @@
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { Team } from "../../../types";
 import axios from "axios";
 import Header from "../../landingPage/components/Header";
 import SearchBar from "../../core/components/SearchBar";
 import TeamsList from "./TeamsList";
 import { useNavigate } from "react-router-dom";
+import { BASE_URL } from "../../../config";
 
 function AllTeams() {
 
     const [allTeams, setAllTeams] = useState<Team[]>([]);
     const navigate = useNavigate();
 
-    const fetchAllTeams = async () => {
+    const fetchAllTeams = useCallback(async () => {
         const token = localStorage.getItem("token");
         if (token == null) {
             navigate("/login");
         }
         console.log("Fetching all...");
         const fetchAllTeamsResponse = await axios.get(
-            "https://teamfinder-production.up.railway.app/api/teams",
+            `${BASE_URL}/api/teams`,
             {
                 headers: {
                     Authorization: `Bearer ${token}`
@@ -29,11 +30,11 @@ function AllTeams() {
             setAllTeams(fetchAllTeamsResponse.data);
         }
         console.log("Fetched all");
-    }
+    }, [navigate])
 
     useEffect(() => {
         fetchAllTeams();
-    }, [])
+    }, [fetchAllTeams])
 
     const handleSearchChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
         const value = e.target.value;

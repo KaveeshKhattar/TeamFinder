@@ -14,18 +14,23 @@ import {
   CardTitle,
 } from "../../../components/ui/card";
 import { Button } from "../../../components/ui/button";
+import { Skeleton } from "../../../components/ui/skeleton";
+import { BASE_URL } from "../../../config";
 
 function AllEvents() {
   const [allEvents, setAllEvents] = useState<Event[]>([]);
+  const [loading, setLoading] = useState(true);
+  
   const navigate = useNavigate();
 
   const fetchAllEvents = useCallback(async () => {
+    setLoading(true);
     const token = localStorage.getItem("token");
     if (token == null) {
       navigate("/login");
     }
     const fetchAllEventsResponse = await axios.get(
-      "https://teamfinder-production.up.railway.app/api/events",
+      `${BASE_URL}/api/events`,
       {
         headers: {
           Authorization: `Bearer ${token}`,
@@ -47,7 +52,7 @@ function AllEvents() {
 
     if (value) {
       const responseFilteredEvents = await axios.get(
-        "https://teamfinder-production.up.railway.app/api/events/searchAllEvents",
+        `${BASE_URL}/api/events/searchAllEvents`,
         {
           params: {
             eventSearchTerm: value,
@@ -63,6 +68,30 @@ function AllEvents() {
       await fetchAllEvents();
     }
   };
+
+  if (loading) {
+    return (
+      <>
+        <Header></Header>
+        <SearchBar onChange={handleSearchChange} />
+        { }
+
+        <div className="grid grid-cols-1 md:grid-cols-4 mt-4 gap-4 min-h-screen">
+          <Card className="flex flex-col items-center justify-center">
+            <Skeleton className="h-[125px] w-[80%] m-4 rounded-md" />
+            <Skeleton className=" h-4 w-[80%] mt-2" />
+            <Skeleton className="h-4 w-[80%] mt-2 mb-8" />
+          </Card>
+
+          <Card className="flex flex-col items-center justify-center">
+            <Skeleton className="h-[125px] w-[80%] m-4 rounded-md" />
+            <Skeleton className=" h-4 w-[80%] mt-2" />
+            <Skeleton className="h-4 w-[80%] mt-2 mb-8" />
+          </Card>
+        </div>
+      </>
+    );
+  }
 
   return (
     <>

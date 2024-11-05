@@ -6,6 +6,7 @@ import { useAuth } from "../../core/hooks/useAuth";
 import { Input } from "../../../components/ui/input";
 import { Button } from "../../../components/ui/button";
 import { ReloadIcon } from "@radix-ui/react-icons";
+import { BASE_URL } from "../../../config";
 
 function Login() {
     const [email, setEmail] = useState("");
@@ -20,7 +21,7 @@ function Login() {
         setLoading(true);
         try {
             const response = await axios.post(
-                "https://teamfinder-production.up.railway.app/auth/login",
+                `${BASE_URL}/auth/login`,
                 {
                     email,
                     password,

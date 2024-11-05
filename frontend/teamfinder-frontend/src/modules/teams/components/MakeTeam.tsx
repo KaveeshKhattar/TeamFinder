@@ -5,6 +5,7 @@ import { useLocation, useNavigate } from "react-router-dom";
 import { Member } from "../../../types";
 import SearchBar from "../../core/components/SearchBar";
 import { Button } from "../../../components/ui/button";
+import { BASE_URL } from "../../../config";
 
 function MakeTeam() {
 
@@ -29,7 +30,7 @@ function MakeTeam() {
     if (value) {
       setDivVisible(true);
 
-      const response = await axios.get(`https://teamfinder-production.up.railway.app/users/searchUsersByFullName`, {
+      const response = await axios.get(`${BASE_URL}/users/searchUsersByFullName`, {
         params: {
           name: value
         },
@@ -51,7 +52,7 @@ function MakeTeam() {
 
     try {
       const response = await axios.get(
-        "https://teamfinder-production.up.railway.app/users/profile",
+        `${BASE_URL}/users/profile`,
         {
           headers: {
             Authorization: `Bearer ${token}`,
@@ -92,7 +93,7 @@ function MakeTeam() {
     const team = { name: teamName, eventId: eventID };
     try {
       const response = await axios.post(
-        'https://teamfinder-production.up.railway.app/api/teams/team',  // API endpoint
+        `${BASE_URL}/api/teams/team`,  // API endpoint
         team,  // This is the request body (team object)
         {
           headers: {
@@ -119,7 +120,7 @@ function MakeTeam() {
 
     try {
       const response = await axios.post(
-        "https://teamfinder-production.up.railway.app/api/teams/userTeamMappings",
+        `${BASE_URL}/api/teams/userTeamMappings`,
         {
           teamId: teamId,
           userIds: user_ids

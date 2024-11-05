@@ -13,6 +13,7 @@ import {
   CardTitle,
 } from "../../../components/ui/card";
 import { Skeleton } from "../../../components/ui/skeleton";
+import { BASE_URL } from "../../../config";
 
 function HomePage() {
   const [colleges, setColleges] = useState<College[]>([]);
@@ -27,7 +28,7 @@ function HomePage() {
         navigate("/login");
       }
       setLoading(true);
-      const response = await axios.get("https://teamfinder-production.up.railway.app/api/colleges", {
+      const response = await axios.get(`${BASE_URL}/api/colleges`, {
         headers: {
           Authorization: `Bearer ${token}`,
         },
@@ -52,7 +53,7 @@ function HomePage() {
     if (value) {
       try {
         const responseFilteredColleges = await axios.get(
-          "https://teamfinder-production.up.railway.app/api/colleges/searchColleges",
+          `${BASE_URL}/api/colleges/searchColleges`,
           {
             params: { name: value },
             headers: { Authorization: `Bearer ${token}` },
@@ -72,9 +73,13 @@ function HomePage() {
       <>
         <Header></Header>
         <SearchBar onChange={handleSearchChange} />
-        { }
+        <div className="grid grid-cols-1 md:grid-cols-4 mt-4 gap-4 min-h-screen">
+          <Card className="flex flex-col items-center justify-center">
+            <Skeleton className="h-[125px] w-[80%] m-4 rounded-md" />
+            <Skeleton className=" h-4 w-[80%] mt-2" />
+            <Skeleton className="h-4 w-[80%] mt-2 mb-8" />
+          </Card>
 
-        <div className="grid grid-cols-1 md:grid-cols-4 mt-4 gap-4">
           <Card className="flex flex-col items-center justify-center">
             <Skeleton className="h-[125px] w-[80%] m-4 rounded-md" />
             <Skeleton className=" h-4 w-[80%] mt-2" />
@@ -86,7 +91,7 @@ function HomePage() {
   }
 
   if (error) {
-    return <div>Error: {error}</div>; // Show an error message
+    return <div className="min-h-screen">Error: {error}</div>; // Show an error message
   }
 
   return (

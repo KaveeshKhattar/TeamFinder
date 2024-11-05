@@ -10,6 +10,7 @@ import axios from "axios";
 import { jwtDecode } from "jwt-decode";
 import { Input } from "../../../components/ui/input";
 import { createClient } from "@supabase/supabase-js";
+import { BASE_URL } from "../../../config";
 
 const ASPECT_RATIO = 1;
 const MIN_DIMENSION = 150;
@@ -127,7 +128,7 @@ const ImageCropper: React.FC<ImageCropperProps> = ({
 
       try {
         const response = await axios.post(
-          "https://teamfinder-production.up.railway.app/users/upload",
+          `${BASE_URL}/users/upload`,
           formData,
           {
             headers: {
@@ -156,7 +157,7 @@ const ImageCropper: React.FC<ImageCropperProps> = ({
         }
 
         const response = await axios.post(
-          "https://teamfinder-production.up.railway.app/users/uploadImageURL",
+          `${BASE_URL}/users/uploadImageURL`,
           { fileURL: fileURL }, // Pass fileURL in the data
           {
             headers: {

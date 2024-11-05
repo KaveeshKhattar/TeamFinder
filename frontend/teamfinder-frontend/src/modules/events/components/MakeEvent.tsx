@@ -4,6 +4,7 @@ import { useLocation, useNavigate } from "react-router-dom";
 import axios from "axios";
 import { Input } from "../../../components/ui/input";
 import { Button } from "../../../components/ui/button";
+import { BASE_URL } from "../../../config";
 
 function MakeEvent() {
     
@@ -28,7 +29,7 @@ function MakeEvent() {
         }
         try {
             console.log("Starting...", collegeId, eventName, eventDate, eventTime, eventVenue, parsedTeamSize, eventDescription);
-            const response = await axios.post("https://teamfinder-production.up.railway.app/api/events/createEvent", {
+            const response = await axios.post(`${BASE_URL}/api/events/createEvent`, {
                 collegeId, eventName, eventDate, eventTime, eventVenue, teamSize: parsedTeamSize, eventDescription
             }, {
                 headers: {

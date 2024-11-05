@@ -7,7 +7,7 @@ const SearchBar: React.FC<SearchBarProps> = ({ placeholder = "Search...", onChan
             <input
                 type="text"
                 placeholder={placeholder}
-                className="w-full dark:text-black bg-white dark:bg-black"
+                className="w-full dark:text-white text-black bg-white dark:bg-black"
                 onChange={onChange}
             />
         </div>

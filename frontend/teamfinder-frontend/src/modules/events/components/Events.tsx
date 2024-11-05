@@ -2,7 +2,6 @@ import { useCallback, useEffect, useState } from "react";
 import Header from "../../landingPage/components/Header";
 import axios from "axios";
 import { Link, useLocation, useNavigate } from "react-router-dom";
-import Loading from "../../core/components/Loading";
 import { Event } from "../../../types";
 import SearchBar from "../../core/components/SearchBar";
 import pic from "../assets/halloween.jpg";
@@ -21,6 +20,8 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "../../../components/ui/dropdown-menu";
+import { Skeleton } from "../../../components/ui/skeleton";
+import { BASE_URL } from "../../../config";
 
 function Events() {
   const [events, setEvents] = useState<Event[]>([]);
@@ -30,14 +31,15 @@ function Events() {
   const [error, setError] = useState<string | null>(null);
 
   const location = useLocation();
-  const { collegeId, collegeUrl } = location.state;
+  const { collegeId } = location.state;
   const navigate = useNavigate();
 
   const fetchEvents = useCallback(async () => {
+    setLoading(true);
     try {
       const token = localStorage.getItem("token");
       const response = await axios.get(
-        `https://teamfinder-frontend.vercel.app//api/${collegeId}/events`,
+        `${BASE_URL}/api/${collegeId}/events`,
         {
           headers: {
             Authorization: `Bearer ${token}`,
@@ -63,7 +65,7 @@ function Events() {
 
     if (value) {
       const responseFilteredEvents = await axios.get(
-        "https://teamfinder-production.up.railway.app/api/college/events/searchEvents",
+        `${BASE_URL}/api/college/events/searchEvents`,
         {
           params: {
             eventSearchTerm: value,
@@ -83,7 +85,7 @@ function Events() {
 
   const checkIfRep = useCallback(async () => {
     const token = localStorage.getItem("token");
-    const response = await axios.get("https://teamfinder-production.up.railway.app/users/checkIfRep", {
+    const response = await axios.get(`${BASE_URL}/users/checkIfRep`, {
       params: {
         collegeId: collegeId,
       },
@@ -98,7 +100,6 @@ function Events() {
     checkIfRep();
   }, [checkIfRep]);
 
-  // Dummy handlers for edit/delete (replace with actual functionality)
   const onEdit = (id: number) => {
     const eventDetails = events.find((event) => event.id === id);
 
@@ -108,7 +109,6 @@ function Events() {
     navigate(`${location.pathname}/${eventUrl}/edit`, {
       state: { event: eventDetails },
     });
-    // Implement edit functionality here
   };
 
   const onDelete = async (id: number) => {
@@ -116,27 +116,46 @@ function Events() {
     const token = localStorage.getItem("token");
 
     try {
-      // Make the DELETE request to the API endpoint with the team ID in the URL
+
       const response = await axios.delete(
-        `https://teamfinder-production.up.railway.app/api/events/event/${id}`, // API endpoint with team ID
+        `${BASE_URL}/api/events/event/${id}`,
         {
           headers: {
-            Authorization: `Bearer ${token}`, // Authorization headers
+            Authorization: `Bearer ${token}`,
           },
         }
       );
 
-      // Check if the response indicates a successful deletion
       if (response.status === 200) {
         fetchEvents();
       }
     } catch (err) {
-      console.error(err, "Deleting the team failed!"); // Improved error logging
+      console.error(err, "Deleting the team failed!");
     }
   };
 
   if (loading) {
-    return <Loading />;
+    return (
+      <>
+        <Header></Header>
+        <SearchBar onChange={handleSearchChange} />
+        { }
+
+        <div className="grid grid-cols-1 md:grid-cols-4 mt-4 gap-4 min-h-screen">
+          <Card className="flex flex-col items-center justify-center">
+            <Skeleton className="h-[125px] w-[80%] m-4 rounded-md" />
+            <Skeleton className=" h-4 w-[80%] mt-2" />
+            <Skeleton className="h-4 w-[80%] mt-2 mb-8" />
+          </Card>
+
+          <Card className="flex flex-col items-center justify-center">
+            <Skeleton className="h-[125px] w-[80%] m-4 rounded-md" />
+            <Skeleton className=" h-4 w-[80%] mt-2" />
+            <Skeleton className="h-4 w-[80%] mt-2 mb-8" />
+          </Card>
+        </div>
+      </>
+    );
   }
 
   if (error) {
@@ -147,98 +166,6 @@ function Events() {
     <>
       <Header></Header>
       <SearchBar onChange={handleSearchChange} />
-
-      {isRep && (
-        <>
-          <Link
-            to={`${location.pathname}/makeEvent`}
-            state={{ collegeId: collegeId, collegeUrl }}
-            className="flex justify-center items-center mt-2 p-2 dark:bg-zinc-600 bg-slate-100 text-black dark:text-white rounded-md border-1 border-black dark:border-white w-full"
-          >
-            <p className="m-1">Create an Event</p>
-            <i className="fa-solid fa-plus"></i>
-          </Link>
-
-          {/* <Dialog>
-            <DialogTrigger asChild>
-              <Button variant="outline">Create an Event</Button>
-            </DialogTrigger>
-            <DialogContent className="sm:max-w-full">
-              <DialogHeader>
-                <DialogTitle>Create an Event</DialogTitle>
-                <DialogDescription>
-                  Create a new event for your university here. Click save when
-                  you're done.
-                </DialogDescription>
-              </DialogHeader>
-              <div className="grid gap-4 py-4">
-                <div className="grid grid-cols-4 items-center gap-4">
-                  <Label htmlFor="eventName" className="text-right">
-                    Name
-                  </Label>
-                  <Input
-                    className="col-span-3"
-                    type="text"
-                    id="eventName"
-                    value={eventName}
-                    onChange={(e) => setEventName(e.target.value)}
-                    required
-                    placeholder="Event Name"
-                  />
-                </div>
-                <div className="grid grid-cols-4 items-center gap-4">
-                  <Label htmlFor="eventName" className="text-right">
-                    Date
-                  </Label>
-                  
-                  <Popover>
-                    <PopoverTrigger asChild>
-                      <Button
-                        variant={"outline"}
-                        className={cn(
-                          "w-[240px] justify-start text-left font-normal",
-                          !eventDate && "text-muted-foreground"
-                        )}
-                      >
-                        <CalendarIcon />
-                        {eventDate ? format(eventDate, "PPP") : <span>Pick a date</span>}
-                      </Button>
-                    </PopoverTrigger>
-                    <PopoverContent className="w-auto p-0" align="start">
-                      <Calendar
-                        mode="single"
-                        selected={eventDate}
-                        onSelect={setEventDate}
-                        initialFocus
-                      />
-                    </PopoverContent>
-                  </Popover>
-
-
-                  <Input
-                    className="col-span-3"
-                    type="date"
-                    id="eventDate"
-                    value={eventDate}
-                    onChange={(e) => setEventDate(e.target.value)}
-                    required
-                    placeholder="Event Date"
-                  />
-                </div>
-                <div className="grid grid-cols-4 items-center gap-4">
-                  <Label htmlFor="eventName" className="text-right">
-                    Time
-                  </Label>
-                  <Input className="col-span-3" type="time" id="eventTime" value={eventTime} onChange={(e) => setEventTime(e.target.value)} required placeholder="Event Date" />
-                </div>
-              </div>
-              <DialogFooter>
-                <Button type="submit">Save changes</Button>
-              </DialogFooter>
-            </DialogContent>
-          </Dialog> */}
-        </>
-      )}
 
       <div className="grid grid-cols-1 md:grid-cols-3 mt-4 gap-2">
         {events.map((event) => {

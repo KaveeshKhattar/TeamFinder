@@ -4,6 +4,7 @@ import { useLocation, useNavigate } from "react-router-dom";
 import axios from "axios";
 import { Input } from "../../../components/ui/input";
 import { Button } from "../../../components/ui/button";
+import { BASE_URL } from "../../../config";
 
 function EditEvents() {
 
@@ -22,7 +23,7 @@ function EditEvents() {
       try {
         console.log("calling..");
         const response = await axios.put(
-          `https://teamfinder-production.up.railway.app/api/events/event/${event.id}`, null, 
+          `${BASE_URL}/api/events/event/${event.id}`, null, 
           {
             params: {
               eventName: eventName,

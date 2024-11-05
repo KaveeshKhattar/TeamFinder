@@ -8,6 +8,7 @@ import TeamsList from "./TeamsList";
 import IndividualList from "./IndividualList";
 import SearchBar from "../../core/components/SearchBar";
 import { Button } from "../../../components/ui/button";
+import { BASE_URL } from "../../../config";
 
 function Teams() {
   const [teams, setTeams] = useState<Team[]>([]);
@@ -27,7 +28,7 @@ function Teams() {
     const token = localStorage.getItem("token");
     try {
       const response = await axios.get(
-        `https://teamfinder-production.up.railway.app/api/events/${eventId}/InterestedIndividuals`,
+        `${BASE_URL}/api/events/${eventId}/InterestedIndividuals`,
         {
           headers: {
             Authorization: `Bearer ${token}`,
@@ -54,7 +55,7 @@ function Teams() {
     try {
       // Fetch user profile to get userId
       const profileResponse = await axios.get(
-        "https://teamfinder-production.up.railway.app/users/profile",
+        `${BASE_URL}/users/profile`,
         {
           headers: {
             Authorization: `Bearer ${token}`,
@@ -78,7 +79,7 @@ function Teams() {
     try {
       // Fetch user profile to get userId
       const response = await axios.get(
-        "https://teamfinder-production.up.railway.app/api/isPartOfAny",
+        `${BASE_URL}/api/isPartOfAny`,
         {
           params: {
             eventId: eventId,
@@ -110,7 +111,7 @@ function Teams() {
     const token = localStorage.getItem("token");
     try {
       const response = await axios.get(
-        `https://teamfinder-production.up.railway.app/api/events/${eventId}/teams`,
+        `${BASE_URL}/api/events/${eventId}/teams`,
         {
           headers: {
             Authorization: `Bearer ${token}`,
@@ -163,7 +164,7 @@ function Teams() {
   const handleClickInterested = async () => {
     const token = localStorage.getItem("token");
     try {
-      const response = await axios.get("https://teamfinder-production.up.railway.app/users/profile", {
+      const response = await axios.get(`${BASE_URL}/users/profile`, {
         headers: {
           Authorization: `Bearer ${token}`,
         },
@@ -178,7 +179,7 @@ function Teams() {
 
     try {
       const response = await axios.post(
-        "https://teamfinder-production.up.railway.app/api/events/InterestedIndividual",
+        `${BASE_URL}/api/events/InterestedIndividual`,
         {
           userId: userId,
           eventId: eventId,
@@ -217,7 +218,7 @@ function Teams() {
 
     try {
       const response = await axios.delete(
-        "https://teamfinder-production.up.railway.app/api/events/InterestedIndividual",
+        `${BASE_URL}/api/events/InterestedIndividual`,
         {
           params: {
             userID: userId,
@@ -242,7 +243,7 @@ function Teams() {
     const token = localStorage.getItem("token");
     let isUserInterestedUserId = 0;
     try {
-      const response = await axios.get("https://teamfinder-production.up.railway.app/users/profile", {
+      const response = await axios.get(`${BASE_URL}/users/profile`, {
         headers: {
           Authorization: `Bearer ${token}`,
         },
@@ -256,7 +257,7 @@ function Teams() {
     }
     try {
       const response = await axios.get(
-        "https://teamfinder-production.up.railway.app/api/events/isUserInterestedAlready",
+        `${BASE_URL}/api/events/isUserInterestedAlready`,
         {
           params: {
             userId: isUserInterestedUserId,

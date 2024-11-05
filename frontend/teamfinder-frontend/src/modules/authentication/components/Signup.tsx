@@ -5,6 +5,7 @@ import Header from "../../landingPage/components/Header";
 import { Input } from "../../../components/ui/input";
 import { Button } from "../../../components/ui/button";
 import { ReloadIcon } from "@radix-ui/react-icons";
+import { BASE_URL } from '../../../../src/config';
 
 function Signup() {
   const [firstName, setFirstName] = useState("");
@@ -28,7 +29,7 @@ function Signup() {
 
     try {
       setLoading(true);
-      const response = await axios.post("https://teamfinder-production.up.railway.app/auth/signup", {
+      const response = await axios.post(`${BASE_URL}/auth/signup`, {
         role,
         firstName,
         lastName,
