@@ -5,17 +5,19 @@ import Header from "../../landingPage/components/Header";
 import { useAuth } from "../../core/hooks/useAuth";
 import { Input } from "../../../components/ui/input";
 import { Button } from "../../../components/ui/button";
+import { ReloadIcon } from "@radix-ui/react-icons";
 
 function Login() {
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
     const [error, setError] = useState<string>("");
+    const [loading, setLoading] = useState<boolean>(false);
     const navigate = useNavigate();
     const { signIn } = useAuth();
 
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
-
+        setLoading(true);
         try {
             const response = await axios.post(
                 "https://teamfinder-wpal.onrender.com/auth/login",
@@ -72,7 +74,16 @@ function Login() {
                             }
                             required
                         />
-                        <Button>Submit</Button>
+                        {
+                            loading ? 
+                            <Button disabled>
+                                <ReloadIcon className="mr-2 h-4 w-4 animate-spin" /> Please wait
+                            </Button>
+                            :
+                            <Button>
+                                Submit
+                            </Button>
+                        }                        
                     </div>
                     {error && <p style={{ color: "red" }}>{error}</p>}
                 </form>
