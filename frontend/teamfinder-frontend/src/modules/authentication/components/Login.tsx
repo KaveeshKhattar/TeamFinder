@@ -86,7 +86,7 @@ function Login() {
                                 </Button>
                         }
                     </div>
-                    {error && <p style={{ color: "red" }}>{error}</p>}
+                    {error && <p className="text-red-500 mt-2">{error}</p>}
                 </form>
                 <p className="md:text-xl">
                     Don't have an account? Sign up{" "}

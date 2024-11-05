@@ -3,6 +3,8 @@ import Header from "../../landingPage/components/Header";
 import axios from "axios";
 import { useNavigate } from 'react-router-dom';
 import { useState } from "react";
+import { Button } from "../../../components/ui/button";
+import { Input } from "../../../components/ui/input";
 
 function Verification() {
     const location = useLocation();
@@ -31,8 +33,10 @@ function Verification() {
         <Header></Header>
             <form className="flex flex-col min-h-screen" onSubmit={handleSubmit}>
                 <p className="text-2xl m-2">Verification code has been sent to: <span className="font-bold text-blue-500">{email}</span></p>
-                <input type="text" value={verificationCode} onChange={(e) => setVerificationCode(e.target.value)} className="m-2 p-2" placeholder="Enter Verification Code"/>
-                <button><input type="submit" className="m-2"/></button>
+                <Input type="text" value={verificationCode} onChange={(e) => setVerificationCode(e.target.value)} className="mb-2 " placeholder="Enter Verification Code"/>
+                <Button>
+                    Submit
+                </Button>
             </form>
         </>
     )

@@ -5,7 +5,6 @@ import Header from "../../landingPage/components/Header";
 import { Input } from "../../../components/ui/input";
 import { Button } from "../../../components/ui/button";
 import { ReloadIcon } from "@radix-ui/react-icons";
-import Error from "../../core/components/Error";
 
 function Signup() {
   const [firstName, setFirstName] = useState("");
@@ -16,35 +15,42 @@ function Signup() {
   const [role, setRole] = useState("");
 
   const [loading, setLoading] = useState<boolean | null>(null);
+  const [error, setError] = useState("");
   const navigate = useNavigate();
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
     if (password !== confirmPassword) {
-      <Error message="Passwords don't match" />
-      console.log("Passwords don't match");
+      setError("Passwords don't match");
       return;
     }
 
     try {
       setLoading(true);
       const response = await axios.post("https://teamfinder-wpal.onrender.com/auth/signup", {
+        role,
         firstName,
         lastName,
         email,
-        confirmPassword,
-        role,
+        password
       });
-
-      if (response.status === 200) {
+      const { success, message } = response.data;
+      if (success) {
         setLoading(false);
         navigate("/verification", { state: { email } });
+      } else {
+        setError("Incorrect Credentials: " + message);
       }
-    } catch (err) {
-      <Error message="Sign Up Failed" />
-      console.log(err, "Sign up failed!");
+    } catch (error) {
+      if (axios.isAxiosError(error)) {
+        const errorMessage = error.response?.data?.message || "An error occurred.";
+        setError(errorMessage);
+      } else {
+        setError("An unexpected error occured.");
+      }
     }
+    setLoading(false);
   };
 
   return (
@@ -124,6 +130,7 @@ function Signup() {
             ) : (
               <Button>Submit</Button>
             )}
+            {error && <p className="text-red-500 mt-2">{error}</p>}
           </div>
 
           <p className="md:text-xl">

@@ -27,6 +27,12 @@ public class GlobalExceptionHandler {
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
     }
 
+    @ExceptionHandler(NotRepresentativeException.class)
+    public ResponseEntity<ApiResponse<String>> handleNotRepresentative(NotRepresentativeException ex) {
+        ApiResponse<String> response = new ApiResponse<>(false, null, ex.getMessage());
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
+    }
+
     @ExceptionHandler(AccountNotVerifiedException.class)
     public ResponseEntity<ApiResponse<String>> handleAccountNotVerifiedException(AccountNotVerifiedException ex) {
         ApiResponse<String> response = new ApiResponse<>(false, null, ex.getMessage());

@@ -15,6 +15,7 @@ import com.project.TeamFinder.dto.VerifyUserDTO;
 import com.project.TeamFinder.exception.AccountNotVerifiedException;
 import com.project.TeamFinder.exception.IncorrectEmailException;
 import com.project.TeamFinder.exception.IncorrectPasswordException;
+import com.project.TeamFinder.exception.NotRepresentativeException;
 import com.project.TeamFinder.model.Role;
 import com.project.TeamFinder.model.User;
 import com.project.TeamFinder.repository.CollegeRepresentativeRepository;
@@ -60,7 +61,7 @@ public class AuthenticationService {
         if (user.getRole() == Role.REPRESENTATIVE) {
             Boolean repAllowed = collegeRepresentativeRepository.existsByEmail(input.getEmail());
             if (!repAllowed) {
-                throw new RuntimeException("You ain't no rep!");
+                throw new NotRepresentativeException("You are not approved as a representative.");
             }
         }
 
@@ -105,8 +106,6 @@ public class AuthenticationService {
         if (!isPasswordMatch) {
             throw new IncorrectPasswordException("Password is incorrect.");
         }
-
-        System.out.println("User password: ");
         authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(
                         input.getEmail(),

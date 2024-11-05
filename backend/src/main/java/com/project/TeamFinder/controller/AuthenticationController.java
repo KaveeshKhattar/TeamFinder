@@ -35,11 +35,12 @@ public class AuthenticationController {
         this.authenticationService = authenticationService;        
     }
 
-    @PostMapping("/signup")
-    public ResponseEntity<User> register(@RequestBody RegisterUserDTO registerUserDto) {
+    @PostMapping(value="/signup", produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<ApiResponse<User>> signup(@RequestBody RegisterUserDTO registerUserDto) {
         System.out.println("*** Sign up got called ***");
         User registeredUser = authenticationService.signup(registerUserDto);
-        return ResponseEntity.ok(registeredUser);
+        ApiResponse<User> response = new ApiResponse<User>(true, registeredUser, "Sign up Successful");
+        return ResponseEntity.ok(response);
     }
 
     @PostMapping(value="/login", produces = MediaType.APPLICATION_JSON_VALUE)
