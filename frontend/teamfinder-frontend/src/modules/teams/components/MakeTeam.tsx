@@ -61,8 +61,8 @@ function MakeTeam() {
       );
 
       if (response.status === 200) {
-        const { firstName, lastName, email, id } = response.data;
-        const member: Member = { firstName, lastName, email, id };
+        const { firstName, lastName, email, id, pictureURL } = response.data;
+        const member: Member = { firstName, lastName, email, id, pictureURL };
 
         setMembers([member])
       }
