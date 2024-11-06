@@ -20,6 +20,7 @@ function Login() {
         e.preventDefault();
         setLoading(true);
         try {
+            console.log("Sending req", `${BASE_URL}/auth/login`)
             const response = await axios.post(
                 `${BASE_URL}/auth/login`,
                 {
@@ -27,7 +28,7 @@ function Login() {
                     password,
                 }
             );
-
+            console.log("Over req")
             const { success, message, data } = response.data;
             if (success) {
                 localStorage.setItem("token", data.token);

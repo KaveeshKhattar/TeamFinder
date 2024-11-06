@@ -19,6 +19,7 @@ export interface Member {
     firstName: string;
     lastName: string;
     email: string;
+    pictureURL: string
 }
 
 export interface User {
