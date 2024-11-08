@@ -340,6 +340,7 @@ function Teams() {
           placeholder="Find teams by your friends' name"
           onChange={handleSearchChange}
         />
+        <div className="grid grid-cols-1 md:grid-cols-2 mt-4 gap-2">
         <div className="flex flex-col justify-center items-center space-x-4 min-h-screen">
           <div className="flex flex-col justify-center items-center">
             <Card className="w-[300px] mt-16">
@@ -429,6 +430,7 @@ function Teams() {
               </CardFooter>
             </Card>
           </div>
+        </div>
         </div>
       </>
     )
