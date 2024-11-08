@@ -195,7 +195,7 @@ function Events() {
           const formattedTime = `${time}`;
 
           return (
-            <div key={event.id}>
+            <div key={event.id} className="min-h-screen">
               <Card className="w-full">
                 <CardHeader>
                   <img src={pic} alt="" className="rounded-md" />

@@ -468,7 +468,7 @@ function Teams() {
     <>
       <Header></Header>
 
-      <div className="flex flex-col ">
+      <div className="flex flex-col">
         <SearchBar
           placeholder="Find teams by your friends' name"
           onChange={handleSearchChange}
@@ -517,7 +517,7 @@ function Teams() {
       </div>
 
       {isViewingTeams ? (
-        <div>
+        <div className="min-h-screen">
           <TeamsList
             teams={teams}
             location={`${location.pathname}`}

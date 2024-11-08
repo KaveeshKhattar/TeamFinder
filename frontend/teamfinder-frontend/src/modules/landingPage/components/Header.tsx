@@ -101,7 +101,7 @@ function Header() {
         {
           token ?
           <div className="flex flex-col gap-5 w-full p-2 mt-16">
-          <Link to="/logout">
+          <Link to="/">
             <Button variant="destructive" className="w-full">
               Sign Out
             </Button>
