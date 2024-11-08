@@ -339,18 +339,18 @@ function Teams() {
         <SearchBar onChange={handleSearchChange} />
         { }
 
-        <div className="grid grid-cols-1 md:grid-cols-4 mt-4 gap-4">
-          <Card className="w-[300px] mt-16">
+        <div className="grid grid-cols-1 md:grid-cols-2">
+          <Card className="w-[650px]">
             <CardHeader>
-              <Skeleton className="mt-8 h-4 w-[200px]" />
+              <Skeleton className="mt-8 h-6 w-[300px]" />
             </CardHeader>
             <CardContent>
               <div className="flex flex-col text-left text-lg">
                 <div className="flex items-center space-x-4">
                   <Skeleton className="h-12 w-12 rounded-full" />
                   <div className="space-y-2">
-                    <Skeleton className="h-4 w-[150px]" />
-                    <Skeleton className="h-4 w-[150px]" />
+                    <Skeleton className="h-4 w-[250px]" />
+                    <Skeleton className="h-4 w-[250px]" />
                   </div>
                 </div>
               </div>
@@ -358,8 +358,8 @@ function Teams() {
                 <div className="flex items-center space-x-4">
                   <Skeleton className="h-12 w-12 rounded-full" />
                   <div className="space-y-2">
-                    <Skeleton className="h-4 w-[150px]" />
-                    <Skeleton className="h-4 w-[150px]" />
+                    <Skeleton className="h-4 w-[250px]" />
+                    <Skeleton className="h-4 w-[250px]" />
                   </div>
                 </div>
               </div>
@@ -369,17 +369,17 @@ function Teams() {
             </CardFooter>
           </Card>
 
-          <Card className="w-[300px] mt-16">
+          <Card className="w-[650px]">
             <CardHeader>
-              <Skeleton className="mt-8 h-4 w-[200px]" />
+              <Skeleton className="mt-8 h-6 w-[300px]" />
             </CardHeader>
             <CardContent>
               <div className="flex flex-col text-left text-lg">
                 <div className="flex items-center space-x-4">
                   <Skeleton className="h-12 w-12 rounded-full" />
                   <div className="space-y-2">
-                    <Skeleton className="h-4 w-[150px]" />
-                    <Skeleton className="h-4 w-[150px]" />
+                    <Skeleton className="h-4 w-[250px]" />
+                    <Skeleton className="h-4 w-[250px]" />
                   </div>
                 </div>
               </div>
@@ -387,8 +387,8 @@ function Teams() {
                 <div className="flex items-center space-x-4">
                   <Skeleton className="h-12 w-12 rounded-full" />
                   <div className="space-y-2">
-                    <Skeleton className="h-4 w-[150px]" />
-                    <Skeleton className="h-4 w-[150px]" />
+                    <Skeleton className="h-4 w-[250px]" />
+                    <Skeleton className="h-4 w-[250px]" />
                   </div>
                 </div>
               </div>
@@ -398,17 +398,17 @@ function Teams() {
             </CardFooter>
           </Card>
 
-          <Card className="w-[300px] mt-16">
+          <Card className="w-[650px] mt-4">
             <CardHeader>
-              <Skeleton className="mt-8 h-4 w-[200px]" />
+              <Skeleton className="mt-8 h-6 w-[300px]" />
             </CardHeader>
             <CardContent>
               <div className="flex flex-col text-left text-lg">
                 <div className="flex items-center space-x-4">
                   <Skeleton className="h-12 w-12 rounded-full" />
                   <div className="space-y-2">
-                    <Skeleton className="h-4 w-[150px]" />
-                    <Skeleton className="h-4 w-[150px]" />
+                    <Skeleton className="h-4 w-[250px]" />
+                    <Skeleton className="h-4 w-[250px]" />
                   </div>
                 </div>
               </div>
@@ -416,8 +416,8 @@ function Teams() {
                 <div className="flex items-center space-x-4">
                   <Skeleton className="h-12 w-12 rounded-full" />
                   <div className="space-y-2">
-                    <Skeleton className="h-4 w-[150px]" />
-                    <Skeleton className="h-4 w-[150px]" />
+                    <Skeleton className="h-4 w-[250px]" />
+                    <Skeleton className="h-4 w-[250px]" />
                   </div>
                 </div>
               </div>
@@ -427,17 +427,17 @@ function Teams() {
             </CardFooter>
           </Card>
 
-          <Card className="w-[300px] mt-16">
+          <Card className="w-[650px] mt-4">
             <CardHeader>
-              <Skeleton className="mt-8 h-4 w-[200px]" />
+              <Skeleton className="mt-8 h-6 w-[300px]" />
             </CardHeader>
             <CardContent>
               <div className="flex flex-col text-left text-lg">
                 <div className="flex items-center space-x-4">
                   <Skeleton className="h-12 w-12 rounded-full" />
                   <div className="space-y-2">
-                    <Skeleton className="h-4 w-[150px]" />
-                    <Skeleton className="h-4 w-[150px]" />
+                    <Skeleton className="h-4 w-[250px]" />
+                    <Skeleton className="h-4 w-[250px]" />
                   </div>
                 </div>
               </div>
@@ -445,8 +445,8 @@ function Teams() {
                 <div className="flex items-center space-x-4">
                   <Skeleton className="h-12 w-12 rounded-full" />
                   <div className="space-y-2">
-                    <Skeleton className="h-4 w-[150px]" />
-                    <Skeleton className="h-4 w-[150px]" />
+                    <Skeleton className="h-4 w-[250px]" />
+                    <Skeleton className="h-4 w-[250px]" />
                   </div>
                 </div>
               </div>

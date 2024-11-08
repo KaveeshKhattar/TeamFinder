@@ -222,7 +222,8 @@ function Profile() {
             <Skeleton className="h-4 w-[200px]" />
           </div>
           <div className="mt-16">
-            <Card className="w-[300px]">
+            <div className="grid grid-cols-1 md:grid-cols-2 mt-4 gap-2 h-full">
+            <Card className="w-[300px] mt-4">
               <CardHeader>
                 <Skeleton className="mt-8 h-4 w-[200px]" />
               </CardHeader>
@@ -279,6 +280,8 @@ function Profile() {
                 
               </CardFooter>
             </Card>
+
+            </div>
           </div>
         </div>
       </>
