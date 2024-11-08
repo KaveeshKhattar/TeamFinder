@@ -311,7 +311,7 @@ function Profile() {
                   <Button>
                     <div className="">
                       <p>Upload Profile Picture</p>
-                      <p className="text-sm text-muted-foreground">Max Size: 5MB</p>
+                      <p className="text-sm text-muted-foreground">Max Size: 2MB</p>
                     </div>
                   </Button>
 

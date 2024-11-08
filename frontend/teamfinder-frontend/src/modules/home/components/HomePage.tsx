@@ -51,6 +51,7 @@ function HomePage() {
     const value = e.target.value;
 
     if (value) {
+      console.log("Value: ", value);
       try {
         const responseFilteredColleges = await axios.get(
           `${BASE_URL}/api/colleges/searchColleges`,
@@ -59,7 +60,13 @@ function HomePage() {
             headers: { Authorization: `Bearer ${token}` },
           }
         );
-        setColleges([...responseFilteredColleges.data]);
+        
+        if ([...responseFilteredColleges.data].length === 0) {
+          setColleges([]);
+          setError("No results for search query");
+        } else {
+          setColleges([...responseFilteredColleges.data]); 
+        }        
       } catch (error) {
         console.error("Error searching colleges:", error);
       }
@@ -91,7 +98,13 @@ function HomePage() {
   }
 
   if (error) {
-    return <div className="min-h-screen">Error: {error}</div>; // Show an error message
+    return (
+      <>
+      <Header></Header>
+      <SearchBar onChange={handleSearchChange} />
+      <div className="flex justify-center items-center min-h-screen">{error}</div>; // Show an error message
+      </>
+    )    
   }
 
   return (

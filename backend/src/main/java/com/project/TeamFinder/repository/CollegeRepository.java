@@ -10,6 +10,5 @@ import com.project.TeamFinder.model.College;
 @Repository
 public interface CollegeRepository extends JpaRepository<College, Long>{
 
-    Long findIdByName(String name);
     List<College> findByNameContainingIgnoreCase(String name);
 }

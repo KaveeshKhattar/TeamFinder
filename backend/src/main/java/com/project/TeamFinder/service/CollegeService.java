@@ -8,8 +8,6 @@ import org.springframework.stereotype.Service;
 import com.project.TeamFinder.model.College;
 import com.project.TeamFinder.repository.CollegeRepository;
 
-import jakarta.transaction.Transactional;
-
 @Service
 public class CollegeService {
 
@@ -21,10 +19,6 @@ public class CollegeService {
     
     public List<College> findAllColleges() {
         return collegeRepository.findAll();
-    }
-
-    public Long findIdByCollegeName(String name) {
-        return collegeRepository.findIdByName(name);
     }
 
     public List<College> searchColleges(String name) {

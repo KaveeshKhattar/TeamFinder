@@ -17,34 +17,37 @@ const TeamCard: React.FC<TeamCardProps> = ({ team, location }) => {
   const teamUrl = formattedName.toLowerCase();
 
   return (
-    <div
-      key={team.teamId}
-      className="flex flex-col mb-2"
-    >
-      <Card className="w-full">
+    <div className="flex flex-col mb-2 h-full">
+      <Card className="flex flex-col h-full">
         <CardHeader>
           <CardTitle className="text-left text-2xl">{team.teamName}</CardTitle>
           <CardDescription className="text-left">Team</CardDescription>
         </CardHeader>
-        <CardContent>
+        <CardContent className="flex-grow">
           <p className="text-left text-muted-foreground mb-2">Members</p>
           <div className="flex flex-col text-left text-lg">
             <ul>
               {team.members.map((member) => (
                 <div key={member.id}>
                   <div className="flex items-center">
-                    <img src={member.pictureURL ? member.pictureURL : teamMemberPic} alt="" className="w-14 rounded-full mr-2 mt-2"/>
+                    <img
+                      src={member.pictureURL ? member.pictureURL : teamMemberPic}
+                      alt=""
+                      className="w-14 rounded-full mr-2 mt-2"
+                    />
                     <div className="flex flex-col">
-                      <p className="text-sm font-bold">{member.firstName} {member.lastName}</p>
+                      <p className="text-sm font-bold">
+                        {member.firstName} {member.lastName}
+                      </p>
                       <p className="text-muted-foreground text-sm">{member.email}</p>
-                    </div>                    
+                    </div>
                   </div>
                 </div>
               ))}
             </ul>
           </div>
         </CardContent>
-        <CardFooter>
+        <CardFooter className="mt-auto">
           <Link to={`${location}/${teamUrl}`} state={{ team: team }} className="w-full">
             <Button className="w-full" variant="secondary">
               View Details

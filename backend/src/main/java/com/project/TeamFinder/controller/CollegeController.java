@@ -40,7 +40,6 @@ public class CollegeController {
     @GetMapping("/colleges")
     public ResponseEntity<List<College>> allColleges() {
         List<College> colleges = collegeService.findAllColleges();
-        System.out.println("Colleges: " + colleges);
         return ResponseEntity.ok(colleges);
     }
 

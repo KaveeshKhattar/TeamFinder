@@ -11,6 +11,7 @@ import { jwtDecode } from "jwt-decode";
 import { Input } from "../../../components/ui/input";
 import { createClient } from "@supabase/supabase-js";
 import { BASE_URL } from "../../../config";
+import { Button } from "../../../components/ui/button";
 
 const ASPECT_RATIO = 1;
 const MIN_DIMENSION = 150;
@@ -225,7 +226,7 @@ const ImageCropper: React.FC<ImageCropperProps> = ({
       </label>
       {error && <p className="text-red-500">{error}</p>}
       {imageSrc && (
-        <div className="flex flex-col items-center">
+        <div className="flex flex-col justify-center items-center">
           <ReactCrop
             crop={crop}
             onChange={(percentCrop) => setCrop(percentCrop)}
@@ -242,12 +243,15 @@ const ImageCropper: React.FC<ImageCropperProps> = ({
               onLoad={onImageLoad}
             />
           </ReactCrop>
-          <button
-            className="mt-4 p-2 bg-blue-500 text-white"
-            onClick={handleSetProfilePicture}
-          >
-            Set as Profile Picture
-          </button>
+          <div className="flex flex-col justify-center items-center">
+            <Button
+              className="mt-4 p-2 text-white mb-2"
+              onClick={handleSetProfilePicture}
+            >
+              Set as Profile Picture
+            </Button>
+            <p className="text-sm text-center text-muted-foreground">It will take 10-15mins for the changes to reflect (Need money to host)</p>
+          </div>
         </div>
       )}
 

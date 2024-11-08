@@ -4,7 +4,7 @@ import { Event } from "../../../types";
 import Header from "../../landingPage/components/Header";
 import SearchBar from "../../core/components/SearchBar";
 import { Link, useNavigate } from "react-router-dom";
-import pic from "../assets/halloween.jpg";
+import pic from "../assets/event.jpeg";
 import {
   Card,
   CardContent,
@@ -37,9 +37,10 @@ function AllEvents() {
         },
       }
     );
-    if (fetchAllEventsResponse.status === 200) {
+    if (fetchAllEventsResponse.status === 200) {      
       setAllEvents(fetchAllEventsResponse.data);
     }
+    setLoading(false);
   }, [navigate]);
 
   useEffect(() => {

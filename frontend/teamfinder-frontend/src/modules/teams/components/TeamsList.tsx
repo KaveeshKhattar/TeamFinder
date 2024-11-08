@@ -7,7 +7,7 @@ const TeamsList: React.FC<TeamsListProps> = ({ teams }) => {
     const location = useLocation();
     
     return (
-        <div>
+        <div className="grid grid-cols-1 md:grid-cols-2 mt-4 gap-2 h-full">
             {teams.length > 0 ? teams.map((team) => (
                 <TeamCard key={team.teamId} team={team} location={`${location.pathname}`} />
             )) : (

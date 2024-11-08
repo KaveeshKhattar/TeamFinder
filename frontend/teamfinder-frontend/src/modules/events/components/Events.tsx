@@ -4,7 +4,7 @@ import axios from "axios";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { Event } from "../../../types";
 import SearchBar from "../../core/components/SearchBar";
-import pic from "../assets/halloween.jpg";
+import pic from "../assets/event.jpeg";
 import {
   Card,
   CardContent,
