@@ -76,7 +76,7 @@ function EditEvents() {
     <>
     <Header></Header>
 
-    <div className="flex flex-col">
+    <div className="flex flex-col min-h-screen">
     <Input className="mb-2" type="text" id="eventName" value={eventName} onChange={(e) => setEventName(e.target.value)} required placeholder="Event Name" />
     
     <Input className="mb-2"type="date" id="eventDate" value={eventDate} onChange={(e) => setEventDate(e.target.value)} required placeholder="Event Date" />

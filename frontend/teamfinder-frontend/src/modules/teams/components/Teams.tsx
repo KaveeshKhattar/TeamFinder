@@ -300,7 +300,7 @@ function Teams() {
           placeholder="Find teams by your friends' name"
           onChange={handleSearchChange}
         />
-        <div className="space-y-8">
+        <div className="grid grid-cols-1 md:grid-cols-2 space-y-8">
           <div className="flex space-x-4 mt-8 min-h-screen">
             <Skeleton className="h-12 w-12 rounded-full" />
             <div className="space-y-2">
@@ -324,9 +324,6 @@ function Teams() {
               <Skeleton className="h-4 w-[200px]" />
             </div>
           </div>
-
-
-
         </div>
       </>
     )
