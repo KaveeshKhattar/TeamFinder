@@ -33,6 +33,7 @@ function HomePage() {
           Authorization: `Bearer ${token}`,
         },
       });
+      console.log("response: ", response);
       setColleges([...response.data]);
     } catch (err) {
       setError("Error fetching colleges");
@@ -77,18 +78,15 @@ function HomePage() {
 
  
 
-if (loading) {
-  return (
-    <>
-      <Header />
-      <SearchBar
-        placeholder="Find teams by your friends' name"
-        onChange={handleSearchChange}
-      />
-      <div className="grid grid-cols-1 md:grid-cols-2 mt-4 gap-2">
-      <div className="flex flex-col justify-center items-center space-x-4 min-h-screen">
-        <div className="flex flex-col justify-center items-center">
-        <Card className="flex flex-col items-center justify-center">
+  if (loading) {
+    return (
+      <div className="min-h-screen">
+        <Header></Header>
+        <SearchBar onChange={handleSearchChange} />
+        { }
+
+        <div className="grid grid-cols-1 md:grid-cols-4 mt-4 gap-4">
+          <Card className="flex flex-col items-center justify-center">
             <Skeleton className="h-[125px] w-[80%] m-4 rounded-md" />
             <Skeleton className=" h-4 w-[80%] mt-2" />
             <Skeleton className="h-4 w-[80%] mt-2 mb-8" />
@@ -113,10 +111,8 @@ if (loading) {
           </Card>
         </div>
       </div>
-      </div>
-    </>
-  )
-}
+    );
+  }
 
   if (error) {
     return (

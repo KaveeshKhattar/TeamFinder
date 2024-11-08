@@ -406,7 +406,8 @@ function Profile() {
             </div>
 
             {(
-              <div className="w-full mt-4">
+              <div className="grid grid-cols-1 md:grid-cols-2 border-2 border-black">
+                <div className="w-full mt-4">
                 {profileTeams.length > 0 ? (
                   profileTeams.map((profileTeam) => (
                     <TeamCard
@@ -418,6 +419,7 @@ function Profile() {
                 ) : (
                   <p className="text-lg text-gray-500">No teams created.</p>
                 )}
+              </div>
               </div>
             )}
           </div>

@@ -325,7 +325,7 @@ function Teams() {
             </div>
           </div>
 
-          
+
 
         </div>
       </>
@@ -334,106 +334,130 @@ function Teams() {
 
   if (loading) {
     return (
-      <>
-        <Header />
-        <SearchBar
-          placeholder="Find teams by your friends' name"
-          onChange={handleSearchChange}
-        />
-        <div className="grid grid-cols-1 md:grid-cols-2 mt-4 gap-2">
-        <div className="flex flex-col justify-center items-center space-x-4 min-h-screen">
-          <div className="flex flex-col justify-center items-center">
-            <Card className="w-[300px] mt-16">
-              <CardHeader>
-                <Skeleton className="mt-8 h-4 w-[200px]" />
-              </CardHeader>
-              <CardContent>
-                <div className="flex flex-col text-left text-lg">
-                  <div className="flex items-center space-x-4">
-                    <Skeleton className="h-12 w-12 rounded-full" />
-                    <div className="space-y-2">
-                      <Skeleton className="h-4 w-[150px]" />
-                      <Skeleton className="h-4 w-[150px]" />
-                    </div>
-                  </div>
-                </div>
-                <div className="flex flex-col text-left text-lg mt-2">
-                  <div className="flex items-center space-x-4">
-                    <Skeleton className="h-12 w-12 rounded-full" />
-                    <div className="space-y-2">
-                      <Skeleton className="h-4 w-[150px]" />
-                      <Skeleton className="h-4 w-[150px]" />
-                    </div>
-                  </div>
-                </div>
-              </CardContent>
-              <CardFooter>
+      <div className="min-h-screen">
+        <Header></Header>
+        <SearchBar onChange={handleSearchChange} />
+        { }
 
-              </CardFooter>
-            </Card>
-
-            <Card className="w-[300px] mt-4">
-              <CardHeader>
-                <Skeleton className="mt-8 h-4 w-[200px]" />
-              </CardHeader>
-              <CardContent>
-                <div className="flex flex-col text-left text-lg">
-                  <div className="flex items-center space-x-4">
-                    <Skeleton className="h-12 w-12 rounded-full" />
-                    <div className="space-y-2">
-                      <Skeleton className="h-4 w-[150px]" />
-                      <Skeleton className="h-4 w-[150px]" />
-                    </div>
+        <div className="grid grid-cols-1 md:grid-cols-4 mt-4 gap-4">
+          <Card className="w-[300px] mt-16">
+            <CardHeader>
+              <Skeleton className="mt-8 h-4 w-[200px]" />
+            </CardHeader>
+            <CardContent>
+              <div className="flex flex-col text-left text-lg">
+                <div className="flex items-center space-x-4">
+                  <Skeleton className="h-12 w-12 rounded-full" />
+                  <div className="space-y-2">
+                    <Skeleton className="h-4 w-[150px]" />
+                    <Skeleton className="h-4 w-[150px]" />
                   </div>
                 </div>
-                <div className="flex flex-col text-left text-lg mt-2">
-                  <div className="flex items-center space-x-4">
-                    <Skeleton className="h-12 w-12 rounded-full" />
-                    <div className="space-y-2">
-                      <Skeleton className="h-4 w-[150px]" />
-                      <Skeleton className="h-4 w-[150px]" />
-                    </div>
+              </div>
+              <div className="flex flex-col text-left text-lg mt-2">
+                <div className="flex items-center space-x-4">
+                  <Skeleton className="h-12 w-12 rounded-full" />
+                  <div className="space-y-2">
+                    <Skeleton className="h-4 w-[150px]" />
+                    <Skeleton className="h-4 w-[150px]" />
                   </div>
                 </div>
-              </CardContent>
-              <CardFooter>
+              </div>
+            </CardContent>
+            <CardFooter>
 
-              </CardFooter>
-            </Card>
+            </CardFooter>
+          </Card>
 
-            <Card className="w-[300px] mt-4">
-              <CardHeader>
-                <Skeleton className="mt-8 h-4 w-[200px]" />
-              </CardHeader>
-              <CardContent>
-                <div className="flex flex-col text-left text-lg">
-                  <div className="flex items-center space-x-4">
-                    <Skeleton className="h-12 w-12 rounded-full" />
-                    <div className="space-y-2">
-                      <Skeleton className="h-4 w-[150px]" />
-                      <Skeleton className="h-4 w-[150px]" />
-                    </div>
+          <Card className="w-[300px] mt-16">
+            <CardHeader>
+              <Skeleton className="mt-8 h-4 w-[200px]" />
+            </CardHeader>
+            <CardContent>
+              <div className="flex flex-col text-left text-lg">
+                <div className="flex items-center space-x-4">
+                  <Skeleton className="h-12 w-12 rounded-full" />
+                  <div className="space-y-2">
+                    <Skeleton className="h-4 w-[150px]" />
+                    <Skeleton className="h-4 w-[150px]" />
                   </div>
                 </div>
-                <div className="flex flex-col text-left text-lg mt-2">
-                  <div className="flex items-center space-x-4">
-                    <Skeleton className="h-12 w-12 rounded-full" />
-                    <div className="space-y-2">
-                      <Skeleton className="h-4 w-[150px]" />
-                      <Skeleton className="h-4 w-[150px]" />
-                    </div>
+              </div>
+              <div className="flex flex-col text-left text-lg mt-2">
+                <div className="flex items-center space-x-4">
+                  <Skeleton className="h-12 w-12 rounded-full" />
+                  <div className="space-y-2">
+                    <Skeleton className="h-4 w-[150px]" />
+                    <Skeleton className="h-4 w-[150px]" />
                   </div>
                 </div>
-              </CardContent>
-              <CardFooter>
+              </div>
+            </CardContent>
+            <CardFooter>
 
-              </CardFooter>
-            </Card>
-          </div>
+            </CardFooter>
+          </Card>
+
+          <Card className="w-[300px] mt-16">
+            <CardHeader>
+              <Skeleton className="mt-8 h-4 w-[200px]" />
+            </CardHeader>
+            <CardContent>
+              <div className="flex flex-col text-left text-lg">
+                <div className="flex items-center space-x-4">
+                  <Skeleton className="h-12 w-12 rounded-full" />
+                  <div className="space-y-2">
+                    <Skeleton className="h-4 w-[150px]" />
+                    <Skeleton className="h-4 w-[150px]" />
+                  </div>
+                </div>
+              </div>
+              <div className="flex flex-col text-left text-lg mt-2">
+                <div className="flex items-center space-x-4">
+                  <Skeleton className="h-12 w-12 rounded-full" />
+                  <div className="space-y-2">
+                    <Skeleton className="h-4 w-[150px]" />
+                    <Skeleton className="h-4 w-[150px]" />
+                  </div>
+                </div>
+              </div>
+            </CardContent>
+            <CardFooter>
+
+            </CardFooter>
+          </Card>
+
+          <Card className="w-[300px] mt-16">
+            <CardHeader>
+              <Skeleton className="mt-8 h-4 w-[200px]" />
+            </CardHeader>
+            <CardContent>
+              <div className="flex flex-col text-left text-lg">
+                <div className="flex items-center space-x-4">
+                  <Skeleton className="h-12 w-12 rounded-full" />
+                  <div className="space-y-2">
+                    <Skeleton className="h-4 w-[150px]" />
+                    <Skeleton className="h-4 w-[150px]" />
+                  </div>
+                </div>
+              </div>
+              <div className="flex flex-col text-left text-lg mt-2">
+                <div className="flex items-center space-x-4">
+                  <Skeleton className="h-12 w-12 rounded-full" />
+                  <div className="space-y-2">
+                    <Skeleton className="h-4 w-[150px]" />
+                    <Skeleton className="h-4 w-[150px]" />
+                  </div>
+                </div>
+              </div>
+            </CardContent>
+            <CardFooter>
+
+            </CardFooter>
+          </Card>
         </div>
-        </div>
-      </>
-    )
+      </div>
+    );
   }
 
   if (error) {
@@ -493,7 +517,7 @@ function Teams() {
       </div>
 
       {isViewingTeams ? (
-        <div className="grid grid-cols-1 md:grid-cols-3 mt-4 gap-2">
+        <div>
           <TeamsList
             teams={teams}
             location={`${location.pathname}`}
