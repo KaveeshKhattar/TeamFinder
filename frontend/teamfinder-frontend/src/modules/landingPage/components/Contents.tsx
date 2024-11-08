@@ -1,52 +1,145 @@
-// import { Link } from 'react-router-dom';
-// import sectionOneImg from '../assets/join-a-team.webp'
-// import sectionTwoImg from '../assets/team-searching-ideas-boy-search-flat-people-finding-inspiration-brain-storming-group-holding-magnifying-glass-look-around-utter-vector-concept_53562-17385.avif'
-// import sectionThreeImg from '../assets/img.jpg'
-// import sectionFourImage from '../assets/friends-meeting-cartoon-vector-22493228.jpg'
-// import { Button } from "../../../components/ui/button";
-
-import { Link } from "react-router-dom";
-import { Button } from "../../../components/ui/button";
+import { motion, AnimatePresence } from 'framer-motion';
+import { useEffect, useState } from "react";
+import { Link } from 'react-router-dom';
+import { Button } from '../../../components/ui/button';
 
 function Contents() {
+
+    const [showFirst, setShowFirst] = useState(false);
+    const [showSecond, setShowSecond] = useState(false);
+    const [showThird, setShowThird] = useState(false);
+    const [showFourth, setShowFourth] = useState(false);
+    const [showFifth, setShowFifth] = useState(false);
+    const [showSixth, setShowSixth] = useState(false);
+
+    useEffect(() => {
+        // Delay before showing the first element
+        const firstTimer = setTimeout(() => {
+            setShowFirst(true);
+
+            // Hide the first element after it has been visible for 3 seconds
+            // const hideFirstTimer = setTimeout(() => {
+            //     setShowFirst(false);
+            // }, 3000); // Duration the first element is visible
+
+            // return () => clearTimeout(hideFirstTimer);
+        }, 300); // Initial delay before showing the first element
+
+        // Delay before showing the second element
+        const secondTimer = setTimeout(() => {
+            setShowSecond(true);
+        }, 1500); // Delay to show the second element after the first element
+
+        const thirdTimer = setTimeout(() => {
+            setShowThird(true);
+        }, 3500); // Delay to show the second element after the first element
+
+        const fourthTimer = setTimeout(() => {
+            setShowFourth(true);
+        }, 5500); // Delay to show the second element after the first element
+
+        const fifthTimer = setTimeout(() => {
+            setShowFifth(true);
+        }, 7500); // Delay to show the second element after the first element
+
+        const sixthTimer = setTimeout(() => {
+            setShowSixth(true);
+        }, 9500); // Delay to show the second element after the first element
+
+        return () => {
+            clearTimeout(firstTimer);
+            clearTimeout(secondTimer);
+            clearTimeout(thirdTimer);
+            clearTimeout(fourthTimer);
+            clearTimeout(fifthTimer);
+            clearTimeout(sixthTimer);
+        };
+    }, []);
+
     return (
+        <div className='flex flex-col justify-start items-center min-h-screen space-y-8'>
+            <AnimatePresence>
+                {showFirst && (
+                    <motion.div
+                        initial={{ opacity: 0, y: 50 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        transition={{ duration: 0.5 }}
+                        style={{ fontSize: '48px', fontWeight: 'bold', marginBottom: '20px' }}
+                        key="first"
+                    >
+                        Welcome to TeamFinder
+                    </motion.div>
+                )}
+            </AnimatePresence>
 
-        <>
-        <div className='grid m-4 min-h-screen max-w-xl'>
+            <AnimatePresence>
+                {showSecond && (
+                    <motion.div
+                        initial={{ opacity: 0, y: 50 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        transition={{ duration: 1 }}
+                        style={{ fontSize: '18px', fontWeight: 'bold' }}
+                        key="second"
+                        className='mt-8'
+                    >
+                        For people looking to join teams
+                    </motion.div>
+                )}
+                {showThird && (
+                    <motion.div
+                        initial={{ opacity: 0, y: 50 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        transition={{ duration: 1 }}
+                        style={{ fontSize: '18px', fontWeight: 'bold' }}
+                        key="third"
+                    >
+                        For teams looking to add members
+                    </motion.div>
+                )}
 
-            <div className='p-4 flex flex-col items-center'>
-                <p className="text-3xl mb-4">For people looking to <span className="font-bold">join teams,</span></p>
-                {/* <img src={sectionTwoImg} alt=""/> */}
-            </div>
+                {showFourth && (
+                    <motion.div
+                        initial={{ opacity: 0, y: 50 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        transition={{ duration: 1 }}
+                        style={{ fontSize: '18px', fontWeight: 'bold' }}
+                        key="fourth"
+                    >
+                        Find events across multiple colleges
+                    </motion.div>
+                )}
 
-            <div className='p-4 flex flex-col items-center'>
-                <p className="text-3xl mb-4">For teams looking to <span className="font-bold">add members,</span></p>
-                {/* <img src={sectionOneImg} alt=""/> */}
-            </div>
+                {showFifth && (
+                    <motion.div
+                        initial={{ opacity: 0, y: 50 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        transition={{ duration: 1 }}
+                        style={{ fontSize: '18px', fontWeight: 'bold' }}
+                        key="fifth"
+                    >
+                        Meet new people, or reconnect with old acquaintances
+                    </motion.div>
+                )}
 
-            <div className='p-4 flex flex-col items-center'>
-                <p className="text-3xl mb-4">Find events across <span className="font-bold">multiple colleges,</span></p>
-                {/* <img src={sectionThreeImg} alt="" className='rounded-md'/> */}
-            </div>
-
-            <div className='p-4 flex flex-col items-center'>
-                <p className="text-3xl mb-4"> Meet new people, or reconnect with <span className="font-bold">old acquaintances</span></p>
-                {/* <img src={sectionFourImage} alt="" className='rounded-md'/> */}
-            </div>
-
+                {showSixth && (
+                    <>
+                        <motion.div
+                            initial={{ opacity: 0, y: 50 }}
+                            animate={{ opacity: 1, y: 0 }}
+                            transition={{ duration: 1 }}
+                            key="sixth"
+                        >
+                            <p className='text-md font-bold'>Compete and win big!</p>
+                            <p className='text-sm'>Don't let your friend group limit you.</p>
+                            <Link to="/login">
+                                <Button className='m-2'>Join Now</Button>
+                            </Link>
+                        </motion.div>
+                    </>
+                )}
+            </AnimatePresence>
         </div>
-
-            <div className='flex flex-col items-center justify-center w-full'>
-                <p className="text-3xl"> Compete and<span className="font-bold"> win big!</span></p>
-                <p className='text-md mb-4'>Don't let your friend group limit you.</p>
-                {/* <button className='text-2xl p-2 m-2 border-2 animate-flicker' onClick={handleLoginClick}>Join Now</button> */}
-                <Link to="/login">
-                    <Button className='m-2'>Join Now</Button>
-                </Link>
-                
-            </div>
-            </>
-    )
+    );
 }
 
 export default Contents;
