@@ -250,7 +250,7 @@ const ImageCropper: React.FC<ImageCropperProps> = ({
             >
               Set as Profile Picture
             </Button>
-            <p className="text-sm text-center text-muted-foreground">It will take 10-15mins for the changes to reflect (Need money to host)</p>
+            <p className="text-sm text-center text-muted-foreground">It will take 10-15 mins for the changes to reflect (Need money to host on a non-free tier)</p>
           </div>
         </div>
       )}

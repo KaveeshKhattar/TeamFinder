@@ -11,6 +11,7 @@ function Header() {
   const toggleMenu = () => {
     setIsOpen(!isOpen);
   };
+  const token = localStorage.getItem("token");
 
   return (
     <nav className="flex mb-4 items-center w-full">
@@ -71,13 +72,13 @@ function Header() {
 
         {/* Right Section with Profile/Sign In Links */}
         <div className="flex items-center space-x-2">
-        <ModeToggle />
+          <ModeToggle />
           {isSignedIn ? (
             <>
-            <Link to="/profile">
-              <Button>Profile</Button>
-            </Link>
-            {/* <ModeToggle /> */}
+              <Link to="/profile">
+                <Button>Profile</Button>
+              </Link>
+              {/* <ModeToggle /> */}
             </>
           ) : (
             <div className="hidden md:flex space-x-2">
@@ -94,17 +95,15 @@ function Header() {
 
       {/* Mobile Hamburger Menu */}
       <div
-        className={`md:hidden fixed mr-2 top-0 left-0 w-full h-screen bg-white dark:bg-black flex flex-col items-center justify-center space-y-8 transition-transform duration-300 ${
-          isOpen ? "translate-x-0" : "-translate-x-full"
-        }`}
+        className={`md:hidden fixed mr-2 top-0 left-0 w-full h-screen bg-white dark:bg-black flex flex-col items-center justify-center space-y-8 transition-transform duration-300 ${isOpen ? "translate-x-0" : "-translate-x-full"
+          }`}
       >
-        <div className="flex flex-col gap-5 w-full p-2 mt-16">
-          <Link to="/signup">
-            <Button className="w-full">Sign Up</Button>
-          </Link>
-          <Link to="/login">
-            <Button variant="secondary" className="w-full">
-              Login
+        {
+          token ?
+          <div className="flex flex-col gap-5 w-full p-2 mt-16">
+          <Link to="/logout">
+            <Button variant="destructive" className="w-full">
+              Sign Out
             </Button>
           </Link>
           <Link to="/">
@@ -128,6 +127,41 @@ function Header() {
             </Button>
           </Link>
         </div>
+            :
+            <div className="flex flex-col gap-5 w-full p-2 mt-16">
+              <Link to="/signup">
+                <Button className="w-full">Sign Up</Button>
+              </Link>
+              <Link to="/login">
+                <Button variant="secondary" className="w-full">
+                  Sign In
+                </Button>
+              </Link>
+              <Link to="/">
+                <Button variant="outline" className="w-full">
+                  Home
+                </Button>
+              </Link>
+              <Link to="/colleges">
+                <Button variant="outline" className="w-full">
+                  Colleges
+                </Button>
+              </Link>
+              <Link to="/events">
+                <Button variant="outline" className="w-full">
+                  Events
+                </Button>
+              </Link>
+              <Link to="/teams">
+                <Button variant="outline" className="w-full">
+                  Teams
+                </Button>
+              </Link>
+            </div>
+            
+
+        }
+
       </div>
     </nav>
   );

@@ -17,8 +17,8 @@ const TeamCard: React.FC<TeamCardProps> = ({ team, location }) => {
   const teamUrl = formattedName.toLowerCase();
 
   return (
-    <div className="flex flex-col mb-2 h-full">
-      <Card className="flex flex-col h-full">
+    <>
+      <Card className="">
         <CardHeader>
           <CardTitle className="text-left text-2xl">{team.teamName}</CardTitle>
           <CardDescription className="text-left">Team</CardDescription>
@@ -55,7 +55,7 @@ const TeamCard: React.FC<TeamCardProps> = ({ team, location }) => {
           </Link>
         </CardFooter>
       </Card>
-    </div>
+      </>
   );
 };
 
