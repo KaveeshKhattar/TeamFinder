@@ -81,8 +81,8 @@ function ProfileTeam() {
 
     try {
       const response = await axios.put(
-        `https://teamfinder-frontend.vercel.app//api/teams/team/${team.teamId}`,  // API endpoint with team ID in the URL
-        updatedTeam,  // This is the request body (team object)
+        `${BASE_URL}/api/teams/${team.teamId}`,
+        updatedTeam, 
         {
           headers: {
             Authorization: `Bearer ${token}`  // Authorization headers
@@ -108,7 +108,7 @@ function ProfileTeam() {
     try {
       // Make the DELETE request to the API endpoint with the team ID in the URL
       const response = await axios.delete(
-        `${BASE_URL}/api/teams/team/${team.teamId}`,  // API endpoint with team ID
+        `${BASE_URL}/api/teams/${team.teamId}`,  // API endpoint with team ID
         {
           headers: {
             Authorization: `Bearer ${token}`,  // Authorization headers

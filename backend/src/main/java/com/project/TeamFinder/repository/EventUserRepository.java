@@ -17,24 +17,21 @@ import java.util.List;
 public interface EventUserRepository extends CrudRepository<EventUser, Long>{
     List<EventUser> findByEventId(Long eventId);
 
-    @Modifying
-    @Transactional
-    @Query(value = "INSERT INTO events_interested_users (event_id, user_id) VALUES (:eventId, :id)", nativeQuery = true)
-    void addInterestedUserToEvent(@Param("eventId") Long eventId, @Param("id") Long id);
-
     @Query(value = "SELECT CASE WHEN COUNT(*) > 0 THEN true ELSE false END FROM events_interested_users WHERE event_id = :eventId AND user_id = :id", nativeQuery = true)
     boolean existsByEventIdAndId(@Param("eventId") Long eventId, @Param("id") Long id);
-
-    
-    @Modifying
-    @Transactional
-    @Query(value = "DELETE FROM events_interested_users WHERE event_id = :eventId AND user_id = :id", nativeQuery = true)
-    void removeInterestedUserFromEvent(@Param("eventId") Long eventId, @Param("id") Long id);
 
     @Modifying
     @Transactional
     @Query(value = "SELECT user_id FROM events_interested_users WHERE event_id = :eventId", nativeQuery = true)
     List<Long> findUserIdsOfAlreadyInterestedUsers(@Param("eventId") Long eventId);
 
+    @Modifying
+    @Transactional
+    @Query(value = "INSERT INTO events_interested_users (event_id, user_id) VALUES (:eventId, :id)", nativeQuery = true)
+    void addInterestedUserToEvent(@Param("eventId") Long eventId, @Param("id") Long id);
 
+    @Modifying
+    @Transactional
+    @Query(value = "DELETE FROM events_interested_users WHERE event_id = :eventId AND user_id = :id", nativeQuery = true)
+    void removeInterestedUserFromEvent(@Param("eventId") Long eventId, @Param("id") Long id);
 }

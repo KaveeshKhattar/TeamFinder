@@ -1,7 +1,7 @@
 import { useCallback, useEffect, useState } from "react";
 import Header from "../../landingPage/components/Header";
 import axios from "axios";
-import { Link, useNavigate } from "react-router-dom";
+import { Link } from "react-router-dom";
 import collegeImg from "../assets/college.jpg";
 import { College } from "../../../types";
 import SearchBar from "../../core/components/SearchBar";
@@ -12,26 +12,19 @@ import {
   CardHeader,
   CardTitle,
 } from "../../../components/ui/card";
-import { Skeleton } from "../../../components/ui/skeleton";
 import { BASE_URL } from "../../../config";
+import LoadingColleges from "./LoadingColleges";
 
 function HomePage() {
   const [colleges, setColleges] = useState<College[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
-  const navigate = useNavigate();
 
   const fetchColleges = useCallback(async () => {
     try {
-      const token = localStorage.getItem("token");
-      if (token == null) {
-        navigate("/login");
-      }
+
       setLoading(true);
       const response = await axios.get(`${BASE_URL}/api/colleges`, {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
       });
       console.log("response: ", response);
       setColleges([...response.data]);
@@ -41,11 +34,7 @@ function HomePage() {
     } finally {
       setLoading(false);
     }
-  }, [navigate]);
-
-  useEffect(() => {
-    fetchColleges();
-  }, [fetchColleges]);
+  }, []);
 
   const handleSearchChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const token = localStorage.getItem("token");
@@ -61,13 +50,13 @@ function HomePage() {
             headers: { Authorization: `Bearer ${token}` },
           }
         );
-        
+
         if ([...responseFilteredColleges.data].length === 0) {
           setColleges([]);
           setError("No results for search query");
         } else {
-          setColleges([...responseFilteredColleges.data]); 
-        }        
+          setColleges([...responseFilteredColleges.data]);
+        }
       } catch (error) {
         console.error("Error searching colleges:", error);
       }
@@ -76,52 +65,29 @@ function HomePage() {
     }
   };
 
- 
+  useEffect(() => {
+    fetchColleges();
+  }, [fetchColleges]);
 
   if (loading) {
     return (
       <div className="min-h-screen">
         <Header></Header>
         <SearchBar onChange={handleSearchChange} />
-        { }
-
-        <div className="grid grid-cols-1 md:grid-cols-4 mt-4 gap-4">
-          <Card className="flex flex-col items-center justify-center">
-            <Skeleton className="h-[125px] w-[80%] m-4 rounded-md" />
-            <Skeleton className=" h-4 w-[80%] mt-2" />
-            <Skeleton className="h-4 w-[80%] mt-2 mb-8" />
-          </Card>
-
-          <Card className="flex flex-col items-center justify-center">
-            <Skeleton className="h-[125px] w-[80%] m-4 rounded-md" />
-            <Skeleton className=" h-4 w-[80%] mt-2" />
-            <Skeleton className="h-4 w-[80%] mt-2 mb-8" />
-          </Card>
-
-          <Card className="flex flex-col items-center justify-center">
-            <Skeleton className="h-[125px] w-[80%] m-4 rounded-md" />
-            <Skeleton className=" h-4 w-[80%] mt-2" />
-            <Skeleton className="h-4 w-[80%] mt-2 mb-8" />
-          </Card>
-
-          <Card className="flex flex-col items-center justify-center">
-            <Skeleton className="h-[125px] w-[80%] m-4 rounded-md" />
-            <Skeleton className=" h-4 w-[80%] mt-2" />
-            <Skeleton className="h-4 w-[80%] mt-2 mb-8" />
-          </Card>
-        </div>
+        <LoadingColleges />
       </div>
+
     );
   }
 
   if (error) {
     return (
       <>
-      <Header></Header>
-      <SearchBar onChange={handleSearchChange} />
-      <div className="flex justify-center items-center min-h-screen">{error}</div>; // Show an error message
+        <Header></Header>
+        <SearchBar onChange={handleSearchChange} />
+        <div className="flex justify-center items-center min-h-screen">{error}</div>; // Show an error message
       </>
-    )    
+    )
   }
 
   return (
@@ -129,7 +95,7 @@ function HomePage() {
       <Header></Header>
       <SearchBar onChange={handleSearchChange} />
 
-      <div className="grid grid-cols-1 md:grid-cols-4 mt-4 gap-2 min-h-screen">
+      <div className="grid grid-cols-1 md:grid-cols-3 mt-4 gap-2 min-h-screen">
         {colleges.map((college) => {
           const formattedName = college.name.replace(/\s+/g, "-");
           const collegeUrl = formattedName.toLowerCase();

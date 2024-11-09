@@ -1,6 +1,5 @@
 package com.project.TeamFinder.service;
 
-
 import java.util.List;
 
 import org.springframework.stereotype.Service;
@@ -16,14 +15,13 @@ public class CollegeService {
     public CollegeService(CollegeRepository collegeRepository) {
         this.collegeRepository = collegeRepository;
     }
-    
+
     public List<College> findAllColleges() {
         return collegeRepository.findAll();
     }
 
     public List<College> searchColleges(String name) {
         List<College> searchResults = collegeRepository.findByNameContainingIgnoreCase(name);
-
         return searchResults;
     }
 

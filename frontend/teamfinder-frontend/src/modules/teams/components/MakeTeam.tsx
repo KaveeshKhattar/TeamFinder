@@ -93,7 +93,7 @@ function MakeTeam() {
     const team = { name: teamName, eventId: eventID };
     try {
       const response = await axios.post(
-        `${BASE_URL}/api/teams/team`,  // API endpoint
+        `${BASE_URL}/api/teams/createTeam`,  // API endpoint
         team,  // This is the request body (team object)
         {
           headers: {

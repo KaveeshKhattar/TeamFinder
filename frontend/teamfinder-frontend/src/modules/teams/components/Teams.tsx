@@ -25,23 +25,16 @@ function Teams() {
   const [individuals, setIndividuals] = useState<Member[]>([]);
   const [userId, setUserId] = useState(0);
   const [isPartOfAnyTeam, setIsPartOfAnyTeam] = useState(false);
-  const [IsUserInterestedAlreadyBool, setIsUserInterestedAlreadyBool] =
-    useState<boolean>();
+  const [IsUserInterestedAlreadyBool, setIsUserInterestedAlreadyBool] = useState<boolean>();
 
   const location = useLocation();
   const { eventId, eventURL } = location.state;
 
   const fetchInterestedIndividuals = async () => {
-    const token = localStorage.getItem("token");
     try {
       setLoadingIndividuals(true);
       const response = await axios.get(
         `${BASE_URL}/api/events/${eventId}/InterestedIndividuals`,
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        }
       );
 
       setIndividuals([...response.data]);
@@ -59,10 +52,9 @@ function Teams() {
   };
 
   const fetchUserAndCheckMembership = useCallback(async () => {
-    const token = localStorage.getItem("token");
+    const token = localStorage.getItem("token")
 
     try {
-      // Fetch user profile to get userId
       const profileResponse = await axios.get(
         `${BASE_URL}/users/profile`,
         {
@@ -74,9 +66,7 @@ function Teams() {
 
       if (profileResponse.status === 200) {
         const fetchedUserId = profileResponse.data.id;
-        setUserId(fetchedUserId); // Update userId state
-        console.log("USER ID:", fetchedUserId);
-        // Now check team membership using the fetched userId
+        setUserId(fetchedUserId);
       }
     } catch (error) {
       console.error(
@@ -113,19 +103,20 @@ function Teams() {
 
   // useEffect to run the combined function
   useEffect(() => {
-    fetchUserAndCheckMembership(); // Call the combined function on component mount
-  }, [fetchUserAndCheckMembership]);
+    const token = localStorage.getItem("token");
+    if (!token) {
+      setIsPartOfAnyTeam(true);
+    } else {
+      fetchUserAndCheckMembership(); // Call the combined function on component mount
+    }
+    console.log("isPart: ", isPartOfAnyTeam);
+  }, [fetchUserAndCheckMembership, isPartOfAnyTeam]);
 
   const fetchTeams = useCallback(async () => {
-    const token = localStorage.getItem("token");
+
     try {
       const response = await axios.get(
         `${BASE_URL}/api/events/${eventId}/teams`,
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        }
       );
       setTeams([...response.data]);
     } catch (err) {
@@ -144,21 +135,17 @@ function Teams() {
     const value = e.target.value;
     if (value) {
       try {
-        // Filter the fetched teams based on the search term
-        console.log("Trying...", teams, value);
         const filteredTeams = teams.filter((team) =>
           team.members.some(
             (member) =>
-              member.fullName.toLowerCase().includes(value.toLowerCase()) // Use value instead of searchTerm
+              member.fullName.toLowerCase().includes(value.toLowerCase())
           )
         );
         console.log("Filtered teams:", filteredTeams);
 
         setTeams(filteredTeams);
       } catch (error) {
-        console.error("Error fetching teams:", error);
-        // Optionally, you can handle errors here
-        // e.g., show an error message or fallback to default state
+        setError("Error filtering teams: " + error);
       }
     } else {
       await fetchTeams();
@@ -171,6 +158,7 @@ function Teams() {
   };
 
   const handleClickInterested = async () => {
+
     const token = localStorage.getItem("token");
     try {
       const response = await axios.get(`${BASE_URL}/users/profile`, {
@@ -188,10 +176,9 @@ function Teams() {
 
     try {
       const response = await axios.post(
-        `${BASE_URL}/api/events/InterestedIndividual`,
+        `${BASE_URL}/api/events/:eventId/InterestedIndividual`,
         {
           userId: userId,
-          eventId: eventId,
         },
         {
           headers: {
@@ -212,7 +199,7 @@ function Teams() {
   const handleClickNotInterested = async () => {
     const token = localStorage.getItem("token");
     try {
-      const response = await axios.get("https://teamfinder-frontend.vercel.app//users/profile", {
+      const response = await axios.get("https://teamfinder-frontend.vercel.app/users/profile", {
         headers: {
           Authorization: `Bearer ${token}`,
         },
@@ -227,11 +214,10 @@ function Teams() {
 
     try {
       const response = await axios.delete(
-        `${BASE_URL}/api/events/InterestedIndividual`,
+        `${BASE_URL}/api/events/:eventId/InterestedIndividual`,
         {
           params: {
             userID: userId,
-            eventId: eventId,
           },
           headers: {
             Authorization: `Bearer ${token}`, // Replace 'token' with your actual token variable
@@ -289,7 +275,12 @@ function Teams() {
   }, [eventId]);
 
   useEffect(() => {
-    isUserInterestedAlready();
+    const token = localStorage.getItem("token");
+    if (!token) {
+      setIsUserInterestedAlreadyBool(false);
+    } else {
+      isUserInterestedAlready(); // Call the combined function on component mount
+    }
   }, [isUserInterestedAlready]);
 
   if (loadingIndividuals) {
@@ -478,21 +469,28 @@ function Teams() {
         <div>
           {isViewingTeams ? (
             <>
-              <Link
-                to={`${location.pathname}/makeTeam`}
-                state={{ eventID: eventId, eventUrl: eventURL }}
-              >
-                <Button
-                  onClick={handleViewingTeamsOrIndividuals}
-                  className={`${isPartOfAnyTeam ? "pointer-events-none bg-gray-400" : ""
-                    } mt-2 w-full`}
+              {isPartOfAnyTeam ? (
+                <div className="pointer-events-none">
+                  <Button className="bg-gray-400 mt-2 w-full" disabled>
+                    <p className="m-1">Make a Team</p>
+                    <i className="fa-solid fa-plus"></i>
+                  </Button>
+                </div>
+              ) : (
+                <Link
+                  to={`${location.pathname}/makeTeam`}
+                  state={{ eventID: eventId, eventUrl: eventURL }}
                 >
-                  <p className="m-1">Make a Team</p>
-                  <i className="fa-solid fa-plus"></i>
-                </Button>
-              </Link>
+                  <Button
+                    onClick={handleViewingTeamsOrIndividuals}
+                    className="mt-2 w-full"
+                  >
+                    <p className="m-1">Make a Team</p>
+                    <i className="fa-solid fa-plus"></i>
+                  </Button>
+                </Link>
+              )}
             </>
-
           ) : (
             <div className="flex mt-2 justify-between">
               <button
@@ -511,6 +509,7 @@ function Teams() {
             </div>
           )}
         </div>
+
       </div>
 
       {isViewingTeams ? (

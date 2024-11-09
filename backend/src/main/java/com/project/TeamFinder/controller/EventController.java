@@ -7,12 +7,13 @@ import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.project.TeamFinder.dto.EventRequestDTO;
+import com.project.TeamFinder.dto.EventUserDTO;
 import com.project.TeamFinder.model.Event;
+import com.project.TeamFinder.projection.UserProjection;
 import com.project.TeamFinder.service.EventService;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -30,15 +31,29 @@ public class EventController {
         this.eventService = eventService;
     }
 
+    @GetMapping("/events")
+    public List<Event> getAllEvents() {
+        System.out.println("Called here");
+        return eventService.getAllEvents();
+    }
+
     @GetMapping("/{collegeId}/events")
     public ResponseEntity<List<Event>> getEvents(@PathVariable Long collegeId) {
         List<Event> events = eventService.getEventsByCollegeId(collegeId);
         return ResponseEntity.ok(events);
     }
 
-    @GetMapping("/college/events/searchEvents")
-    public List<Event> getFilteredEvents(@RequestHeader("Authorization") String token,
-            @RequestParam String eventSearchTerm, @RequestParam Long collegeId) {
+    @GetMapping("/events/searchAllEvents")
+    public List<Event> getSearchAllEvents(
+            @RequestParam String eventSearchTerm) {
+        List<Event> globalEvents = eventService.getAllEvents();
+        List<Event> filteredEvents = eventService.searchEvents(globalEvents, eventSearchTerm);
+        return filteredEvents;
+    }
+
+    @GetMapping("/{collegeId}/searchEvents")
+    public List<Event> getFilteredEvents(
+            @RequestParam String eventSearchTerm, @PathVariable Long collegeId) {
 
         List<Event> globalEvents = eventService.getEventsByCollegeId(collegeId);
         List<Event> filteredEvents = eventService.searchEvents(globalEvents, eventSearchTerm);
@@ -49,19 +64,6 @@ public class EventController {
     public Boolean isUserInterestedAlready(@RequestParam Long userId, @RequestParam Long eventId) {
         List<Long> userIdsWhoAreAlreadyInterested = eventService.getUserIdsWhoAreInterestedAlready(eventId);
         return userIdsWhoAreAlreadyInterested.contains(userId);
-    }
-
-    @GetMapping("/events")
-    public List<Event> getAllEvents() {
-        return eventService.getAllEvents();
-    }
-
-    @GetMapping("/events/searchAllEvents")
-    public List<Event> getSearchAllEvents(@RequestHeader("Authorization") String token,
-            @RequestParam String eventSearchTerm) {
-        List<Event> globalEvents = eventService.getAllEvents();
-        List<Event> filteredEvents = eventService.searchEvents(globalEvents, eventSearchTerm);
-        return filteredEvents;
     }
 
     @PostMapping("events/createEvent")
@@ -77,23 +79,41 @@ public class EventController {
         return eventRequest.getEventName();
     }
 
-    @DeleteMapping("/events/event/{eventId}")
-    public void deleteEvent(@RequestHeader("Authorization") String token, @PathVariable Long eventId) {
-        eventService.deleteEvent(eventId);
-    }
-
     @PutMapping("events/event/{eventId}")
-    public void updateEvent(@RequestHeader("Authorization") String token,
-    @PathVariable("eventId") Long eventId,
+    public void updateEvent(
+            @PathVariable("eventId") Long eventId,
             @RequestParam("eventName") String eventName,
             @RequestParam("eventDate") String eventDate,
             @RequestParam("eventTime") String eventTime,
             @RequestParam("teamSize") Long teamSize,
             @RequestParam("eventVenue") String eventVenue,
             @RequestParam("eventDescription") String eventDescription) {
-        
+
         System.out.println("Updating..." + eventName + " " + eventDate);
         eventService.updateEvent(eventId, eventName, eventDate, eventTime, teamSize, eventVenue, eventDescription);
+    }
+
+    @DeleteMapping("/events/event/{eventId}")
+    public void deleteEvent( @PathVariable Long eventId) {
+        eventService.deleteEvent(eventId);
+    }
+
+    @GetMapping("/events/{eventId}/InterestedIndividuals")
+    public List<UserProjection> getInterestedUsers(@PathVariable long eventId) {
+        List<UserProjection> interestedUsers = eventService.getInterestedUsers(eventId);
+        return interestedUsers;
+    }
+
+    @PostMapping("/events/{eventId}/InterestedIndividual")
+    public ResponseEntity<Long> postInterestedUser(@PathVariable long eventId, @RequestBody EventUserDTO request) {
+        eventService.addInterestedUser(eventId, request.getUserId());
+        return ResponseEntity.ok(request.getUserId());
+    }
+
+    @DeleteMapping("/events/{eventId}/InterestedIndividual")
+    public ResponseEntity<Long> dropInterestedUser(@PathVariable long eventId, @RequestParam Long userID) {
+        eventService.removeInterestedUser(eventId, userID);
+        return ResponseEntity.ok(userID);
     }
 
 }

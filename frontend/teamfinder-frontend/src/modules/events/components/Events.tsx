@@ -20,8 +20,8 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "../../../components/ui/dropdown-menu";
-import { Skeleton } from "../../../components/ui/skeleton";
 import { BASE_URL } from "../../../config";
+import LoadingColleges from "../../home/components/LoadingColleges";
 
 function Events() {
   const [events, setEvents] = useState<Event[]>([]);
@@ -37,14 +37,8 @@ function Events() {
   const fetchEvents = useCallback(async () => {
     setLoading(true);
     try {
-      const token = localStorage.getItem("token");
       const response = await axios.get(
         `${BASE_URL}/api/${collegeId}/events`,
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        }
       );
       setEvents([...response.data]);
     } catch (err) {
@@ -60,19 +54,14 @@ function Events() {
   }, [fetchEvents]);
 
   const handleSearchChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
-    const token = localStorage.getItem("token");
     const value = e.target.value;
 
     if (value) {
       const responseFilteredEvents = await axios.get(
-        `${BASE_URL}/api/college/events/searchEvents`,
+        `${BASE_URL}/api/${collegeId}/searchEvents`,
         {
           params: {
             eventSearchTerm: value,
-            collegeId: collegeId,
-          },
-          headers: {
-            Authorization: `Bearer ${token}`,
           },
         }
       );
@@ -90,14 +79,19 @@ function Events() {
         collegeId: collegeId,
       },
       headers: {
-        Authorization: `Bearer ${token}`,
-      },
+        Authorization: `Bearer ${token}`
+      }
     });
     setIsRep(response.data);
   }, [collegeId]);
 
   useEffect(() => {
-    checkIfRep();
+    const token = localStorage.getItem("token");
+    if (token) {
+      checkIfRep();
+    } else {
+      return;
+    }
   }, [checkIfRep]);
 
   const onEdit = (id: number) => {
@@ -139,28 +133,7 @@ function Events() {
       <>
         <Header></Header>
         <SearchBar onChange={handleSearchChange} />
-        { }
-        <div className="min-h-screen">
-        <div className="grid grid-cols-1 md:grid-cols-3 mt-4 gap-2">
-          <Card className="flex flex-col items-center justify-center">
-            <Skeleton className="h-[125px] w-[80%] m-4 rounded-md" />
-            <Skeleton className=" h-4 w-[80%] mt-2" />
-            <Skeleton className="h-4 w-[80%] mt-2 mb-8" />
-          </Card>
-
-          <Card className="flex flex-col items-center justify-center">
-            <Skeleton className="h-[125px] w-[80%] m-4 rounded-md" />
-            <Skeleton className=" h-4 w-[80%] mt-2" />
-            <Skeleton className="h-4 w-[80%] mt-2 mb-8" />
-          </Card>
-
-          <Card className="flex flex-col items-center justify-center">
-            <Skeleton className="h-[125px] w-[80%] m-4 rounded-md" />
-            <Skeleton className=" h-4 w-[80%] mt-2" />
-            <Skeleton className="h-4 w-[80%] mt-2 mb-8" />
-          </Card>
-        </div>
-        </div>
+        <LoadingColleges />
       </>
     );
   }

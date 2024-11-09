@@ -14,29 +14,22 @@ import jakarta.transaction.Transactional;
 
 @Repository
 public interface TeamMembersRepository extends CrudRepository<TeamMembers, Long> {
+    
     List<TeamMembers> findByTeamId(Long teamId);
     
     @Query(value = "SELECT team_id FROM team_members WHERE user_id = :userId", nativeQuery = true)
     List<Long> findTeamIdByUserId(@Param("userId") Long userId);
+
+    @Modifying
+    @Transactional
+    @Query(value = "INSERT INTO team_members (team_id, user_id) VALUES (:teamId, :userId)", nativeQuery = true)
+    void addUserToTeam(@Param("teamId") Long teamId, @Param("userId") Long userId); 
 
     @Query(value = "DELETE FROM team_members WHERE team_id = :id", nativeQuery = true)
     void deleteMembers(@Param("id") Long id);
 
     @Modifying
     @Transactional
-    @Query(value = "INSERT INTO team_members (team_id, user_id) VALUES (:teamId, :userId)", nativeQuery = true)
-    void addUserToTeam(@Param("teamId") Long teamId, @Param("userId") Long userId);
-
-    @Modifying
-    @Transactional
     @Query(value = "SELECT CASE WHEN COUNT(*) > 0 THEN true ELSE false END FROM team_members WHERE team_id = :teamId AND user_id = :userId", nativeQuery = true)
     boolean existsByTeamIdAndUserId(@Param("teamId") Long teamId, @Param("userId") Long userId);
-
-    // Optional: If you want to remove users by a list of user IDs
-    @Modifying
-    @Transactional
-    @Query(value = "DELETE FROM team_members WHERE team_id = ?1", nativeQuery = true)
-    void deleteUsersFromTeamByIds(Long teamId, List<Long> userIds);
-    
-    
 }

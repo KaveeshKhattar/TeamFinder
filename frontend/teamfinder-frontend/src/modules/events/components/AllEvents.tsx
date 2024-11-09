@@ -3,7 +3,7 @@ import { useCallback, useEffect, useState } from "react";
 import { Event } from "../../../types";
 import Header from "../../landingPage/components/Header";
 import SearchBar from "../../core/components/SearchBar";
-import { Link, useNavigate } from "react-router-dom";
+import { Link } from "react-router-dom";
 import pic from "../assets/event.jpeg";
 import {
   Card,
@@ -14,34 +14,26 @@ import {
   CardTitle,
 } from "../../../components/ui/card";
 import { Button } from "../../../components/ui/button";
-import { Skeleton } from "../../../components/ui/skeleton";
 import { BASE_URL } from "../../../config";
+import LoadingColleges from "../../home/components/LoadingColleges";
 
 function AllEvents() {
   const [allEvents, setAllEvents] = useState<Event[]>([]);
   const [loading, setLoading] = useState(true);
-  
-  const navigate = useNavigate();
 
   const fetchAllEvents = useCallback(async () => {
     setLoading(true);
-    const token = localStorage.getItem("token");
-    if (token == null) {
-      navigate("/login");
-    }
+    // if (token == null) {
+    //   navigate("/login");
+    // }
     const fetchAllEventsResponse = await axios.get(
       `${BASE_URL}/api/events`,
-      {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      }
     );
-    if (fetchAllEventsResponse.status === 200) {      
+    if (fetchAllEventsResponse.status === 200) {
       setAllEvents(fetchAllEventsResponse.data);
     }
     setLoading(false);
-  }, [navigate]);
+  }, []);
 
   useEffect(() => {
     fetchAllEvents();
@@ -75,27 +67,7 @@ function AllEvents() {
       <div className="min-h-screen">
         <Header></Header>
         <SearchBar onChange={handleSearchChange} />
-        { }
-
-        <div className="grid grid-cols-1 md:grid-cols-3 mt-4 gap-2">
-          <Card className="flex flex-col items-center justify-center">
-            <Skeleton className="h-[125px] w-[80%] m-4 rounded-md" />
-            <Skeleton className=" h-4 w-[80%] mt-2" />
-            <Skeleton className="h-4 w-[80%] mt-2 mb-8" />
-          </Card>
-
-          <Card className="flex flex-col items-center justify-center">
-            <Skeleton className="h-[125px] w-[80%] m-4 rounded-md" />
-            <Skeleton className=" h-4 w-[80%] mt-2" />
-            <Skeleton className="h-4 w-[80%] mt-2 mb-8" />
-          </Card>
-
-          <Card className="flex flex-col items-center justify-center">
-            <Skeleton className="h-[125px] w-[80%] m-4 rounded-md" />
-            <Skeleton className=" h-4 w-[80%] mt-2" />
-            <Skeleton className="h-4 w-[80%] mt-2 mb-8" />
-          </Card>
-        </div>
+        <LoadingColleges />
       </div>
     );
   }
@@ -166,9 +138,9 @@ function AllEvents() {
                         eventURL: `http://teamfinder-frontend.vercel.app/${location.pathname}/${eventUrl}`,
                       }}
                     >
-                    <Button>
+                      <Button>
                         View Event
-                    </Button>
+                      </Button>
                     </Link>
                   </CardFooter>
                 </Card>

@@ -10,7 +10,6 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.project.TeamFinder.dto.EventUserDTO;
 import com.project.TeamFinder.dto.TeamUserRequestDTO;
 import com.project.TeamFinder.dto.TeamWithMembersDTO;
 import com.project.TeamFinder.model.Team;
@@ -32,36 +31,59 @@ public class TeamController {
         this.teamService = teamService;
     }
 
+    @GetMapping("/teams")
+    public List<TeamWithMembersDTO> getAllTeams() {
+        return teamService.getAllTeams();
+    }
+
     @GetMapping("/events/{eventId}/teams")
     public ResponseEntity<List<TeamWithMembersDTO>> getTeams(@PathVariable long eventId) {
         List<TeamWithMembersDTO> teamsWithMembers = teamService.getAllTeamsWithMembers(eventId);
         return ResponseEntity.ok(teamsWithMembers);
     }
 
-    @GetMapping("/events/{eventId}/InterestedIndividuals")
-    public List<UserProjection> getInterestedUsers(@PathVariable long eventId) {
-        List<UserProjection> interestedUsers = teamService.getInterestedUsers(eventId);
-        return interestedUsers;
+    @GetMapping("/teams/searchAllTeams")
+    public List<TeamWithMembersDTO> searchTeams(@RequestHeader("Authorization") String token,
+            @RequestParam String teamSearchTerm) {
+        List<TeamWithMembersDTO> globalTeams = teamService.getAllTeams();
+        List<TeamWithMembersDTO> filteredTeams = teamService.searchTeams(globalTeams, teamSearchTerm);
+        return filteredTeams;
     }
 
-    @PostMapping("/events/InterestedIndividual")
-    public ResponseEntity<Long> postInterestedUser(@RequestBody EventUserDTO request) {
-        teamService.addInterestedUser(request.getEventId(), request.getUserId());
-        return ResponseEntity.ok(request.getUserId());
-    }
-
-    @DeleteMapping("/events/InterestedIndividual")
-    public ResponseEntity<Long> dropInterestedUser(@RequestParam Long userID, @RequestParam Long eventId) {
-        teamService.removeInterestedUser(eventId, userID);
-        return ResponseEntity.ok(userID);
-    }
-    
-    @PostMapping("/teams/team")
+    // Create team for an event
+    @PostMapping("/teams/createTeam")
     public ResponseEntity<Team> postTeam(@RequestBody Team newTeam) {
         teamService.addTeam(newTeam);
         return ResponseEntity.ok(newTeam);
     }
 
+    // Update team from profile page
+    @PutMapping("/teams/{id}")
+    public ResponseEntity<Team> updateTeam(@PathVariable Long id, @RequestBody Team updatedTeam) {
+        // Get the existing team
+        Team existingTeam = teamService.getTeamById(id);
+        if (existingTeam == null) {
+            return ResponseEntity.notFound().build(); // Team not found
+        }
+        existingTeam.setName(updatedTeam.getName());
+        teamService.updateTeamName(id, updatedTeam.getName());
+        return ResponseEntity.ok(existingTeam);
+    }
+
+    // Delete team from profile page
+    @DeleteMapping("/teams/{id}")
+    public ResponseEntity<Void> deleteTeam(@PathVariable Long id) {
+        Team existingTeam = teamService.getTeamById(id);
+        if (existingTeam == null) {
+            return ResponseEntity.notFound().build();
+        }
+
+        teamService.deleteTeamMembers(id);
+        teamService.deleteTeam(id);
+        return ResponseEntity.noContent().build();
+    }
+
+    // Add user_ids for a team in Supabase (DB)
     @PostMapping("/teams/userTeamMappings")
     public ResponseEntity<TeamUserRequestDTO> postTeamUserMappings(@RequestBody TeamUserRequestDTO request) {
 
@@ -69,43 +91,11 @@ public class TeamController {
         return ResponseEntity.ok(request);
     }
 
-    @PutMapping("/teams/team/{id}")
-    public ResponseEntity<Team> updateTeam(@PathVariable Long id, @RequestBody Team updatedTeam) {
-        // Get the existing team
-        Team existingTeam = teamService.getTeamById(id);
-        if (existingTeam == null) {
-            return ResponseEntity.notFound().build(); // Team not found
-        }
-
-        // Update the team name (and other properties as needed)
-        existingTeam.setName(updatedTeam.getName()); // If you want to update other fields, you can do that here
-
-        // Use the service method to update the team in the database
-        teamService.updateTeamName(id, updatedTeam.getName());
-
-        return ResponseEntity.ok(existingTeam);
-    }
-
-
+    // Update user_ids for a team in Supabase (DB)
     @PutMapping("/teams/userTeamMappings")
     public ResponseEntity<TeamUserRequestDTO> updateTeamUserMappings(@RequestBody TeamUserRequestDTO request) {
-        // Assuming teamService has a method to update user-team mappings
-        // It might involve checking if the team exists and updating user IDs
-
         teamService.updateUsersInTeam(request.getTeamId(), request.getUserIds());
-
         return ResponseEntity.ok(request);
-    }
-
-
-
-    @GetMapping("/teams/searchTeams")
-    public List<TeamWithMembersDTO> getFilteredTeams(@RequestHeader("Authorization") String token, @RequestParam String name, @RequestParam Long eventId) {
-        List<TeamWithMembersDTO> globalTeams = teamService.getAllTeamsWithMembers(eventId);
-        
-        List<TeamWithMembersDTO> filteredTeams = teamService.searchTeams(globalTeams, name);
-        
-        return filteredTeams;
     }
 
     @GetMapping("/teams/profile")
@@ -115,21 +105,8 @@ public class TeamController {
         return result;
     }
 
-    @DeleteMapping("/teams/team/{id}")
-    public ResponseEntity<Void> deleteTeam(@PathVariable Long id) {
-        // You can optionally check if the team exists before attempting to delete
-        Team existingTeam = teamService.getTeamById(id);
-        if (existingTeam == null) {
-            return ResponseEntity.notFound().build(); // Team not found
-        }
-
-        teamService.deleteTeam(id); // Call service method to delete the team
-        teamService.deleteTeamMembers(id); // Call service method to delete the team
-        return ResponseEntity.noContent().build(); // Return 204 No Content on success
-    }
-
     @GetMapping("/isPartOfAny")
-    public Boolean getTeamsPerProfile(@RequestParam Long eventId, @RequestParam Long userId) {
+    public Boolean getTeamsForUserProfile(@RequestParam Long eventId, @RequestParam Long userId) {
         List<TeamWithMembersDTO> globalTeams = teamService.getAllTeamsWithMembers(eventId);
         for (TeamWithMembersDTO team : globalTeams) {
             if (team.getMembers() != null) {
@@ -141,19 +118,6 @@ public class TeamController {
             }
         }
         return false; // User is not part of any teams
-    }
-
-    @GetMapping("/teams")
-    public List<TeamWithMembersDTO> getAllTeams() {
-
-        return teamService.getAllTeams();
-    }
-
-    @GetMapping("/teams/searchAllTeams")
-    public List<TeamWithMembersDTO> getSearchAllEvents(@RequestHeader("Authorization") String token, @RequestParam String teamSearchTerm) {
-        List<TeamWithMembersDTO> globalTeams = teamService.getAllTeams();
-        List<TeamWithMembersDTO> filteredTeams = teamService.searchTeams(globalTeams, teamSearchTerm);
-        return filteredTeams;
     }
 
 }
