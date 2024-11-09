@@ -40,7 +40,7 @@ function AllEvents() {
   }, [fetchAllEvents]);
 
   const handleSearchChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
-    const token = localStorage.getItem("token");
+
     const value = e.target.value;
 
     if (value) {
@@ -49,9 +49,6 @@ function AllEvents() {
         {
           params: {
             eventSearchTerm: value,
-          },
-          headers: {
-            Authorization: `Bearer ${token}`,
           },
         }
       );

@@ -44,7 +44,7 @@ public class CollegeController {
     }
 
     @GetMapping("/colleges/searchColleges")    
-    public ResponseEntity<?> getFilteredColleges(@RequestHeader("Authorization") String token, @RequestParam String name) {
+    public ResponseEntity<?> getFilteredColleges(@RequestParam String name) {
 
         List<College> filteredColleges = collegeService.searchColleges(name);
         return ResponseEntity.ok(filteredColleges);

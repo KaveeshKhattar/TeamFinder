@@ -37,7 +37,6 @@ function HomePage() {
   }, []);
 
   const handleSearchChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
-    const token = localStorage.getItem("token");
     const value = e.target.value;
 
     if (value) {
@@ -47,7 +46,6 @@ function HomePage() {
           `${BASE_URL}/api/colleges/searchColleges`,
           {
             params: { name: value },
-            headers: { Authorization: `Bearer ${token}` },
           }
         );
 
