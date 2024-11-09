@@ -146,8 +146,7 @@ function Events() {
     <>
       <Header></Header>
       <SearchBar onChange={handleSearchChange} />
-
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 mt-4 gap-2">
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 mt-4 gap-2 min-h-screen">
         {events.map((event) => {
           const eventName = event.name || "";
           const formattedName = eventName.replace(/\s+/g, "-");
@@ -168,12 +167,16 @@ function Events() {
           const formattedTime = `${time}`;
 
           return (
-            <div key={event.id} className="min-h-screen">
+            <div
+              key={event.id}
+            >
               <Card className="w-full">
                 <CardHeader>
                   <img src={pic} alt="" className="rounded-md" />
                   <CardTitle className="text-left">{event.name}</CardTitle>
-                  <CardDescription className="text-left">Event</CardDescription>
+                  <CardDescription className="text-left">
+                    Event
+                  </CardDescription>
                 </CardHeader>
                 <CardContent>
                   <div className="flex items-center">
@@ -205,7 +208,7 @@ function Events() {
                       eventURL: `https://teamfinder-frontend.vercel.app/${location.pathname}/${eventUrl}`,
                     }}
                   >
-                    <Button className="p-5 mr-2">View Event</Button>
+                    <Button className="mr-2">View Event</Button>
                   </Link>
                   {isRep && (
                     <>
