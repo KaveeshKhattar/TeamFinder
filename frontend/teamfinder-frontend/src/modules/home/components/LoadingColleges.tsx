@@ -4,7 +4,7 @@ import {
 import { Skeleton } from "../../../components/ui/skeleton";
 
 const LoadingColleges = () => {
-    const skeletons = Array(2).fill(0);
+    const skeletons = Array(6).fill(0);
 
     return (
         <>
