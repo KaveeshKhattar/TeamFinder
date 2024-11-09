@@ -16,7 +16,6 @@ import org.springframework.security.core.Authentication;
 import java.io.File;
 import java.util.Base64;
 import java.util.List;
-import java.util.Optional;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -47,6 +46,12 @@ public class UserController {
         this.imageHandlerService = imageHandlerService;
     }
 
+    @GetMapping("/")
+    public ResponseEntity<List<User>> allUsers() {
+        List <User> users = userService.allUsers();
+        return ResponseEntity.ok(users);
+    }
+
     @GetMapping("/me")
     public ResponseEntity<User> authenticatedUser() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
@@ -54,20 +59,12 @@ public class UserController {
         return ResponseEntity.ok(currentUser);
     }
 
-    @GetMapping("/")
-    public ResponseEntity<List<User>> allUsers() {
-        List <User> users = userService.allUsers();
-        return ResponseEntity.ok(users);
-    }
-    
     @GetMapping("/profile")
-    public ResponseEntity<Optional<User>> profile(@RequestHeader("Authorization") String token) {
+    public ResponseEntity<User> profile(@RequestHeader("Authorization") String token) {
 
-        final String jwt = token.substring(7);
-        final String userEmail = jwtService.extractUsername(jwt);
-        Optional<User> profile = userService.findByEmail(userEmail);
-        
-        return ResponseEntity.ok(profile);
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        User currentUser = (User) authentication.getPrincipal();
+        return ResponseEntity.ok(currentUser);
     }
 
     @PutMapping("/update")

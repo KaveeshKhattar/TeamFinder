@@ -4,11 +4,11 @@ import {
 import { Skeleton } from "../../../components/ui/skeleton";
 
 const LoadingColleges = () => {
-    const skeletons = Array(3).fill(0);
+    const skeletons = Array(2).fill(0);
 
     return (
         <>
-            <div className="grid grid-cols-1 md:grid-cols-3 mt-4 gap-2">
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 mt-4 gap-2">
                 {skeletons.map((_, index) => (
                     <Card key={index} className="flex flex-col items-center justify-center">
                         <Skeleton className="h-[125px] w-[80%] m-4 rounded-md" />

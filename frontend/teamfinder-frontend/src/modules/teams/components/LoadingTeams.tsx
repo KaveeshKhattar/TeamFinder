@@ -11,7 +11,7 @@ const LoadingTeams = () => {
 
     return (
         <>
-            <div className="grid grid-cols-1 md:grid-cols-3 mt-4 gap-2">
+            <div className="grid grid-cols-1 md:grid-cols-2 mt-4 gap-2">
                 {skeletons.map((_, index) => (
                     <Card key={index} className="w-full mb-2">
                         <CardHeader>

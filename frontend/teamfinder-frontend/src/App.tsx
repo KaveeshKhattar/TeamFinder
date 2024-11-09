@@ -20,34 +20,36 @@ import MakeEvent from './modules/events/components/MakeEvent'
 import EditEvents from './modules/events/components/EditEvents'
 import 'react-image-crop/dist/ReactCrop.css'
 import { ThemeProvider } from './components/themeProvider'
+import { Toaster } from './components/ui/toaster'
 
 function App() {
 
   return (
-    <AuthProvider> 
+    <AuthProvider>
       <ThemeProvider defaultTheme="light" storageKey="vite-ui-theme">
-      <Router>
-        <Suspense fallback={<Loading />}>
-          <Routes>
-            <Route path="/" element={<LandingPage />} />
-            <Route path="/profile" element={<Profile />} />
-            <Route path="/profile/:teamUrl" element={<ProfileTeam />} />
-            <Route path="/login" element={<Login />} />
-            <Route path="/signup" element={<Signup />} />
-            <Route path="/verification" element={<Verification />} />
-            <Route path="/colleges" element={<HomePage />} />
-            <Route path="/events" element={<AllEvents />} />
-            <Route path="/teams" element={<AllTeams />} />
-            <Route path="/teams/:teamUrl" element={<TeamDetails />} />
-            <Route path="/:collegeUrl" element={<Events />} />
-            <Route path="/:collegeUrl/:eventUrl/edit" element={<EditEvents />} />
-            <Route path="/:collegeUrl/:eventUrl" element={<Teams />} />
-            <Route path="/:collegeUrl/makeEvent" element={<MakeEvent />} />
-            <Route path="/:collegeUrl/:eventUrl/:teamUrl" element={<TeamDetails />} />
-            <Route path="/:collegeUrl/:eventUrl/makeTeam" element={<MakeTeam />} />
-          </Routes>
-        </Suspense>
-      </Router>
+        <Toaster />
+          <Router>
+            <Suspense fallback={<Loading />}>
+              <Routes>
+                <Route path="/" element={<LandingPage />} />
+                <Route path="/profile" element={<Profile />} />
+                <Route path="/profile/:teamUrl" element={<ProfileTeam />} />
+                <Route path="/login" element={<Login />} />
+                <Route path="/signup" element={<Signup />} />
+                <Route path="/verification" element={<Verification />} />
+                <Route path="/colleges" element={<HomePage />} />
+                <Route path="/events" element={<AllEvents />} />
+                <Route path="/teams" element={<AllTeams />} />
+                <Route path="/teams/:teamUrl" element={<TeamDetails />} />
+                <Route path="/:collegeUrl" element={<Events />} />
+                <Route path="/:collegeUrl/:eventUrl/edit" element={<EditEvents />} />
+                <Route path="/:collegeUrl/:eventUrl" element={<Teams />} />
+                <Route path="/:collegeUrl/makeEvent" element={<MakeEvent />} />
+                <Route path="/:collegeUrl/:eventUrl/:teamUrl" element={<TeamDetails />} />
+                <Route path="/:collegeUrl/:eventUrl/makeTeam" element={<MakeTeam />} />
+              </Routes>
+            </Suspense>
+          </Router>
       </ThemeProvider>
     </AuthProvider>
   )

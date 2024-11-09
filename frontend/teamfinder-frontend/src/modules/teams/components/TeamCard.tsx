@@ -18,7 +18,7 @@ const TeamCard: React.FC<TeamCardProps> = ({ team, location }) => {
 
   return (
     <>
-      <Card className="">
+      <Card className="flex flex-col">
         <CardHeader>
           <CardTitle className="text-left text-2xl">{team.teamName}</CardTitle>
           <CardDescription className="text-left">Team</CardDescription>

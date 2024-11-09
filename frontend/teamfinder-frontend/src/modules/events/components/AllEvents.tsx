@@ -76,7 +76,7 @@ function AllEvents() {
     <>
       <Header></Header>
       <SearchBar onChange={handleSearchChange} />
-      <div className="grid grid-cols-1 md:grid-cols-3 mt-4 gap-2">
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 mt-4 gap-2 min-h-screen">
         {allEvents.length > 0 ? (
           allEvents.map((event) => {
             const eventName = event.name || "";

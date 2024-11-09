@@ -147,7 +147,7 @@ function Events() {
       <Header></Header>
       <SearchBar onChange={handleSearchChange} />
 
-      <div className="grid grid-cols-1 md:grid-cols-3 mt-4 gap-2">
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 mt-4 gap-2">
         {events.map((event) => {
           const eventName = event.name || "";
           const formattedName = eventName.replace(/\s+/g, "-");

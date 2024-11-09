@@ -320,10 +320,7 @@ function Teams() {
       <div className="min-h-screen">
         <Header></Header>
         <SearchBar onChange={handleSearchChange} />
-
-        <div className="grid grid-cols-1 md:grid-cols-2">
-          <LoadingTeams />
-        </div>
+        <LoadingTeams />
       </div>
     );
   }

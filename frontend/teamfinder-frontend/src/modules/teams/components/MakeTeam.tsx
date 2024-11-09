@@ -6,6 +6,7 @@ import { Member } from "../../../types";
 import SearchBar from "../../core/components/SearchBar";
 import { Button } from "../../../components/ui/button";
 import { BASE_URL } from "../../../config";
+import IndividualCard from "./IndividualCard";
 
 function MakeTeam() {
 
@@ -104,7 +105,7 @@ function MakeTeam() {
 
       if (response.status === 200) {
         const teamId = response.data.id;
-        
+
         // Call the function to map users to the newly created team
         await createUserTeamMappings(teamId);
         navigate(-1);
@@ -147,12 +148,12 @@ function MakeTeam() {
     <>
       <Header></Header>
 
-      <div className="flex flex-col">
+      <div className="relative flex flex-col min-h-screen">
         <SearchBar placeholder="Add People" onChange={handleSearchChange} />
 
         {/* Dropdown for filtered people */}
         {divVisible && (
-          <div className=" w-full border-2 border-gray-300 mt-2 dark:bg-zinc-600 bg-slate-100 text-black dark:text-white rounded-md">
+          <div className="mt-10 dark:bg-zinc-700 bg-slate-100 text-black dark:text-white rounded-md absolute z-30 w-full">
 
             {filteredPeople.length > 0 ? (
               filteredPeople.map((person: Member) => {
@@ -163,12 +164,11 @@ function MakeTeam() {
                     className="flex justify-between items-center p-2"
                   // Add onClick handler to handle selection if needed
                   >
-                    <p> {person.firstName} {person.lastName} </p>
+                    <IndividualCard key={person.id} individual={person} />
 
-                    <button className="flex items-center p-1 text-white dark:text-black bg-green-500" type="button" onClick={() => addMember(person)}>
+                    <Button className="flex items-center p-1 text-white bg-green-500" type="button" onClick={() => addMember(person)}>
                       <i className="fa-solid fa-plus p-1"></i>
-                      <p>Add</p>
-                    </button>
+                    </Button>
 
                   </div>
                 )
@@ -181,31 +181,23 @@ function MakeTeam() {
 
         <input className="m-2 p-2 border-2 border-zinc-300 dark:border-slate-600 rounded-md" type="text" id="teamName" value={teamName} onChange={(e) => setTeamName(e.target.value)} required placeholder="Team Name" />
 
-        <div className="flex flex-col p-2">
+        <div className="flex flex-col ">
           <p className="text-left text-xl p-1">Members:</p>
-
-
           {members.map((member: Member) => {
             return (
-              <div key={`${member.id}-${member.email}`} className="flex justify-between items-center mb-4 p-2">
-                <p>{member.firstName} {member.lastName}</p>
-
-                  <Button variant="destructive" onClick={() => removeMember(member.id)}>
-                    <i className="fa-solid fa-minus p-1"></i>
-                    <p>Remove</p>
-                  </Button>
+              <div key={`${member.id}-${member.email}`} className="flex justify-between items-center mb-4">
+                <IndividualCard key={member.id} individual={member} />
+                <Button variant="destructive" onClick={() => removeMember(member.id)}>
+                  <i className="fa-solid fa-minus"></i>
+                </Button>
               </div>
             )
           })}
         </div>
-
-        <button className="p-2 dark:bg-zinc-600 bg-slate-100" onClick={handleSubmit}>
-          <input type="submit" />
-        </button>
-
+        <Button onClick={handleSubmit}>
+          Submit
+        </Button>
       </div>
-
-
     </>
   );
 }
