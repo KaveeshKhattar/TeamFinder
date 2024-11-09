@@ -20,14 +20,12 @@ import MakeEvent from './modules/events/components/MakeEvent'
 import EditEvents from './modules/events/components/EditEvents'
 import 'react-image-crop/dist/ReactCrop.css'
 import { ThemeProvider } from './components/themeProvider'
-import { Toaster } from './components/ui/toaster'
 
 function App() {
 
   return (
     <AuthProvider>
       <ThemeProvider defaultTheme="light" storageKey="vite-ui-theme">
-        <Toaster />
           <Router>
             <Suspense fallback={<Loading />}>
               <Routes>
