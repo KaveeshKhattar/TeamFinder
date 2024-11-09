@@ -9,12 +9,7 @@ import SearchBar from "../../core/components/SearchBar";
 import { Button } from "../../../components/ui/button";
 import { BASE_URL } from "../../../config";
 import { Skeleton } from "../../../components/ui/skeleton";
-import {
-  Card,
-  CardContent,
-  CardFooter,
-  CardHeader,
-} from "../../../components/ui/card";
+import LoadingTeams from "./LoadingTeams";
 
 function Teams() {
   const [teams, setTeams] = useState<Team[]>([]);
@@ -325,124 +320,9 @@ function Teams() {
       <div className="min-h-screen">
         <Header></Header>
         <SearchBar onChange={handleSearchChange} />
-        { }
 
         <div className="grid grid-cols-1 md:grid-cols-2">
-          <Card className="w-[650px]">
-            <CardHeader>
-              <Skeleton className="mt-8 h-6 w-[300px]" />
-            </CardHeader>
-            <CardContent>
-              <div className="flex flex-col text-left text-lg">
-                <div className="flex items-center space-x-4">
-                  <Skeleton className="h-12 w-12 rounded-full" />
-                  <div className="space-y-2">
-                    <Skeleton className="h-4 w-[250px]" />
-                    <Skeleton className="h-4 w-[250px]" />
-                  </div>
-                </div>
-              </div>
-              <div className="flex flex-col text-left text-lg mt-2">
-                <div className="flex items-center space-x-4">
-                  <Skeleton className="h-12 w-12 rounded-full" />
-                  <div className="space-y-2">
-                    <Skeleton className="h-4 w-[250px]" />
-                    <Skeleton className="h-4 w-[250px]" />
-                  </div>
-                </div>
-              </div>
-            </CardContent>
-            <CardFooter>
-
-            </CardFooter>
-          </Card>
-
-          <Card className="w-[650px]">
-            <CardHeader>
-              <Skeleton className="mt-8 h-6 w-[300px]" />
-            </CardHeader>
-            <CardContent>
-              <div className="flex flex-col text-left text-lg">
-                <div className="flex items-center space-x-4">
-                  <Skeleton className="h-12 w-12 rounded-full" />
-                  <div className="space-y-2">
-                    <Skeleton className="h-4 w-[250px]" />
-                    <Skeleton className="h-4 w-[250px]" />
-                  </div>
-                </div>
-              </div>
-              <div className="flex flex-col text-left text-lg mt-2">
-                <div className="flex items-center space-x-4">
-                  <Skeleton className="h-12 w-12 rounded-full" />
-                  <div className="space-y-2">
-                    <Skeleton className="h-4 w-[250px]" />
-                    <Skeleton className="h-4 w-[250px]" />
-                  </div>
-                </div>
-              </div>
-            </CardContent>
-            <CardFooter>
-
-            </CardFooter>
-          </Card>
-
-          <Card className="w-[650px] mt-4">
-            <CardHeader>
-              <Skeleton className="mt-8 h-6 w-[300px]" />
-            </CardHeader>
-            <CardContent>
-              <div className="flex flex-col text-left text-lg">
-                <div className="flex items-center space-x-4">
-                  <Skeleton className="h-12 w-12 rounded-full" />
-                  <div className="space-y-2">
-                    <Skeleton className="h-4 w-[250px]" />
-                    <Skeleton className="h-4 w-[250px]" />
-                  </div>
-                </div>
-              </div>
-              <div className="flex flex-col text-left text-lg mt-2">
-                <div className="flex items-center space-x-4">
-                  <Skeleton className="h-12 w-12 rounded-full" />
-                  <div className="space-y-2">
-                    <Skeleton className="h-4 w-[250px]" />
-                    <Skeleton className="h-4 w-[250px]" />
-                  </div>
-                </div>
-              </div>
-            </CardContent>
-            <CardFooter>
-
-            </CardFooter>
-          </Card>
-
-          <Card className="w-[650px] mt-4">
-            <CardHeader>
-              <Skeleton className="mt-8 h-6 w-[300px]" />
-            </CardHeader>
-            <CardContent>
-              <div className="flex flex-col text-left text-lg">
-                <div className="flex items-center space-x-4">
-                  <Skeleton className="h-12 w-12 rounded-full" />
-                  <div className="space-y-2">
-                    <Skeleton className="h-4 w-[250px]" />
-                    <Skeleton className="h-4 w-[250px]" />
-                  </div>
-                </div>
-              </div>
-              <div className="flex flex-col text-left text-lg mt-2">
-                <div className="flex items-center space-x-4">
-                  <Skeleton className="h-12 w-12 rounded-full" />
-                  <div className="space-y-2">
-                    <Skeleton className="h-4 w-[250px]" />
-                    <Skeleton className="h-4 w-[250px]" />
-                  </div>
-                </div>
-              </div>
-            </CardContent>
-            <CardFooter>
-
-            </CardFooter>
-          </Card>
+          <LoadingTeams />
         </div>
       </div>
     );
@@ -494,19 +374,22 @@ function Teams() {
           ) : (
             <div className="flex mt-2 justify-between">
               <button
-                className="bg-green-500 w-1/2 mr-2 rounded-md text-white"
+                className={`w-1/2 mr-2 rounded-md text-white ${localStorage.getItem('token') ? 'bg-green-500' : 'bg-gray-400'
+                  }`}
                 onClick={handleClickInterested}
               >
                 <p className="m-1">Interested</p>
               </button>
 
               <button
-                className="w-1/2 bg-red-500 rounded-md text-white"
+                className={`w-1/2 rounded-md text-white ${localStorage.getItem('token') ? 'bg-red-500' : 'bg-gray-400'
+                  }`}
                 onClick={handleClickNotInterested}
               >
                 <p className="m-1">Not Interested</p>
               </button>
             </div>
+
           )}
         </div>
 
