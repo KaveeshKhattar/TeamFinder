@@ -5,7 +5,7 @@ import Header from "./Header";
 function LandingPage() {
 
     return (
-        <div className='flex flex-col justify-between items-center m-auto'>
+        <div className='flex flex-col justify-between items-center'>
             <Header></Header>
             <Contents></Contents>
             <Footer></Footer>

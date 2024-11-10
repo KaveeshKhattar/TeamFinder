@@ -57,7 +57,7 @@ function Contents() {
     }, []);
 
     return (
-        <div className='flex flex-col justify-start items-center min-h-screen space-y-8'>
+        <div className='flex flex-col justify-start items-center min-h-dvh flex-grow space-y-8 z-10'>
             <AnimatePresence>
                 {showFirst && (
                     <motion.div

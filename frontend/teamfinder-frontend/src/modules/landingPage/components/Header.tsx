@@ -105,7 +105,7 @@ function Header() {
 
       {/* Mobile Hamburger Menu */}
       <div
-        className={`md:hidden fixed mr-2 top-0 left-0 w-full h-screen bg-white dark:bg-black flex flex-col items-center justify-center space-y-8 transition-transform duration-300 ${isOpen ? "translate-x-0" : "-translate-x-full"
+        className={`md:hidden fixed mr-2 top-0 left-0 w-full h-screen bg-white dark:bg-black flex flex-col items-center justify-center space-y-8 transition-transform duration-300 z-40 ${isOpen ? "translate-x-0" : "-translate-x-full"
           }`}
       >
         {
