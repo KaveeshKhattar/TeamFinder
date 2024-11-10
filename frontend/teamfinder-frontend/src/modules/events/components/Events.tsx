@@ -72,9 +72,9 @@ function Events() {
     }
   };
 
-  const checkIfRep = useCallback(async () => {
+  const checkIfUserisCollegeRepresentative = useCallback(async () => {
     const token = localStorage.getItem("token");
-    const response = await axios.get(`${BASE_URL}/users/checkIfRep`, {
+    const response = await axios.get(`${BASE_URL}/users/checkIfUserisCollegeRepresentative`, {
       params: {
         collegeId: collegeId,
       },
@@ -88,11 +88,11 @@ function Events() {
   useEffect(() => {
     const token = localStorage.getItem("token");
     if (token) {
-      checkIfRep();
+      checkIfUserisCollegeRepresentative();
     } else {
       return;
     }
-  }, [checkIfRep]);
+  }, [checkIfUserisCollegeRepresentative]);
 
   const onEdit = (id: number) => {
     const eventDetails = events.find((event) => event.id === id);

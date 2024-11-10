@@ -28,8 +28,6 @@ public class ImageHandlerService {
         }
 
         String urlString = supabaseUrl + "/storage/v1/object/" + bucketName + "/" + fileName;
-        System.out.println("Connection URL: " + urlString);
-        System.out.println("Sending image to store...");
         HttpURLConnection connection = (HttpURLConnection) new URL(urlString).openConnection();
         connection.setRequestMethod("POST");
         connection.setDoOutput(true);
@@ -44,7 +42,6 @@ public class ImageHandlerService {
                 os.write(buffer, 0, bytesRead);
             }
         }
-        System.out.println("Image written to store...");
         // Check the response code
         int responseCode = connection.getResponseCode();
         if (responseCode == HttpURLConnection.HTTP_OK) {
@@ -75,7 +72,6 @@ public class ImageHandlerService {
         HttpURLConnection connection = (HttpURLConnection) new URL(url).openConnection();
         connection.setRequestMethod("DELETE");
         connection.setRequestProperty("Authorization", "Bearer " + serviceKey);
-        System.out.println("In service to delete file" + connection);
         int responseCode = connection.getResponseCode();
         if (responseCode == HttpURLConnection   .HTTP_OK) {
             return "File deleted successfully";

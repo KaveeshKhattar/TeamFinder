@@ -5,7 +5,6 @@ import java.util.List;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
@@ -45,10 +44,8 @@ public class CollegeController {
 
     @GetMapping("/colleges/searchColleges")    
     public ResponseEntity<?> getFilteredColleges(@RequestParam String name) {
-
         List<College> filteredColleges = collegeService.searchColleges(name);
         return ResponseEntity.ok(filteredColleges);
-            
     }
     
 }

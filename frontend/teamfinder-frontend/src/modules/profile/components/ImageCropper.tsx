@@ -105,6 +105,7 @@ const ImageCropper: React.FC<ImageCropperProps> = ({
     const dataURL = previewCanvasRef.current
       ? previewCanvasRef.current.toDataURL()
       : "";
+
     updateProfilePic(dataURL);
 
     // Prepare the form data for the API request
@@ -121,9 +122,9 @@ const ImageCropper: React.FC<ImageCropperProps> = ({
       const blob = dataURLtoBlob(dataURL);
 
       if (blob) {
-        formData.append("file", blob, `${slicedEmail}.png`); // Append only if blob is not null
+        formData.append("file", blob, `${slicedEmail}.png`);
       } else {
-        console.error("Could not create blob from data URL."); // Handle the error appropriately
+        console.error("Could not create blob from data URL.");
       }
       console.log("Blob created");
 
@@ -159,7 +160,7 @@ const ImageCropper: React.FC<ImageCropperProps> = ({
 
         const response = await axios.post(
           `${BASE_URL}/users/uploadImageURL`,
-          { fileURL: fileURL }, // Pass fileURL in the data
+          { fileURL: fileURL },
           {
             headers: {
               Authorization: `Bearer ${token}`,

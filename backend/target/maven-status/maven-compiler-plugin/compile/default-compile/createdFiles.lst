@@ -2,6 +2,7 @@ com/project/TeamFinder/model/Event.class
 com/project/TeamFinder/TeamFinderApplication.class
 com/project/TeamFinder/exception/NotRepresentativeException.class
 com/project/TeamFinder/controller/UserController.class
+com/project/TeamFinder/exception/NoCollegesException.class
 com/project/TeamFinder/dto/LoginUserDTO.class
 com/project/TeamFinder/dto/UpdateUserDTO.class
 com/project/TeamFinder/repository/EventRepository.class

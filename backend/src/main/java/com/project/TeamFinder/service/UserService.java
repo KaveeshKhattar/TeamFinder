@@ -41,25 +41,19 @@ public class UserService {
         
         User user = optionalUser.orElseThrow(() -> new RuntimeException("User not found"));
 
-        // Update only the fields that have changed
-        if (updateUserDTO.getFirstName() != null) {
-            user.setFirstName(updateUserDTO.getFirstName());
-        }
-        if (updateUserDTO.getLastName() != null) {
-            user.setLastName(updateUserDTO.getLastName());
-        }
-        return userRepository.save(user);        
+        user.setFirstName(updateUserDTO.getFirstName());
+        user.setLastName(updateUserDTO.getLastName());
+        user.setEmail(updateUserDTO.getEmail());
+        return userRepository.save(user);
     }
 
-    @Transactional
     public List<User> getUsersByFullName(String firstNameSearch) {
         List<User> searchResults = userRepository.findByFullNameContainingIgnoreCase(firstNameSearch);
         return searchResults;
     }
 
-    public Boolean getIfRep(String email, Long collegeId) {
+    public Boolean isUserCollegeRepresentative(String email, Long collegeId) {
         Optional<Long> collegeNameOpt = collegeRepresentativeRepository.findByEmailAndCollege(email, collegeId);
-        System.out.println("Ola: " + collegeNameOpt);
         if (collegeNameOpt.isPresent()) {
             return true;
         } else {
@@ -67,25 +61,11 @@ public class UserService {
         }
     }
 
-    public Boolean getIfRepReal(String email) {
-        String aayera = "aayera khattar";
-        System.out.println(aayera);
-        Optional<String> collegeNameOpt = collegeRepresentativeRepository.findCollegeByEmail(email);
-        System.out.println("college: " + collegeNameOpt);
-        if (collegeNameOpt.isPresent()) {
-            return true; 
-        } else {
-            return false;
-        }
-    }
-
     public void saveFileURL(String userEmail, String fileURL) {
-        System.out.println(userEmail + " Service " + fileURL);
         userRepository.addPictureURL(userEmail, fileURL);
     }
 
     public void deleteFileURL(String userEmail) {
-        System.out.println(userEmail + " Service");
         userRepository.removePictureURL(userEmail);
     }
 

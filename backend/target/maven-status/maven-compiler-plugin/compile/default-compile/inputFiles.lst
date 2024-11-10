@@ -22,6 +22,7 @@
 /Users/heeshi/Projects/TeamFinder/backend/src/main/java/com/project/TeamFinder/exception/GlobalExceptionHandler.java
 /Users/heeshi/Projects/TeamFinder/backend/src/main/java/com/project/TeamFinder/exception/IncorrectEmailException.java
 /Users/heeshi/Projects/TeamFinder/backend/src/main/java/com/project/TeamFinder/exception/IncorrectPasswordException.java
+/Users/heeshi/Projects/TeamFinder/backend/src/main/java/com/project/TeamFinder/exception/NoCollegesException.java
 /Users/heeshi/Projects/TeamFinder/backend/src/main/java/com/project/TeamFinder/exception/NotRepresentativeException.java
 /Users/heeshi/Projects/TeamFinder/backend/src/main/java/com/project/TeamFinder/model/College.java
 /Users/heeshi/Projects/TeamFinder/backend/src/main/java/com/project/TeamFinder/model/CollegeRepresentative.java

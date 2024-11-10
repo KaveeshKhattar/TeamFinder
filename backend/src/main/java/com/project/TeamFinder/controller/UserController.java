@@ -52,13 +52,6 @@ public class UserController {
         return ResponseEntity.ok(users);
     }
 
-    @GetMapping("/me")
-    public ResponseEntity<User> authenticatedUser() {
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        User currentUser = (User) authentication.getPrincipal();
-        return ResponseEntity.ok(currentUser);
-    }
-
     @GetMapping("/profile")
     public ResponseEntity<User> profile(@RequestHeader("Authorization") String token) {
 
@@ -82,21 +75,13 @@ public class UserController {
         return filteredUsers;
     }
     
-    @GetMapping("/checkIfRep")
-    public Boolean getIfRep(@RequestHeader("Authorization") String token, @RequestParam("collegeId") Long collegeId) {
-        System.out.println("Calling me!");
-        final String jwt = token.substring(7);
-        final String userEmail = jwtService.extractUsername(jwt);
-        System.out.println("Checking me!");
-        Boolean ans = userService.getIfRep(userEmail, collegeId);
-        return ans;
-    }
+    @GetMapping("/checkIfUserisCollegeRepresentative")
+    public Boolean isUserCollegeRepresentative(@RequestHeader("Authorization") String token, @RequestParam("collegeId") Long collegeId) {
 
-    @GetMapping("/checkIfRepProfile")
-    public Boolean getIfRepNoCollegeId(@RequestHeader("Authorization") String token) {
         final String jwt = token.substring(7);
         final String userEmail = jwtService.extractUsername(jwt);
-        Boolean ans = userService.getIfRepReal(userEmail);
+
+        Boolean ans = userService.isUserCollegeRepresentative(userEmail, collegeId);
         return ans;
     }
 
@@ -108,9 +93,6 @@ public class UserController {
         if (userEmail == null) {
             return "Invalid token";
         }
-
-        // final String fileName = userEmail + ".png";
-        // if (filename in connection then delete that then post this )
 
         try {
 

@@ -6,7 +6,6 @@ import profilePic from "../assets/blank-profile-picture-973460_1280.webp";
 import { useAuth } from "../../core/hooks/useAuth";
 import { Team } from "../../../types";
 import TeamCard from "../../teams/components/TeamCard";
-// import Crop from 'react-image-crop';
 import "react-image-crop/dist/ReactCrop.css";
 import Modal from "./Modal";
 import { Button } from "../../../components/ui/button";
@@ -40,6 +39,7 @@ import { Skeleton } from "../../../components/ui/skeleton";
 function Profile() {
   const [firstName, setFirstName] = useState("");
   const [lastName, setLastName] = useState("");
+  const [email, setEmail] = useState("");
   const [userId, setUserId] = useState(0);
   const [profilePicUrl, setProfilePicUrl] = useState(profilePic);
   // const [teamIds, setTeamIds] = useState<number[]>([]);
@@ -80,12 +80,13 @@ function Profile() {
         );
 
         if (response.status === 200) {
-          const { firstName = "", lastName = "", id } = response.data;
+          const { firstName = "", lastName = "", id, email = "" } = response.data;
 
           // Set state with the fetched data
           setUserId(id);
           setFirstName(firstName);
           setLastName(lastName);
+          setEmail(email);
         }
       } catch (err) {
         console.log(err, "Sign up failed!");
@@ -113,6 +114,7 @@ function Profile() {
           body: JSON.stringify({
             firstName: firstName,
             lastName: lastName,
+            email: email
           }),
         });
 
@@ -391,6 +393,19 @@ function Profile() {
                         name="lastName"
                         value={lastName}
                         onChange={(e) => setLastName(e.target.value)}
+                        className="col-span-3"
+                      />
+                    </div>
+
+                    <div className="grid grid-cols-4 items-center gap-4">
+                      <Label htmlFor="email" className="text-right">
+                        Email
+                      </Label>
+                      <Input
+                        id="email"
+                        name="email"
+                        value={email}
+                        onChange={(e) => setEmail(e.target.value)}
                         className="col-span-3"
                       />
                     </div>

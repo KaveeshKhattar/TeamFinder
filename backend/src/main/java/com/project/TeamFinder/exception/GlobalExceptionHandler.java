@@ -1,7 +1,10 @@
 package com.project.TeamFinder.exception;
 
+import org.hibernate.exception.SQLGrammarException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.jdbc.BadSqlGrammarException;
+import org.springframework.orm.jpa.JpaSystemException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 
@@ -45,4 +48,27 @@ public class GlobalExceptionHandler {
         return ResponseEntity.status(HttpStatus.FORBIDDEN).body(response);
     }
 
+    @ExceptionHandler(NoCollegesException.class)
+    public ResponseEntity<ApiResponse<String>> handleNoCollegesException(NoCollegesException ex) {
+        ApiResponse<String> response = new ApiResponse<>(true, null, ex.getMessage());
+        return ResponseEntity.status(HttpStatus.NO_CONTENT).body(response);
+    }
+
+    @ExceptionHandler(SQLGrammarException.class)
+    public ResponseEntity<ApiResponse<String>> handleSQLGrammarException(SQLGrammarException ex) {
+        ApiResponse<String> response = new ApiResponse<>(false, null, "Database error: " + ex.getMessage());
+        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(response);
+    }
+
+    @ExceptionHandler(JpaSystemException.class)
+    public ResponseEntity<ApiResponse<String>> handleJpaSystemException(JpaSystemException ex) {
+        ApiResponse<String> response = new ApiResponse<>(false, null, "Database error: " + ex.getMessage());
+        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(response);
+    }
+
+    @ExceptionHandler(BadSqlGrammarException.class)
+    public ResponseEntity<ApiResponse<String>> handleBadSqlGrammarException(BadSqlGrammarException ex) {
+        ApiResponse<String> response = new ApiResponse<>(false, null, "Database error: " + ex.getMessage());
+        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(response);
+    }
 }

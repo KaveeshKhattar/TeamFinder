@@ -9,10 +9,12 @@ import { ReloadIcon } from "@radix-ui/react-icons";
 import { BASE_URL } from "../../../config";
 
 function Login() {
+    
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
     const [error, setError] = useState<string>("");
     const [loading, setLoading] = useState<boolean>(false);
+    
     const navigate = useNavigate();
     const { signIn } = useAuth();
 
@@ -92,6 +94,12 @@ function Login() {
                     Don't have an account? Sign up{" "}
                     <Link to="/signup">
                         <span className="text-blue-500">here.</span>
+                    </Link>
+                </p>
+                <p className="md:text-xl">
+                    Forgot Password?{" "}
+                    <Link to="/changePasswordVerify" state= {{email}}>
+                        <span className="text-blue-500">Click here.</span>
                     </Link>
                 </p>
             </div>

@@ -22,17 +22,20 @@ function HomePage() {
 
   const fetchColleges = useCallback(async () => {
     try {
-
-      setLoading(true);
+      setLoading(true);      
       const response = await axios.get(`${BASE_URL}/api/colleges`, {
       });
-      console.log("response: ", response);
-      setColleges([...response.data]);
+      console.log("Response: ", response);
+      if (response.status === 200) {
+        setColleges([...response.data]); 
+      }
     } catch (err) {
-      setError("Error fetching colleges");
-      console.error(err);
+      setError("Error fetching colleges: " + err);
+
     } finally {
+
       setLoading(false);
+
     }
   }, []);
 
@@ -40,7 +43,6 @@ function HomePage() {
     const value = e.target.value;
 
     if (value) {
-      console.log("Value: ", value);
       try {
         const responseFilteredColleges = await axios.get(
           `${BASE_URL}/api/colleges/searchColleges`,
@@ -56,10 +58,12 @@ function HomePage() {
           setColleges([...responseFilteredColleges.data]);
         }
       } catch (error) {
-        console.error("Error searching colleges:", error);
+        setError("Error searching colleges:" + error);
       }
     } else {
-      fetchColleges();
+      if (colleges.length === 0) { 
+        fetchColleges();
+      }
     }
   };
 
@@ -83,7 +87,7 @@ function HomePage() {
       <>
         <Header></Header>
         <SearchBar onChange={handleSearchChange} />
-        <div className="flex justify-center items-center min-h-screen">{error}</div>; // Show an error message
+        <div className="flex justify-center items-center min-h-screen">{error}</div>;
       </>
     )
   }
