@@ -175,8 +175,8 @@ function Teams() {
 
     try {
       const response = await axios.post(
-        `${BASE_URL}/api/events/:eventId/InterestedIndividual`,
-        {
+        `${BASE_URL}/api/events/${eventId}/InterestedIndividual`,
+        {          
           userId: userId,
         },
         {
@@ -213,7 +213,7 @@ function Teams() {
 
     try {
       const response = await axios.delete(
-        `${BASE_URL}/api/events/:eventId/InterestedIndividual`,
+        `${BASE_URL}/api/events/${eventId}/InterestedIndividual`,
         {
           params: {
             userID: userId,
