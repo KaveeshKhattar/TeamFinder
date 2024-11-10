@@ -38,7 +38,7 @@ public class CollegeController {
     @GetMapping("/colleges")
     public ResponseEntity<List<College>> allColleges() {
         List<College> colleges = collegeService.findAllColleges();
-        return ResponseEntity.ok(colleges); // If no exception is thrown, this will return 200 OK
+        return ResponseEntity.ok(colleges);
     }
 
     @GetMapping("/searchColleges")

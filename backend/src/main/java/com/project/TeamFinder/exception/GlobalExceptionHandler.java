@@ -50,6 +50,7 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(NoCollegesException.class)
     public ResponseEntity<ApiResponse<String>> handleNoCollegesException(NoCollegesException ex) {
+        System.out.println("Called here");
         ApiResponse<String> response = new ApiResponse<>(true, null, ex.getMessage());
         return ResponseEntity.status(HttpStatus.NO_CONTENT).body(response);
     }

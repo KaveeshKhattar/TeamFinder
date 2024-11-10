@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import Header from "../../landingPage/components/Header";
 import axios from "axios";
 import { Link } from "react-router-dom";
@@ -17,49 +17,48 @@ import LoadingColleges from "./LoadingColleges";
 
 function HomePage() {
   const [colleges, setColleges] = useState<College[]>([]);
-  const [allColleges, setAllColleges] = useState<College[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
-  useEffect(() => {
-    const fetchColleges = async () => {
-      try {
-        setLoading(true);
-        const response = await axios.get(`${BASE_URL}/api/colleges`);
+  const fetchColleges = useCallback(async () => {
+    try {
+      setLoading(true);
+      const response = await axios.get(`${BASE_URL}/api/colleges`);
 
-        if (response.status === 204) {
-          // Handle no content scenario
-          setAllColleges([]);
-          setError("No colleges available");
-        } else if (response.status === 200) {
-          // Handle successful response with data
-          setAllColleges(response.data);
-          setError("");
-        }
-      } catch (err) {
-        // Check if it's an AxiosError and get the response status if available
-        if (axios.isAxiosError(err) && err.response) {
-          if (err.response.status === 500) {
-            // Handle 500 Internal Server Error
-            setError("An error occured on the server. Please try again later.");
-          } else {
-            // Handle other specific errors if needed
-            setError("Error fetching colleges: " + err.message);
-          }
-        } else {
-          // Handle network errors or other unexpected errors
-          setError("Unexpected error.");
-        }
-
-        // Clear the colleges list in case of an error
-        setAllColleges([]);
-      } finally {
-        setLoading(false);
+      if (response.status === 204) {
+        // Handle no content scenario
+        setColleges([]);
+        setError("No colleges available");
+      } else if (response.status === 200) {
+        // Handle successful response with data
+        setColleges(response.data);
+        setError("");
       }
-    };
+    } catch (err) {
+      // Check if it's an AxiosError and get the response status if available
+      if (axios.isAxiosError(err) && err.response) {
+        if (err.response.status === 500) {
+          // Handle 500 Internal Server Error
+          setError("An error occured on the server. Please try again later.");
+        } else {
+          // Handle other specific errors if needed
+          setError("Error fetching colleges: " + err.message);
+        }
+      } else {
+        // Handle network errors or other unexpected errors
+        setError("Unexpected error.");
+      }
 
-    fetchColleges();
+      // Clear the colleges list in case of an error
+      fetchColleges();
+    } finally {
+      setLoading(false);
+    }
   }, []);
+
+  useEffect(() => {
+    fetchColleges();
+  }, [fetchColleges]);
 
 
   const handleSearchChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -95,7 +94,7 @@ function HomePage() {
       }
     } else {
       // Reset to all colleges when the input is cleared
-      setColleges(allColleges);
+      fetchColleges();
       setError(""); // Clear any existing errors
     }
   };
