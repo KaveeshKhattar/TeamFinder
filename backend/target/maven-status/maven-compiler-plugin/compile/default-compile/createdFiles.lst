@@ -15,6 +15,7 @@ com/project/TeamFinder/dto/MemberDTO.class
 com/project/TeamFinder/responses/ApiResponse.class
 com/project/TeamFinder/exception/GlobalExceptionHandler.class
 com/project/TeamFinder/model/EventUser.class
+com/project/TeamFinder/dto/PasswordChangeDTO.class
 com/project/TeamFinder/service/CollegeService.class
 com/project/TeamFinder/dto/VerifyUserDTO.class
 com/project/TeamFinder/service/ImageHandlerService.class
@@ -37,6 +38,7 @@ com/project/TeamFinder/dto/EventRequestDTO.class
 com/project/TeamFinder/controller/CollegeController.class
 com/project/TeamFinder/repository/TeamRepository.class
 com/project/TeamFinder/dto/RegisterUserDTO.class
+com/project/TeamFinder/dto/EmailRequestDTO.class
 com/project/TeamFinder/dto/TeamWithMembersDTO.class
 com/project/TeamFinder/service/JwtService.class
 com/project/TeamFinder/model/College.class

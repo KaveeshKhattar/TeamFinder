@@ -72,6 +72,39 @@ public class AuthenticationService {
         sendVerificationEmail(user);
         return userRepository.save(user);
     }
+    
+    public void passwordChange(String email, String password) {
+        // Find the user by email
+        Optional<User> optionalUser = userRepository.findByEmail(email);
+        
+        // Check if the user exists
+        if (!optionalUser.isPresent()) {
+            throw new RuntimeException("User with email " + email + " not found");
+        }
+    
+        // Get the user from the Optional
+        User user = optionalUser.get();
+        
+        // Encode the password
+        String encodedPassword = passwordEncoder.encode(password);
+    
+        // Set the new password
+        user.setPassword(encodedPassword);
+        
+        // Save the updated user
+        userRepository.save(user);
+    }
+
+    public void sendEmailPassword(String email) {
+        Optional<User> optionalUser = userRepository.findByEmail(email);
+        User user = optionalUser.get();
+
+        user.setVerificationCode(generateVerificationCode());
+        user.setVerificationCodeExpiresAt(LocalDateTime.now().plusMinutes(15));
+        user.setEnabled(false);
+        sendVerificationEmail(user);
+        userRepository.save(user);
+    }
 
     public void verifyUser(VerifyUserDTO input) {
         Optional<User> optionalUser = userRepository.findByEmail(input.getEmail());

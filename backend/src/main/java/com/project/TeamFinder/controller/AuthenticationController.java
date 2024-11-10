@@ -3,7 +3,6 @@ package com.project.TeamFinder.controller;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
@@ -13,7 +12,9 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.project.TeamFinder.dto.EmailRequestDTO;
 import com.project.TeamFinder.dto.LoginUserDTO;
+import com.project.TeamFinder.dto.PasswordChangeDTO;
 import com.project.TeamFinder.dto.RegisterUserDTO;
 import com.project.TeamFinder.dto.VerifyUserDTO;
 import com.project.TeamFinder.model.User;
@@ -42,6 +43,18 @@ public class AuthenticationController {
         User registeredUser = authenticationService.signup(registerUserDto);
         ApiResponse<User> response = new ApiResponse<User>(true, registeredUser, "Sign up Successful");
         return ResponseEntity.ok(response);
+    }
+
+    @PostMapping(value="/changePasswordVerify", produces = MediaType.APPLICATION_JSON_VALUE)
+    public void sendEmailForPasswordChange(@RequestBody EmailRequestDTO emailRequest) {
+        System.out.println("*** Sending email for pwd change ***");
+        authenticationService.sendEmailPassword(emailRequest.getEmail());
+    }
+
+    @PostMapping(value="/updatePassword", produces = MediaType.APPLICATION_JSON_VALUE)
+    public void changePassword(@RequestBody PasswordChangeDTO passwordChangeDTO) {
+        System.out.println("*** Pwd change ***");
+        authenticationService.passwordChange(passwordChangeDTO.getEmail(), passwordChangeDTO.getPassword());
     }
 
     @PostMapping(value="/login", produces = MediaType.APPLICATION_JSON_VALUE)

@@ -20,7 +20,7 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(Exception.class)
     public ResponseEntity<ApiResponse<String>> handleException(Exception ex) {
-        ApiResponse<String> response = new ApiResponse<>(false, null, "An unexpected error occurred");
+        ApiResponse<String> response = new ApiResponse<>(false, null, "An internal server error occurred: " + ex.getMessage());
         return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(response);
     }
 

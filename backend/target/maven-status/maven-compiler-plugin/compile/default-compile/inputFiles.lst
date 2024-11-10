@@ -8,10 +8,12 @@
 /Users/heeshi/Projects/TeamFinder/backend/src/main/java/com/project/TeamFinder/controller/EventController.java
 /Users/heeshi/Projects/TeamFinder/backend/src/main/java/com/project/TeamFinder/controller/TeamController.java
 /Users/heeshi/Projects/TeamFinder/backend/src/main/java/com/project/TeamFinder/controller/UserController.java
+/Users/heeshi/Projects/TeamFinder/backend/src/main/java/com/project/TeamFinder/dto/EmailRequestDTO.java
 /Users/heeshi/Projects/TeamFinder/backend/src/main/java/com/project/TeamFinder/dto/EventRequestDTO.java
 /Users/heeshi/Projects/TeamFinder/backend/src/main/java/com/project/TeamFinder/dto/EventUserDTO.java
 /Users/heeshi/Projects/TeamFinder/backend/src/main/java/com/project/TeamFinder/dto/LoginUserDTO.java
 /Users/heeshi/Projects/TeamFinder/backend/src/main/java/com/project/TeamFinder/dto/MemberDTO.java
+/Users/heeshi/Projects/TeamFinder/backend/src/main/java/com/project/TeamFinder/dto/PasswordChangeDTO.java
 /Users/heeshi/Projects/TeamFinder/backend/src/main/java/com/project/TeamFinder/dto/RegisterUserDTO.java
 /Users/heeshi/Projects/TeamFinder/backend/src/main/java/com/project/TeamFinder/dto/TeamUserRequestDTO.java
 /Users/heeshi/Projects/TeamFinder/backend/src/main/java/com/project/TeamFinder/dto/TeamWithMembersDTO.java

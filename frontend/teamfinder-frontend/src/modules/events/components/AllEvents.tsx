@@ -52,7 +52,7 @@ function AllEvents() {
           },
         }
       );
-
+      
       setAllEvents(responseFilteredEvents.data);
     } else {
       await fetchAllEvents();

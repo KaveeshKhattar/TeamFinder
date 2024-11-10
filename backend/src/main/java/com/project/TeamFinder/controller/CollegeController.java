@@ -15,12 +15,11 @@ import com.project.TeamFinder.service.JwtService;
 
 import org.springframework.web.bind.annotation.RequestParam;
 
-
 @RestController
 @RequestMapping("/api")
 @CrossOrigin
 public class CollegeController {
-    
+
     JwtService jwtService;
 
     private final CollegeService collegeService;
@@ -39,13 +38,18 @@ public class CollegeController {
     @GetMapping("/colleges")
     public ResponseEntity<List<College>> allColleges() {
         List<College> colleges = collegeService.findAllColleges();
-        return ResponseEntity.ok(colleges);
+        return ResponseEntity.ok(colleges); // If no exception is thrown, this will return 200 OK
     }
 
-    @GetMapping("/colleges/searchColleges")    
-    public ResponseEntity<?> getFilteredColleges(@RequestParam String name) {
-        List<College> filteredColleges = collegeService.searchColleges(name);
+    @GetMapping("/searchColleges")
+    public ResponseEntity<List<College>> getFilteredColleges(@RequestParam String name) {
+        List<College> filteredColleges = collegeService.searchColleges(name); 
+
+        if (filteredColleges.isEmpty()) {
+            return ResponseEntity.noContent().build();  // 204 No Content
+        }
+
         return ResponseEntity.ok(filteredColleges);
     }
-    
+
 }

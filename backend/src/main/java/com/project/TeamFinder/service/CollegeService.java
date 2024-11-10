@@ -22,14 +22,11 @@ public class CollegeService {
         if (colleges.isEmpty()) {
             throw new NoCollegesException("Error fetching colleges.");
         }
-        return collegeRepository.findAll();
+        return colleges;
     }
 
     public List<College> searchColleges(String name) {
         List<College> searchResults = collegeRepository.findByNameContainingIgnoreCase(name);
-        if (searchResults.isEmpty()) {
-            throw new NoCollegesException("Error searching colleges.");
-        }
         return searchResults;
     }
 

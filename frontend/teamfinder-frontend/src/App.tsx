@@ -20,7 +20,8 @@ import MakeEvent from './modules/events/components/MakeEvent'
 import EditEvents from './modules/events/components/EditEvents'
 import 'react-image-crop/dist/ReactCrop.css'
 import { ThemeProvider } from './components/themeProvider'
-import ChangePasswordVerification from './modules/authentication/components/ChangePassword'
+import ChangePasswordVerification from './modules/authentication/components/ChangePasswordVerification'
+import ChangePassword from './modules/authentication/components/ChangePassword'
 
 function App() {
 
@@ -37,6 +38,7 @@ function App() {
                 <Route path="/signup" element={<Signup />} />
                 <Route path="/verification" element={<Verification />} />
                 <Route path="/changePasswordVerify" element={<ChangePasswordVerification />} />
+                <Route path="/changePassword" element={<ChangePassword />} />
                 <Route path="/colleges" element={<HomePage />} />
                 <Route path="/events" element={<AllEvents />} />
                 <Route path="/teams" element={<AllTeams />} />

@@ -32,14 +32,17 @@ public class EventController {
     }
 
     @GetMapping("/events")
-    public List<Event> getAllEvents() {
-        System.out.println("Called here");
-        return eventService.getAllEvents();
+    public ResponseEntity<List<Event>> getAllEvents() {
+        List<Event> events = eventService.getAllEvents();
+        return ResponseEntity.ok(events); // If no exception is thrown, this will return 200 OK
     }
 
     @GetMapping("/{collegeId}/events")
     public ResponseEntity<List<Event>> getEvents(@PathVariable Long collegeId) {
         List<Event> events = eventService.getEventsByCollegeId(collegeId);
+        if (events.isEmpty()) {
+            return ResponseEntity.noContent().build();  // 204 No Content
+        }
         return ResponseEntity.ok(events);
     }
 

@@ -40,7 +40,12 @@ function Events() {
       const response = await axios.get(
         `${BASE_URL}/api/${collegeId}/events`,
       );
-      setEvents([...response.data]);
+      if (response.status === 204) {
+        setEvents([]);
+        setError("No colleges found");
+      } else if (response.status === 200) {
+        setEvents([...response.data]);
+      }
     } catch (err) {
       setError("Error fetching events");
       console.error(err);
@@ -65,7 +70,6 @@ function Events() {
           },
         }
       );
-
       setEvents(responseFilteredEvents.data);
     } else {
       fetchEvents();

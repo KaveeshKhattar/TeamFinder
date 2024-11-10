@@ -96,7 +96,7 @@ function Login() {
                         <span className="text-blue-500">here.</span>
                     </Link>
                 </p>
-                <p className="md:text-xl">
+                <p className="md:text-xl mt-2">
                     Forgot Password?{" "}
                     <Link to="/changePasswordVerify" state= {{email}}>
                         <span className="text-blue-500">Click here.</span>

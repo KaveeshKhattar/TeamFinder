@@ -5,6 +5,7 @@ import java.util.stream.Collectors;
 
 import org.springframework.stereotype.Service;
 
+import com.project.TeamFinder.exception.NoCollegesException;
 import com.project.TeamFinder.model.Event;
 import com.project.TeamFinder.model.EventUser;
 import com.project.TeamFinder.projection.UserProjection;
@@ -26,11 +27,16 @@ public class EventService {
     }
 
     public List<Event> getAllEvents() {
-        return (List<Event>) eventRepository.findAll();
+        List<Event> events = (List<Event>) eventRepository.findAll();
+        if (events.isEmpty()) {
+            throw new NoCollegesException("Error fetching events.");
+        }
+        return events; 
     }
 
     public List<Event> getEventsByCollegeId(Long collegeId) {
-        return eventRepository.findByCollegeId(collegeId);
+        List<Event> events = eventRepository.findByCollegeId(collegeId);
+        return events;
     }
 
     public List<Event> searchEvents(List<Event> globalEvents, String name) {
