@@ -1,17 +1,27 @@
 import { useState } from "react";
 import { useAuth } from "../../core/hooks/useAuth";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { Button } from "../../../components/ui/button";
 import { ModeToggle } from "../../../components/modeToggle";
 
 function Header() {
   const [isOpen, setIsOpen] = useState(false);
   const { isSignedIn } = useAuth();
+  const { signOut } = useAuth();
+  const navigate = useNavigate();
 
   const toggleMenu = () => {
     setIsOpen(!isOpen);
   };
   const token = localStorage.getItem("token");
+
+  const handleSignOut = (event: React.MouseEvent<HTMLButtonElement>) => {
+    event.preventDefault();
+    signOut();
+    localStorage.removeItem("token");
+    localStorage.setItem("isSignedIn", "false");
+    navigate("/");
+  };
 
   return (
     <nav className="flex mb-4 items-center w-full">
@@ -102,7 +112,7 @@ function Header() {
           token ?
           <div className="flex flex-col gap-5 w-full p-2 mt-16">
           <Link to="/">
-            <Button variant="destructive" className="w-full">
+            <Button variant="destructive" className="w-full" onClick={handleSignOut}>
               Sign Out
             </Button>
           </Link>

@@ -36,8 +36,7 @@ public class AuthenticationService {
             CollegeRepresentativeRepository collegeRepresentativeRepository,
             AuthenticationManager authenticationManager,
             PasswordEncoder passwordEncoder,
-            EmailService emailService
-    ) {
+            EmailService emailService) {
         this.authenticationManager = authenticationManager;
         this.userRepository = userRepository;
         this.collegeRepresentativeRepository = collegeRepresentativeRepository;
@@ -56,7 +55,9 @@ public class AuthenticationService {
     }
 
     public User signup(RegisterUserDTO input) {
-        User user = new User(input.getFirstName(), input.getLastName(), input.getFirstName() + " " + input.getLastName(),  input.getEmail(), passwordEncoder.encode(input.getPassword()), input.getRole());
+        User user = new User(input.getFirstName(), input.getLastName(),
+                input.getFirstName() + " " + input.getLastName(), input.getEmail(),
+                passwordEncoder.encode(input.getPassword()), input.getRole());
 
         if (user.getRole() == Role.REPRESENTATIVE) {
             Boolean repAllowed = collegeRepresentativeRepository.existsByEmail(input.getEmail());
@@ -93,14 +94,14 @@ public class AuthenticationService {
     }
 
     public User authenticate(LoginUserDTO input) {
-        
+
         User user = userRepository.findByEmail(input.getEmail())
                 .orElseThrow(() -> new IncorrectEmailException("Incorrect email"));
 
         if (!user.isEnabled()) {
             throw new AccountNotVerifiedException("Account not verified. Please verify your account.");
         }
-        
+
         boolean isPasswordMatch = passwordEncoder.matches(input.getPassword(), user.getPassword());
 
         if (!isPasswordMatch) {
