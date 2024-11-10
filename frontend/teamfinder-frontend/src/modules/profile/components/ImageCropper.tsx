@@ -24,7 +24,6 @@ const supabase = createClient(
 
 interface JwtPayload {
   sub: string;
-  // Add other properties based on your JWT claims
 }
 
 interface ImageCropperProps {
@@ -94,93 +93,6 @@ const ImageCropper: React.FC<ImageCropperProps> = ({
     setCrop(centeredCrop);
   };
 
-  const handleSetProfilePicture = async () => {
-    if (imgRef.current && previewCanvasRef.current) {
-      setCanvasPreview(
-        imgRef.current,
-        previewCanvasRef.current,
-        convertToPixelCrop(crop, imgRef.current.width, imgRef.current.height)
-      );
-    }
-    const dataURL = previewCanvasRef.current
-      ? previewCanvasRef.current.toDataURL()
-      : "";
-
-    updateProfilePic(dataURL);
-
-    // Prepare the form data for the API request
-    const token: string | null = localStorage.getItem("token");
-    let sub: string | undefined;
-    if (token) {
-      const decodedToken = jwtDecode<JwtPayload>(token);
-      sub = decodedToken.sub;
-    }
-    if (sub) {
-      const index = sub.indexOf(".com");
-      const slicedEmail = sub.slice(0, index);
-      const formData = new FormData();
-      const blob = dataURLtoBlob(dataURL);
-
-      if (blob) {
-        formData.append("file", blob, `${slicedEmail}.png`);
-      } else {
-        console.error("Could not create blob from data URL.");
-      }
-      console.log("Blob created");
-
-      try {
-        const response = await axios.post(
-          `${BASE_URL}/users/upload`,
-          formData,
-          {
-            headers: {
-              "Content-Type": "multipart/form-data",
-              Authorization: `Bearer ${token}`,
-            },
-          }
-        );
-        console.log("Image uploaded successfully:", response.data);
-      } catch (error) {
-        console.error("Error uploading image:", error);
-      }
-
-      console.log("Blob sent");
-
-      try {
-        const { data, error } = await supabase.storage
-          .from("image-store")
-          .createSignedUrl(encodeURIComponent(`${slicedEmail}.png`), 31536000);
-        const fileURL = data?.signedUrl;
-
-        if (error) {
-          console.error("Error creating signed URL:", error);
-        } else {
-          console.log("Signed URL:", fileURL);
-        }
-
-        const response = await axios.post(
-          `${BASE_URL}/users/uploadImageURL`,
-          { fileURL: fileURL },
-          {
-            headers: {
-              Authorization: `Bearer ${token}`,
-            },
-          }
-        );
-
-        if (response.status === 200) {
-          console.log("file url sent from UI", fileURL);
-        } else {
-          console.log("file url not sent from UI");
-        }
-      } catch (err) {
-        console.log(err);
-      }
-    }
-
-    closeModal();
-  };
-
   const dataURLtoBlob = (dataURL: string): Blob | null => {
     // Split the data URL into parts
     const parts = dataURL.split(",");
@@ -207,7 +119,104 @@ const ImageCropper: React.FC<ImageCropperProps> = ({
     return new Blob([ab], { type: mimeString });
   };
 
+  const handleSetProfilePicture = async () => {
+    if (imgRef.current && previewCanvasRef.current) {
+      setCanvasPreview(
+        imgRef.current,
+        previewCanvasRef.current,
+        convertToPixelCrop(crop, imgRef.current.width, imgRef.current.height)
+      );
+    }
+    const dataURL = previewCanvasRef.current
+      ? previewCanvasRef.current.toDataURL()
+      : "";
+
+    updateProfilePic(dataURL);
+
+    // Prepare the form data for the API request
+    const token: string | null = localStorage.getItem("token");
+    let sub: string | undefined;
+
+    if (token) {
+      const decodedToken = jwtDecode<JwtPayload>(token);
+      sub = decodedToken.sub;
+    }
+
+    if (sub) {
+      const index = sub.indexOf(".com");
+      const slicedEmail = sub.slice(0, index);
+      const formData = new FormData();
+      const blob = dataURLtoBlob(dataURL);
+
+      if (blob) {
+        formData.append("file", blob, `${slicedEmail}.png`);
+      } else {
+        console.error("Could not create blob from data URL.");
+      }
+      
+      // Blob created from useRef URL. Sending this Blob to supabase now.
+
+      try {
+        
+        await axios.post(
+          `${BASE_URL}/users/upload`,
+          formData,
+          {
+            headers: {
+              "Content-Type": "multipart/form-data",
+              Authorization: `Bearer ${token}`,
+            },
+          }
+        );
+        
+      } catch (error) {
+        console.log("Error uploading image: ", error);
+      }
+
+      // Blob sent to supabase, creating URL now
+
+      try {
+        const { data, error } = await supabase.storage
+          .from("image-store")
+          .createSignedUrl(encodeURIComponent(`${slicedEmail}.png`), 31536000);
+        
+        const fileURL = data?.signedUrl;
+
+        if (error) {
+          console.error("Error creating signed URL:", error);
+        } else {
+          console.log("Signed URL:", fileURL);
+        }
+
+        // Created file URL
+
+        const response = await axios.post(
+          `${BASE_URL}/users/uploadImageURL`,
+          { fileURL: fileURL },
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          }
+        );
+
+        if (response.status === 200) {
+          console.log("file url sent from UI", fileURL);
+        } else {
+          console.log("file url not sent from UI");
+        }
+      } catch (err) {
+        console.log(err);
+      }
+    }
+
+    // Image URL posted to users table
+
+    closeModal();
+  };
+
   const profilePic = profilePicture;
+
   useEffect(() => {
     if (imgRef.current) {
       imgRef.current.src = profilePic;
@@ -246,7 +255,7 @@ const ImageCropper: React.FC<ImageCropperProps> = ({
           </ReactCrop>
           <div className="flex flex-col justify-center items-center">
             <Button
-              className="mt-4 p-2 text-white mb-2"
+              className="mt-4 p-2 mb-2"
               onClick={handleSetProfilePicture}
             >
               Set as Profile Picture

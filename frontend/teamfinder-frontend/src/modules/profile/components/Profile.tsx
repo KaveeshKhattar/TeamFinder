@@ -37,15 +37,17 @@ import { BASE_URL } from "../../../config";
 import { Skeleton } from "../../../components/ui/skeleton";
 
 function Profile() {
+  const [userId, setUserId] = useState(0);
+  const [email, setEmail] = useState("");
   const [firstName, setFirstName] = useState("");
   const [lastName, setLastName] = useState("");
-  const [email, setEmail] = useState("");
-  const [userId, setUserId] = useState(0);
+  
   const [profilePicUrl, setProfilePicUrl] = useState(profilePic);
-  // const [teamIds, setTeamIds] = useState<number[]>([]);
   const [profileTeams, setProfileTeams] = useState<Team[]>([]);
+  
   const [modalOpen, setModalOpen] = useState(false);
-
+  
+  const [isEditing, setIsEditing] = useState(false);
   const [loading, setLoading] = useState(false);
 
   const { signOut } = useAuth();
@@ -89,14 +91,14 @@ function Profile() {
           setEmail(email);
         }
       } catch (err) {
-        console.log(err, "Sign up failed!");
+        console.log(err, "Fetching user failed.");
       }
     };
 
     fetchUser();
   }, []);
 
-  const [isEditing, setIsEditing] = useState(false);
+  
 
   const saveChanges = async (event: React.MouseEvent<HTMLButtonElement>) => {
     event.preventDefault();
@@ -161,8 +163,6 @@ function Profile() {
     fetchTeams();
   }, [fetchTeams]);
 
-
-  // const profilePic = useRef("frontend/teamfinder-frontend/src/modules/profile/assets/profile-pic.jpg");
   const updateProfilePic = (imgSrc: SetStateAction<string>) => {
     setProfilePicUrl(imgSrc);
   };
@@ -191,7 +191,7 @@ function Profile() {
   };
 
   const fetchProfilPic = async () => {
-    console.log("Fetching profile pic...");
+
     const token = localStorage.getItem("token");
     const response = await axios.get(
       `${BASE_URL}/users/fetchProfilePic`,
