@@ -37,6 +37,7 @@ public class SecurityConfiguration {
                 .authorizeHttpRequests(authorize -> authorize
                         .requestMatchers("/auth/**").permitAll()
                         .requestMatchers("/api/**").permitAll()
+                        .requestMatchers("/users/checkIfUserisCollegeRepresentative").hasRole("REPRESENTATIVE")
                         .anyRequest().authenticated()
                 )
                 .sessionManagement(session -> session

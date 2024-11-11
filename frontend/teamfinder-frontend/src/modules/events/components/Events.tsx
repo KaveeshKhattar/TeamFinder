@@ -25,10 +25,11 @@ import LoadingColleges from "../../home/components/LoadingColleges";
 
 function Events() {
   const [events, setEvents] = useState<Event[]>([]);
-  const [isRep, setIsRep] = useState<boolean>(false);
-
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const role = localStorage.getItem("role");
+
+  console.log("ROLE: ", role);
 
   const location = useLocation();
   const { collegeId } = location.state;
@@ -75,28 +76,6 @@ function Events() {
       fetchEvents();
     }
   };
-
-  const checkIfUserisCollegeRepresentative = useCallback(async () => {
-    const token = localStorage.getItem("token");
-    const response = await axios.get(`${BASE_URL}/users/checkIfUserisCollegeRepresentative`, {
-      params: {
-        collegeId: collegeId,
-      },
-      headers: {
-        Authorization: `Bearer ${token}`
-      }
-    });
-    setIsRep(response.data);
-  }, [collegeId]);
-
-  useEffect(() => {
-    const token = localStorage.getItem("token");
-    if (token) {
-      checkIfUserisCollegeRepresentative();
-    } else {
-      return;
-    }
-  }, [checkIfUserisCollegeRepresentative]);
 
   const onEdit = (id: number) => {
     const eventDetails = events.find((event) => event.id === id);
@@ -214,7 +193,7 @@ function Events() {
                   >
                     <Button className="mr-2">View Event</Button>
                   </Link>
-                  {isRep && (
+                  {role === "REPRESENTATIVE" && (
                     <>
                       <DropdownMenu>
                         <DropdownMenuTrigger className="p-2 rounded-md bg-black text-white">

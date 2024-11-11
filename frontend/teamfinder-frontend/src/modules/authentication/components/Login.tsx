@@ -32,6 +32,7 @@ function Login() {
             const { success, message, data } = response.data;
             if (success) {
                 localStorage.setItem("token", data.token);
+                localStorage.setItem("role", response.data.data.role);
                 signIn();
                 navigate("/colleges", { state: { email } });
             } else {

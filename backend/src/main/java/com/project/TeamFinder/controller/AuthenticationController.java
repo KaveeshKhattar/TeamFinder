@@ -63,8 +63,10 @@ public class AuthenticationController {
         
         User authenticatedUser = authenticationService.authenticate(loginUserDto);
         String jwtToken = jwtService.generateToken(authenticatedUser);
+        String userRole = authenticatedUser.getRole().name();
+        LoginResponse loginResponse = new LoginResponse(jwtToken, jwtService.getExpirationTime(), userRole);
         
-        LoginResponse loginResponse = new LoginResponse(jwtToken, jwtService.getExpirationTime());
+        // LoginResponse loginResponse = new LoginResponse(jwtToken, jwtService.getExpirationTime());
         ApiResponse<LoginResponse> response = new ApiResponse<LoginResponse>(true, loginResponse, "Login Successful");
         
         return ResponseEntity.ok(response);
