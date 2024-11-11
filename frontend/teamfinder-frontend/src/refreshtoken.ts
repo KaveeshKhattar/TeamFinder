@@ -2,7 +2,7 @@ import axios from "axios";
 import { BASE_URL } from "./config";
 
 // Function to decode JWT and check if it is near expiration
-function isTokenNearExpiration(token) {
+function isTokenNearExpiration(token: string | null): boolean {
     if (!token) return true; // If no token, consider it expired
     const payload = JSON.parse(atob(token.split('.')[1]));
     const expirationTime = payload.exp * 1000; // Convert to milliseconds
