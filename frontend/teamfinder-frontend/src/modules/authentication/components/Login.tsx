@@ -7,6 +7,7 @@ import { Input } from "../../../components/ui/input";
 import { Button } from "../../../components/ui/button";
 import { ReloadIcon } from "@radix-ui/react-icons";
 import { BASE_URL } from "../../../config";
+import startTokenRefreshTimer from "../../../refreshtoken";
 
 function Login() {
     
@@ -32,7 +33,9 @@ function Login() {
             const { success, message, data } = response.data;
             if (success) {
                 localStorage.setItem("token", data.token);
+                localStorage.setItem("refreshToken", data.refreshToken);
                 localStorage.setItem("role", response.data.data.role);
+                startTokenRefreshTimer();
                 signIn();
                 navigate("/colleges", { state: { email } });
             } else {

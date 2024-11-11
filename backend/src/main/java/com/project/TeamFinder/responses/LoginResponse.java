@@ -3,6 +3,7 @@ package com.project.TeamFinder.responses;
 
 public class LoginResponse {
     private String token;
+    private String refreshToken;
     private long expiresIn;
     private String role;
 
@@ -22,6 +23,14 @@ public class LoginResponse {
         this.token = token;
     }
 
+    public String getRefreshToken() {
+        return refreshToken;
+    }
+
+    public void setRefreshToken(String refreshToken) {
+        this.refreshToken = refreshToken;
+    }
+
     public long getExpiresIn() {
         return expiresIn;
     }
@@ -30,8 +39,9 @@ public class LoginResponse {
         this.expiresIn = expiresIn;
     }
 
-    public LoginResponse(String jwtToken, long expirationTime, String role) {
+    public LoginResponse(String jwtToken, String refreshToken, long expirationTime, String role) {
         this.token = jwtToken;
+        this.refreshToken = refreshToken;
         this.expiresIn = expirationTime;
         this.role = role;  // Initialize role
     }

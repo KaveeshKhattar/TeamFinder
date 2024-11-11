@@ -54,6 +54,11 @@ public class AuthenticationService {
         return userRepository.existsByEmailContainingIgnoreCase(email);
     }
 
+    public User loadUserByEmail(String email) {
+        Optional<User> user = userRepository.findByEmail(email);
+        return user.get();
+    }
+
     public User signup(RegisterUserDTO input) {
         User user = new User(input.getFirstName(), input.getLastName(),
                 input.getFirstName() + " " + input.getLastName(), input.getEmail(),

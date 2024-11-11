@@ -25,6 +25,9 @@ public class JwtService {
     @Value("${security.jwt.expiration-time}")
     private long jwtExpiration;
 
+    @Value("${security.jwt.refresh-token-expiration-time}")
+    private long refreshTokenExpiration;
+
     public String extractUsername(String token) {
         return extractClaim(token, Claims::getSubject);
     }
@@ -44,7 +47,29 @@ public class JwtService {
     }
 
     public String generateToken(UserDetails userDetails) {
-        return generateToken(new HashMap<>(), userDetails);
+        Map<String, Object> extraClaims = new HashMap<>();
+        extraClaims.put("type", "access");
+        return generateToken(extraClaims, userDetails);
+    }
+
+    public String generateRefreshToken(UserDetails userDetails) {
+        Map<String, Object> extraClaims = new HashMap<>();
+        extraClaims.put("type", "refresh");
+        return generateToken(extraClaims, userDetails, refreshTokenExpiration);
+    }
+
+    private String generateToken(Map<String, Object> extraClaims, UserDetails userDetails, long expiration) {
+        System.out.println("Called for refresh token expiration");
+        return buildToken(new HashMap<>(), userDetails, expiration);
+    }
+
+    public boolean isRefreshTokenValid(String refreshToken) {
+        try {
+            extractAllClaims(refreshToken);
+            return !isTokenExpired(refreshToken);
+        } catch (Exception e) {
+            return false;
+        }
     }
 
     public String generateToken(Map<String, Object> extraClaims, UserDetails userDetails) {

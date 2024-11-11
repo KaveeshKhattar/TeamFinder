@@ -3,8 +3,10 @@ package com.project.TeamFinder.controller;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -63,13 +65,37 @@ public class AuthenticationController {
         
         User authenticatedUser = authenticationService.authenticate(loginUserDto);
         String jwtToken = jwtService.generateToken(authenticatedUser);
+        String refreshToken = jwtService.generateRefreshToken(authenticatedUser);
+
+        // Send both tokens back to the client
+        Map<String, String> tokens = new HashMap<>();
+        tokens.put("token", jwtToken);
+        tokens.put("refreshToken", refreshToken);
+
         String userRole = authenticatedUser.getRole().name();
-        LoginResponse loginResponse = new LoginResponse(jwtToken, jwtService.getExpirationTime(), userRole);
+        LoginResponse loginResponse = new LoginResponse(jwtToken, refreshToken, jwtService.getExpirationTime(), userRole);
         
         // LoginResponse loginResponse = new LoginResponse(jwtToken, jwtService.getExpirationTime());
         ApiResponse<LoginResponse> response = new ApiResponse<LoginResponse>(true, loginResponse, "Login Successful");
         
         return ResponseEntity.ok(response);
+    }
+
+    @PostMapping("/refresh-token")
+    public ResponseEntity<Map<String, String>> refreshAccessToken(@RequestBody Map<String, String> request) {
+        String refreshToken = request.get("refreshToken");
+
+        if (jwtService.isRefreshTokenValid(refreshToken)) {
+            String username = jwtService.extractUsername(refreshToken);
+            UserDetails userDetails = authenticationService.loadUserByEmail(username);
+            String newAccessToken = jwtService.generateToken(userDetails);
+
+            Map<String, String> response = new HashMap<>();
+            response.put("accessToken", newAccessToken);
+            return ResponseEntity.ok(response);
+        } else {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+        }
     }
 
     @PostMapping("/verify")
