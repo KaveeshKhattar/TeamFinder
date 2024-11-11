@@ -13,6 +13,7 @@ import {
   CardTitle,
 } from "../../../components/ui/card";
 import { BASE_URL } from "../../../config";
+import IndividualCard from "../../teams/components/IndividualCard";
 
 function ProfileTeam() {
 
@@ -158,12 +159,12 @@ function ProfileTeam() {
     <>
       <Header></Header>
 
-      <div className="flex flex-col relative">
+      <div className="flex flex-col relative min-h-screen">
         <SearchBar placeholder="Add People" onChange={handleSearchChange} />
 
         {/* Dropdown for filtered people */}
         {divVisible && (
-          <div className="absolute w-full border-2 border-gray-300 mt-10 bg-white text-black dark:text-white rounded-md mb-2 max-h-[200px] overflow-auto">
+          <div className="mt-10 dark:bg-zinc-700 bg-slate-100 text-black dark:text-white rounded-md absolute z-30 w-full">
 
             {filteredPeople.length > 0 ? (
               filteredPeople.map((person: Member) => {
@@ -174,25 +175,24 @@ function ProfileTeam() {
                     className="flex justify-between items-center p-2"
                   // Add onClick handler to handle selection if needed
                   >
-                    <p> {person.firstName} {person.lastName} </p>
+                    <IndividualCard key={person.id} individual={person} />
 
-                    <Button className="bg-green-500" onClick={() => addMember(person)}>
+                    <Button className="flex items-center p-1 text-white bg-green-500" type="button" onClick={() => addMember(person)}>
                       <i className="fa-solid fa-plus p-1"></i>
-                      <p>Add</p>
                     </Button>
 
                   </div>
                 )
               })
             ) : (
-              <div className="p-2">No results found</div>
+              <div className=" p-2">No results found</div>
             )}
           </div>
         )}
 
         
 
-        <div className="flex flex-col ">
+        <div className="flex flex-col">
 
           <Card className="mb-2 mt-2">
         <CardHeader>
@@ -209,13 +209,11 @@ function ProfileTeam() {
             <p className="text-muted-foreground text-left">Members</p>
           {members.map((member: Member) => {
             return (
-              <div key={`${member.id}-${member.email}`} className="flex justify-between items-center mb-2">
-                <p>{member.firstName} {member.lastName}</p>
-
+              <div key={`${member.id}-${member.email}`} className="flex justify-between items-center mb-4">
+                <IndividualCard key={member.id} individual={member} />
                 <Button variant="destructive" onClick={() => removeMember(member.id)}>
-                    <i className="fa-solid fa-minus p-1"></i>
-                    <p>Remove</p>
-                  </Button>
+                  <i className="fa-solid fa-minus"></i>
+                </Button>
               </div>
             )
           })}

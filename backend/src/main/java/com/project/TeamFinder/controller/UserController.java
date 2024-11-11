@@ -148,7 +148,6 @@ public class UserController {
         }
         
         final String fileName = prefix + ".png";
-        System.out.println("Filename being searched for: " + fileName);
         
         try {
             byte[] data = imageHandlerService.getFile("image-store", fileName);

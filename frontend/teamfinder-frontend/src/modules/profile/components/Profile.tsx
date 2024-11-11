@@ -5,7 +5,6 @@ import axios from "axios";
 import profilePic from "../assets/blank-profile-picture-973460_1280.webp";
 import { useAuth } from "../../core/hooks/useAuth";
 import { Team } from "../../../types";
-import TeamCard from "../../teams/components/TeamCard";
 import "react-image-crop/dist/ReactCrop.css";
 import Modal from "./Modal";
 import { Button } from "../../../components/ui/button";
@@ -35,6 +34,7 @@ import {
 import { DialogFooter } from "../../../components/ui/dialog";
 import { BASE_URL } from "../../../config";
 import { Skeleton } from "../../../components/ui/skeleton";
+import TeamCardProfile from "./TeamCardProfile";
 
 function Profile() {
   const [userId, setUserId] = useState(0);
@@ -427,7 +427,7 @@ function Profile() {
                 <div className="grid grid-cols-1 md:grid-cols-2 mt-4 gap-2 h-full">
                 {profileTeams.length > 0 ? (
                   profileTeams.map((profileTeam) => (
-                    <TeamCard
+                    <TeamCardProfile
                       key={profileTeam.teamId}
                       team={profileTeam}
                       location={`${location.pathname}`}
