@@ -22,6 +22,12 @@ public class College {
     @Column(unique = true, nullable = false)
     private String location;
 
+    public College(Long id, String name, String location) {
+        this.id = id;
+        this.name = name;
+        this.location = location;
+    }
+
     public Long getId() {
         return id;
     }

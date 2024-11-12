@@ -31,6 +31,7 @@ function HomePage() {
         setError("No colleges available");
       } else if (response.status === 200) {
         // Handle successful response with data
+        console.log(response)
         setColleges(response.data);
         setError("");
       }
