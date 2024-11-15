@@ -1,2 +1,3 @@
 com/project/TeamFinder/TeamFinderApplicationTests.class
 com/project/TeamFinder/UnitTesting/CollegeServiceTest.class
+com/project/TeamFinder/IntegrationTesting/CollegeControllerIT.class
