@@ -8,9 +8,9 @@ This platform connects:
 # Story Behind TeamFinder
 
 * The inspiration for building TeamFinder came from a personal experience during my college days. 
-* I once planned to participate in a hackathon hosted by my college but faced a common issue — my close friends were either out of town or uninterested in joining. Discouraged by the lack of a team, I decided not to go, only to later realize that some of my high school acquaintances had attended with teams smaller than the allowed size. 
-* This made me think: I could have been part of their team if only I had known they were going and were open to adding members.
+* I once planned to participate in a hackathon hosted by my college but faced a common issue — my close friends were either out of town or uninterested in joining. Discouraged by the lack of a team, I decided not to go, only to later realize that some of my high school acquaintances had attended with teams smaller than the allowed size.
 
+  
 * This experience led me to develop TeamFinder, a platform designed to bridge the gap between students and event participants by helping them find and join teams for hackathons, competitions, and other group activities. 
 * TeamFinder ensures that no one misses out on valuable opportunities just because they couldn’t form or find a team in time. 
 
