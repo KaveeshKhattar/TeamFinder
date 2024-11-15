@@ -14,4 +14,4 @@ This platform connects:
 * This experience led me to develop TeamFinder, a platform designed to bridge the gap between students and event participants by helping them find and join teams for hackathons, competitions, and other group activities. 
 * TeamFinder ensures that no one misses out on valuable opportunities just because they couldn’t form or find a team in time. 
 
-This app aims to foster collaboration and maximize participation.
+This app, thus, aims to foster collaboration and maximize participation.
