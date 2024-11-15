@@ -52,4 +52,8 @@ public class College {
         this.location = location;
     }
 
+    // Default constructor (required by Hibernate)
+    public College() {
+    }
+
 }
