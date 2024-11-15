@@ -211,7 +211,7 @@ function ProfileTeam() {
             return (
               <div key={`${member.id}-${member.email}`} className="flex justify-between items-center mb-4">
                 <IndividualCard key={member.id} individual={member} />
-                <Button variant="destructive" onClick={() => removeMember(member.id)}>
+                <Button variant="destructive" className="text-xs" onClick={() => removeMember(member.id)}>
                   <i className="fa-solid fa-minus"></i>
                 </Button>
               </div>

@@ -43,7 +43,7 @@ function Events() {
       );
       if (response.status === 204) {
         setEvents([]);
-        setError("No colleges found");
+        setError("No Events found");
       } else if (response.status === 200) {
         setEvents([...response.data]);
       }
@@ -122,7 +122,7 @@ function Events() {
   }
 
   if (error) {
-    return <div>Error: {error}</div>;
+    return <div className="min-h-screen">{error}</div>;
   }
 
   return (
