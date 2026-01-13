@@ -24,6 +24,11 @@ public class UserService {
         this.collegeRepresentativeRepository = collegeRepresentativeRepository;
     }
 
+    public void addToWaitlist(String email) {
+        System.out.println("Service layer adding to waitlist: " + email);
+        userRepository.addToWaitlist(email);
+    }
+
     public List<User> allUsers() {
         List<User> users = new ArrayList<>();
         userRepository.findAll().forEach(users::add);

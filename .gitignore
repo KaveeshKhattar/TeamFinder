@@ -59,3 +59,6 @@ dist-ssr
 *.njsproj
 *.sln
 *.sw?
+
+backend/src/main/resources/application.properties
+backend/target/classes/application.properties

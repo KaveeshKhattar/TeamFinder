@@ -36,6 +36,7 @@ public class SecurityConfiguration {
                 .cors(cors -> cors.configurationSource(corsConfigurationSource()))
                 .authorizeHttpRequests(authorize -> authorize
                         .requestMatchers("/auth/**").permitAll()
+                        .requestMatchers("/users/waitlist").permitAll()
                         .requestMatchers("/api/**").permitAll()
                         .requestMatchers("/users/checkIfUserisCollegeRepresentative").hasRole("REPRESENTATIVE")
                         .anyRequest().authenticated()

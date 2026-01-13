@@ -5,6 +5,12 @@ This platform's purpose:
 - to connect individuals with teams that have room for more members
 - to help teams looking for prospective members be proactive and search for interested people
 
+OR
+
+1. **Individuals seeking teams** based on skills or acquaintances.
+2. **Teams looking for members** with specific skills or connections
+
+
 ## Origin Story
 The inspiration for building TeamFinder came from a personal experience during my college days.
 

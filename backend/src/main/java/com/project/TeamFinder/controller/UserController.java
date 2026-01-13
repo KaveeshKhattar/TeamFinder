@@ -6,6 +6,7 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.project.TeamFinder.dto.UpdateUserDTO;
+import com.project.TeamFinder.dto.WaitlistRequestDTO;
 import com.project.TeamFinder.model.User;
 import com.project.TeamFinder.service.ImageHandlerService;
 import com.project.TeamFinder.service.JwtService;
@@ -16,7 +17,9 @@ import org.springframework.security.core.Authentication;
 import java.io.File;
 import java.util.Base64;
 import java.util.List;
+import java.util.Map;
 
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -44,6 +47,29 @@ public class UserController {
         this.userService = userService;
         this.jwtService = jwtService;
         this.imageHandlerService = imageHandlerService;
+    }
+
+    @PostMapping("/waitlist")
+    public ResponseEntity<?> addToWaitlist(@RequestBody WaitlistRequestDTO request) {
+        try {
+        String email = request.getEmail();
+        userService.addToWaitlist(email);
+        return ResponseEntity.ok(Map.of(
+            "success", true,
+            "message", "Added to waitlist successfully"
+        ));
+    } catch (DataIntegrityViolationException e) {
+        // Duplicate email
+        return ResponseEntity.status(HttpStatus.CONFLICT).body(Map.of(
+            "success", false,
+            "message", "This email is already on the waitlist"
+        ));
+    } catch (Exception e) {
+        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(Map.of(
+            "success", false,
+            "message", "Failed to add to waitlist"
+        ));
+    }
     }
 
     @GetMapping("/")
