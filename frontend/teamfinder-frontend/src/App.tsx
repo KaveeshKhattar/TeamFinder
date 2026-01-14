@@ -1,6 +1,7 @@
 import { Route, BrowserRouter as Router, Routes } from 'react-router-dom'
 import './App.css'
 import LandingPage from './modules/landingPage/components/LandingPage'
+import LandingPagev1 from './modules/landingPage/components/LandingPagev1'
 import Verification from './modules/authentication/components/Verification'
 import HomePage from './modules/home/components/HomePage'
 import Login from './modules/authentication/components/Login'
@@ -31,6 +32,7 @@ function App() {
           <Router>
             <Suspense fallback={<Loading />}>
               <Routes>
+                <Route path="/launch" element={<LandingPagev1 />} />
                 <Route path="/" element={<LandingPage />} />
                 <Route path="/profile" element={<Profile />} />
                 <Route path="/profile/:teamUrl" element={<ProfileTeam />} />
