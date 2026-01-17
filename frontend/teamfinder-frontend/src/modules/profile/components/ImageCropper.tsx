@@ -16,10 +16,16 @@ import { Button } from "../../../components/ui/button";
 const ASPECT_RATIO = 1;
 const MIN_DIMENSION = 150;
 
+const supabase_secret = import.meta.env.SUPABASE_SERVICE_KEY;
+
+if (!supabase_secret) {
+  throw new Error("Supabase service key is not configured. Please set SUPABASE_SERVICE_KEY or VITE_SUPABASE_SERVICE_KEY environment variable.");
+}
+
 // Create a single supabase client for interacting with your database
 const supabase = createClient(
   "https://allzrnbdqtbuulmoiclr.supabase.co",
-  "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImFsbHpybmJkcXRidXVsbW9pY2xyIiwicm9sZSI6InNlcnZpY2Vfcm9sZSIsImlhdCI6MTc2ODI3OTg2NiwiZXhwIjoyMDgzODU1ODY2fQ.Oe3EF9nqSVJlTDCAvkwj8j2azPkJeQCyTUky023FWmo"
+  supabase_secret
 );
 
 interface JwtPayload {
