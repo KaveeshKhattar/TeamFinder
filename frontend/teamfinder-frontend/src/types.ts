@@ -1,17 +1,11 @@
-export interface College {
-    id: number;
-    name: string;
-    location: string
-}
-
 export interface Event {
     id: number;
-    collegeId: number;
-    date: Date;
+    create_at: string;
     name: string;
-    venue: string;
-    teamSize: number;
     description: string;
+    venue: string;
+    start_date: string;
+    end_date: string
 }
 
 export interface Member {

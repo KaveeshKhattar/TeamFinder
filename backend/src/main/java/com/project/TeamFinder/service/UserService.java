@@ -42,20 +42,25 @@ public class UserService {
 
     @Transactional
     public User updateUser(String email, UpdateUserDTO updateUserDTO) {
+
+        System.out.println("Updating user in service layer: " + email);
+        
         Optional<User> optionalUser = userRepository.findByEmail(email);
         
         User user = optionalUser.orElseThrow(() -> new RuntimeException("User not found"));
 
         user.setFirstName(updateUserDTO.getFirstName());
-        user.setLastName(updateUserDTO.getLastName());
+        user.setLastName(updateUserDTO.getLastName());  
         user.setEmail(updateUserDTO.getEmail());
+        user.setBio(updateUserDTO.getBio());
+        user.setSkills(updateUserDTO.getSkills());
         return userRepository.save(user);
     }
 
-    public List<User> getUsersByFullName(String firstNameSearch) {
-        List<User> searchResults = userRepository.findByFullNameContainingIgnoreCase(firstNameSearch);
-        return searchResults;
-    }
+    // public List<User> getUsersByFullName(String firstNameSearch) {
+    //     List<User> searchResults = userRepository.findByFullNameContainingIgnoreCase(firstNameSearch);
+    //     return searchResults;
+    // }
 
     public Boolean isUserCollegeRepresentative(String email, Long collegeId) {
         Optional<Long> collegeNameOpt = collegeRepresentativeRepository.findByEmailAndCollege(email, collegeId);
@@ -67,10 +72,12 @@ public class UserService {
     }
 
     public void saveFileURL(String userEmail, String fileURL) {
+        System.out.println("Saving file URL to database: " + fileURL + " for user: " + userEmail);
         userRepository.addPictureURL(userEmail, fileURL);
     }
 
     public void deleteFileURL(String userEmail) {
+        System.out.println("Deleting file URL from database for user: " + userEmail);
         userRepository.removePictureURL(userEmail);
     }
 

@@ -25,7 +25,6 @@ const Modal: React.FC<ModalProps> = ({ updateProfilePic, closeModal }) => {
                 className="rounded-md inline-flex items-center justify-center absolute top-2 right-2"
                 onClick={closeModal}
               >
-                <span className="sr-only">Close menu</span>
                 <Button variant="secondary" className="mt-1.5">Close</Button>
               </button>
               <ImageCropper updateProfilePic={updateProfilePic} closeModal={closeModal}/>

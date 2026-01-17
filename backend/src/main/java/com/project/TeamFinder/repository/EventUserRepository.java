@@ -27,6 +27,11 @@ public interface EventUserRepository extends CrudRepository<EventUser, Long>{
 
     @Modifying
     @Transactional
+    @Query(value = "SELECT event_id FROM events_interested_users WHERE user_id = :userId", nativeQuery = true)
+    List<Long> findInterestedEventIDsPerUser(@Param("userId") Long userId);
+
+    @Modifying
+    @Transactional
     @Query(value = "INSERT INTO events_interested_users (event_id, user_id) VALUES (:eventId, :id)", nativeQuery = true)
     void addInterestedUserToEvent(@Param("eventId") Long eventId, @Param("id") Long id);
 

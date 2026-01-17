@@ -19,7 +19,7 @@ public interface UserRepository extends CrudRepository<User, Long> {
     Optional<User> findByVerificationCode(String verification_code);
     Boolean existsByEmailContainingIgnoreCase(String email);
     List<UserProjection> findAllByIdIn(List<Long> userIds);
-    List<User> findByFullNameContainingIgnoreCase(String firstName);
+    // List<User> findByFullNameContainingIgnoreCase(String firstName);
 
     
     @Modifying
@@ -28,10 +28,12 @@ public interface UserRepository extends CrudRepository<User, Long> {
     void addToWaitlist(String email);
 
     @Modifying
+    @Transactional
     @Query(value="UPDATE users SET picture_url = :url WHERE email = :user_email", nativeQuery = true)
     void addPictureURL(String user_email, String url);
 
     @Modifying
+    @Transactional
     @Query(value="UPDATE users SET picture_url = NULL WHERE email = :user_email", nativeQuery = true)
     void removePictureURL(String user_email);
 

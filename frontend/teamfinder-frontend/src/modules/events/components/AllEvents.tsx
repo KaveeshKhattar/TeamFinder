@@ -109,7 +109,7 @@ function AllEvents() {
                   <CardContent>
                     <div className="flex items-center">
                       <p className="text-sm mr-1">Team Size:</p>
-                      <p className="text-sm">{event.teamSize}</p>
+                      <p className="text-sm">{event.venue}</p>
                     </div>
 
                     <div className="flex items-center">

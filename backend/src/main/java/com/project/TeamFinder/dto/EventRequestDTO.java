@@ -1,38 +1,34 @@
 package com.project.TeamFinder.dto;
 
+import java.time.OffsetDateTime;
+
 public class EventRequestDTO {
-    private Long collegeId;
+    // private Long collegeId;
     private String eventName;
-    private String eventDate;
-    private String eventTime;
+    // private String eventDate;
+    // private String eventTime;
+    private OffsetDateTime eventTime;
     private String eventVenue; // Adjust type if needed
-    private Long teamSize;
-    private String eventDescription;
+    private Long size;
+    // private String eventDescription;
 
     public Long getTeamSize() {
-        return teamSize;
+        return size;
     }
 
-    public void setTeamSize(Long teamSize) {
-        this.teamSize = teamSize;
+    public void setTeamSize(Long size) {
+        this.size = size;
     }
 
-    public String getEventDescription() {
-        return eventDescription;
-    }
+    // public String getEventDescription() {
+    //     return eventDescription;
+    // }
 
-    public void setEventDescription(String eventDescription) {
-        this.eventDescription = eventDescription;
-    }
+    // public void setEventDescription(String eventDescription) {
+    //     this.eventDescription = eventDescription;
+    // }
 
     // Getters and Setters
-    public Long getCollegeId() {
-        return collegeId;
-    }
-
-    public void setCollegeId(Long collegeId) {
-        this.collegeId = collegeId;
-    }
 
     public String getEventName() {
         return eventName;
@@ -42,19 +38,11 @@ public class EventRequestDTO {
         this.eventName = eventName;
     }
 
-    public String getEventDate() {
-        return eventDate;
-    }
-
-    public void setEventDate(String eventDate) {
-        this.eventDate = eventDate;
-    }
-
-    public String getEventTime() {
+    public OffsetDateTime getEventTime() {
         return eventTime;
     }
 
-    public void setEventTime(String eventTime) {
+    public void setEventTime(OffsetDateTime eventTime) {
         this.eventTime = eventTime;
     }
 

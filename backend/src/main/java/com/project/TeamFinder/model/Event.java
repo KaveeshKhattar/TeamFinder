@@ -1,4 +1,6 @@
 package com.project.TeamFinder.model;
+import java.time.OffsetDateTime;
+import java.util.Date;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -17,21 +19,21 @@ public class Event {
 
     @Column
     private String name;
+    
+    @Column
+    private String description;
 
     @Column
     private String venue;
 
     @Column
-    private String description;
-
+    private Date start_date;
+    
     @Column
-    private String date;
+    private Date end_date;
 
-    @Column
-    private int teamSize;
-
-    @Column(name = "college_id")
-    private Long collegeId;
+    // @Column
+    // private int size;
 
     public Long getId() {
         return id;
@@ -65,28 +67,29 @@ public class Event {
         this.description = description;
     }
 
-    public String getDate() {
-        return date;
+
+    public Date getStart_date() {
+        return start_date;
     }
 
-    public void setDate(String date) {
-        this.date = date;
+    public void setStart_date(Date start_date) {
+        this.start_date = start_date;
     }
 
-    public int getTeamSize() {
-        return teamSize;
+    public Date getEnd_date() {
+        return end_date;
     }
 
-    public void setTeamSize(int teamSize) {
-        this.teamSize = teamSize;
+    public void setEnd_date(Date end_date) {
+        this.end_date = end_date;
     }
 
-    public Long getCollegeId() {
-        return collegeId;
-    }
+    // public int getSize() {
+    //     return size;
+    // }
 
-    public void setCollegeId(Long collegeId) {
-        this.collegeId = collegeId;
-    }
+    // public void setSize(int size) {
+    //     this.size = size;
+    // }
 
 }

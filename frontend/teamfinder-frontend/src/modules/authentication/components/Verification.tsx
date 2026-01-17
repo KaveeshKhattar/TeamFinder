@@ -4,8 +4,13 @@ import axios from "axios";
 import { useNavigate } from 'react-router-dom';
 import { useState } from "react";
 import { Button } from "../../../components/ui/button";
-import { Input } from "../../../components/ui/input";
 import { BASE_URL } from "../../../config";
+import {
+    InputOTP,
+    InputOTPGroup,
+    InputOTPSeparator,
+    InputOTPSlot,
+} from "../../../components/ui/input-otp";
 
 function Verification() {
     const location = useLocation();
@@ -31,23 +36,43 @@ function Verification() {
             if (axios.isAxiosError(error)) {
                 const errorMessage = error.response?.data?.message || "An error occurred.";
                 setError(errorMessage);
-              } else {
+            } else {
                 setError("An unexpected error occured.");
-              }
+            }
         }
     }
 
     return (
         <>
             <Header></Header>
-            <form className="flex flex-col min-h-screen" onSubmit={handleSubmit}>
-                <p className="text-2xl m-2">Verification code has been sent to: <span className="font-bold text-blue-500">{email}</span></p>
-                <Input type="text" value={verificationCode} onChange={(e) => setVerificationCode(e.target.value)} className="mb-2 " placeholder="Enter Verification Code" />
-                <Button>
-                    Submit
-                </Button>
-                {error && <p className="text-red-500 mt-2">{error}</p>}
-            </form>
+
+            <div className="flex items-center justify-center min-h-[calc(100vh-6rem)]">
+                <div className="flex flex-col items-center justify-center scale-125">
+                    <p className="text-lg m-2">We've sent a code to: <span className="font-bold">{email}</span></p>
+                    <p className="text-lg m-2">The code expires in 15 minutes</p>
+                    <form className="flex flex-col items-center justify-center" onSubmit={handleSubmit}>
+
+                        {/* <Input type="text" value={verificationCode} onChange={(e) => setVerificationCode(e.target.value)} className="mb-2 " placeholder="Enter Verification Code" /> */}
+                        <InputOTP maxLength={6} onChange={(value) => setVerificationCode(value)}>
+                            <InputOTPGroup>
+                                <InputOTPSlot index={0} />
+                                <InputOTPSlot index={1} />
+                                <InputOTPSlot index={2} />
+                            </InputOTPGroup>
+                            <InputOTPSeparator />
+                            <InputOTPGroup>
+                                <InputOTPSlot index={3} />
+                                <InputOTPSlot index={4} />
+                                <InputOTPSlot index={5} />
+                            </InputOTPGroup>
+                        </InputOTP>
+                        <Button className="m-2">
+                            Submit
+                        </Button>
+                        {error && <p className="text-red-500 mt-2">{error}</p>}
+                    </form>
+                </div>
+            </div>
         </>
     )
 }

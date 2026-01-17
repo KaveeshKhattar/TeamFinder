@@ -1,65 +1,47 @@
-import { SetStateAction, useCallback, useEffect, useState } from "react";
-import Header from "../../landingPage/components/Header";
+import { SetStateAction, useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
+import Header from "../../landingPage/components/Header";
 import axios from "axios";
-import profilePic from "../assets/blank-profile-picture-973460_1280.webp";
-import { useAuth } from "../../core/hooks/useAuth";
-import { Team } from "../../../types";
-import "react-image-crop/dist/ReactCrop.css";
-import Modal from "./Modal";
+import { BASE_URL } from "../../../config";
 import { Button } from "../../../components/ui/button";
-import { Label } from "../../../components/ui/label";
-import { Input } from "../../../components/ui/input";
 import {
-  Card,
-  CardContent,
-  CardFooter,
-  CardHeader,
-} from "../../../components/ui/card";
+  Dialog,
+  DialogClose,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "../../../components/ui/dialog";
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "../../../components/ui/dropdown-menu";
-
-import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogHeader,
-  DialogTitle,
-  DialogTrigger,
-} from "../../../components/ui/dialog";
-import { DialogFooter } from "../../../components/ui/dialog";
-import { BASE_URL } from "../../../config";
+import { Input } from "../../../components/ui/input";
+import { Label } from "../../../components/ui/label";
 import { Skeleton } from "../../../components/ui/skeleton";
-import TeamCardProfile from "./TeamCardProfile";
+import { Camera, Edit2 } from "lucide-react";
+import Modal from "./Modal";
+import defaultProfilePicture from "../assets/blank-profile-picture-973460_1280.webp";
+import Leads from "./Leads";
+
+type User = {
+  id: number;
+  firstName: string;
+  lastName: string;
+  email: string;
+  photoUrl: string;
+  bio: string;
+  skills: string[];
+};
 
 function Profile() {
-  const [userId, setUserId] = useState(0);
-  const [email, setEmail] = useState("");
-  const [firstName, setFirstName] = useState("");
-  const [lastName, setLastName] = useState("");
-  
-  const [profilePicUrl, setProfilePicUrl] = useState(profilePic);
-  const [profileTeams, setProfileTeams] = useState<Team[]>([]);
-  
-  const [modalOpen, setModalOpen] = useState(false);
-  
-  const [isEditing, setIsEditing] = useState(false);
-  const [loading, setLoading] = useState(false);
-
-  const { signOut } = useAuth();
   const navigate = useNavigate();
-
-  const handleSignOut = (event: React.MouseEvent<HTMLButtonElement>) => {
-    event.preventDefault();
-    signOut();
-    localStorage.removeItem("token");
-    localStorage.setItem("isSignedIn", "false");
-    navigate("/");
-  };
+  const [user, setUser] = useState<User | null>(null);
+  const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
     if (localStorage.getItem("token") === null) {
@@ -72,100 +54,91 @@ function Profile() {
 
     const fetchUser = async () => {
       try {
-        const response = await axios.get(
-          `${BASE_URL}/users/profile`,
-          {
-            headers: {
-              Authorization: `Bearer ${token}`,
-            },
-          }
-        );
+        setIsLoading(true);
+        const response = await axios.get(`${BASE_URL}/users/profile`, {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        });
 
         if (response.status === 200) {
-          const { firstName = "", lastName = "", id, email = "" } = response.data;
-
-          // Set state with the fetched data
-          setUserId(id);
-          setFirstName(firstName);
-          setLastName(lastName);
-          setEmail(email);
+          setUser(response.data);
         }
       } catch (err) {
         console.log(err, "Fetching user failed.");
+      } finally {
+        setIsLoading(false);
       }
     };
 
     fetchUser();
   }, []);
 
-  
+  const [open, setOpen] = useState(false);
+  async function onSubmit(e: React.FormEvent<HTMLFormElement>) {
+    e.preventDefault();
+    setOpen(false);
 
-  const saveChanges = async (event: React.MouseEvent<HTMLButtonElement>) => {
-    event.preventDefault();
-
-    const token = localStorage.getItem("token");
-
-    if (isEditing) {
-      try {
-        const response = await fetch(`${BASE_URL}/users/update`, {
-          method: "PUT",
-          headers: {
-            Authorization: `Bearer ${token}`,
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({
-            firstName: firstName,
-            lastName: lastName,
-            email: email
-          }),
-        });
-
-        if (response.status === 200) {
-          setIsEditing(false); // Toggle edit mode after a successful update
-        } else {
-          console.error("Failed to update user:", await response.text());
-        }
-      } catch (error) {
-        console.error("Error updating user:", error);
+    console.log("Form submitted");
+    const formData = new FormData(e.currentTarget);
+    const data = {
+      firstName: formData.get("firstname"),
+      lastName: formData.get("lastname"),
+      email: formData.get("email"),
+      bio: formData.get("bio"),
+      skills: formData.get("skills")?.toString().split(",").map(skill => skill.trim()),
+    };
+    console.log("Submitting data:", data);
+    try {
+      const token = localStorage.getItem("token");
+      const response = await axios.put(`${BASE_URL}/users/update`, data, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+          "Content-Type": "application/json",
+        },
+      });
+      if (response.status === 200) {
+        setUser(response.data);
       }
-    } else {
-      setIsEditing(true); // Enable editing if not currently in edit mode
+    } catch (err) {
+      console.error("Profile update failed:", err);
     }
-  };
+  }
 
-  const fetchTeams = useCallback(async () => {
-    setLoading(true);
-    if (userId) {
-      // Ensure userId is set
-      try {
-        const token = localStorage.getItem("token");
-        const responseTeams = await axios.get(
-          `${BASE_URL}/api/teams/profile`,
-          {
-            params: { userId: userId },
-            headers: {
-              Authorization: `Bearer ${token}`, // Include the JWT token
-            },
-          }
-        );
-        if (responseTeams.status === 200) {
-          setProfileTeams(responseTeams.data);
-          // localStorage.setItem("profileTeams", JSON.stringify(profileTeams));
-          setLoading(false);
-        }
-      } catch (error) {
-        console.error("Error fetching teams:", error);
-      }
-    }
-  }, [userId]);
-
-  useEffect(() => {
-    fetchTeams();
-  }, [fetchTeams]);
+  const [modalOpen, setModalOpen] = useState(false);
+  const [profilePicUrl, setProfilePicUrl] = useState(defaultProfilePicture);
+  const [isLoadingProfilePic, setIsLoadingProfilePic] = useState(true);
 
   const updateProfilePic = (imgSrc: SetStateAction<string>) => {
     setProfilePicUrl(imgSrc);
   };
+
+  const fetchProfilePic = async () => {
+    const token = localStorage.getItem("token");
+    try {
+      setIsLoadingProfilePic(true);
+      const response = await axios.get(`${BASE_URL}/users/fetchProfilePic`, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+
+      if (response.data === "Fail") {
+        setProfilePicUrl(defaultProfilePicture);
+      } else {
+        setProfilePicUrl(response.data);
+      }
+    } catch (err) {
+      console.log(err);
+      setProfilePicUrl(defaultProfilePicture);
+    } finally {
+      setIsLoadingProfilePic(false);
+    }
+  };
+
+  useEffect(() => {
+    fetchProfilePic();
+  }, []);
 
   const deleteProfilePicture = async () => {
     const token = localStorage.getItem("token");
@@ -178,7 +151,7 @@ function Profile() {
     } catch (err) {
       console.log(err);
     }
-    setProfilePicUrl(profilePic);
+    setProfilePicUrl(defaultProfilePicture);
     try {
       await axios.delete(`${BASE_URL}/users/deleteImageURL`, {
         headers: {
@@ -190,258 +163,223 @@ function Profile() {
     }
   };
 
-  const fetchProfilPic = async () => {
-
-    const token = localStorage.getItem("token");
-    const response = await axios.get(
-      `${BASE_URL}/users/fetchProfilePic`,
-      {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      }
-    );
-
-    if (response.data === "Fail") {
-      setProfilePicUrl(profilePic);
-    } else {
-      setProfilePicUrl(response.data);
-    }
-  };
-
-  useEffect(() => {
-    fetchProfilPic();
-  }, []);
-
-  if (loading) {
-    return (
-      <>
-        <Header />        
-        <div className="flex flex-col justify-center items-center space-x-4 min-h-screen">
-          <Skeleton className="h-[150px] w-[150px] rounded-full mb-16" />
-          <div className="space-y-2">
-            <Skeleton className="h-4 w-[200px]" />
-            <Skeleton className="h-4 w-[200px]" />
-          </div>
-          <div className="mt-16">
-            <div className="grid grid-cols-1 md:grid-cols-2 mt-4 gap-2 h-full">
-            <Card className="w-[300px] mt-4">
-              <CardHeader>
-                <Skeleton className="mt-8 h-4 w-[200px]" />
-              </CardHeader>
-              <CardContent>
-                <div className="flex flex-col text-left text-lg">
-                  <div className="flex items-center space-x-4">
-                    <Skeleton className="h-12 w-12 rounded-full" />
-                    <div className="space-y-2">
-                      <Skeleton className="h-4 w-[150px]" />
-                      <Skeleton className="h-4 w-[150px]" />
-                    </div>
-                  </div>
-                </div>
-                <div className="flex flex-col text-left text-lg mt-2">
-                  <div className="flex items-center space-x-4">
-                    <Skeleton className="h-12 w-12 rounded-full" />
-                    <div className="space-y-2">
-                    <Skeleton className="h-4 w-[150px]" />
-                    <Skeleton className="h-4 w-[150px]" />
-                    </div>
-                  </div>
-                </div>
-              </CardContent>
-              <CardFooter>
-                
-              </CardFooter>
-            </Card>
-
-            <Card className="w-[300px] mt-4">
-              <CardHeader>
-                <Skeleton className="mt-8 h-4 w-[200px]" />
-              </CardHeader>
-              <CardContent>
-                <div className="flex flex-col text-left text-lg">
-                  <div className="flex items-center space-x-4">
-                    <Skeleton className="h-12 w-12 rounded-full" />
-                    <div className="space-y-2">
-                      <Skeleton className="h-4 w-[150px]" />
-                      <Skeleton className="h-4 w-[150px]" />
-                    </div>
-                  </div>
-                </div>
-                <div className="flex flex-col text-left text-lg mt-2">
-                  <div className="flex items-center space-x-4">
-                    <Skeleton className="h-12 w-12 rounded-full" />
-                    <div className="space-y-2">
-                    <Skeleton className="h-4 w-[150px]" />
-                    <Skeleton className="h-4 w-[150px]" />
-                    </div>
-                  </div>
-                </div>
-              </CardContent>
-              <CardFooter>
-                
-              </CardFooter>
-            </Card>
-
-            </div>
-          </div>
-        </div>
-      </>
-    )
-  }
-
   return (
-    <>
+    <div className="min-h-screen bg-background">
       <Header />
 
-      <div className="flex flex-col items-center min-h-screen dark:bg-black bg-white">
-        <div className="flex flex-col justify-center items-center gap-2">
-          <img
-            src={profilePicUrl}
-            alt=""
-            className="rounded-full h-[150px]"
-          />
-          {/* <input type="file" className="border-2 border-black"/> */}
-
-          <div className="">
-            <DropdownMenu>
-              <DropdownMenuTrigger className="bg-zinc-700">
-                <div className="flex items-center p-2 bg-zinc-700 text-white rounded-md">
-                  <i className="fa-solid fa-pen"></i>
-                  <p className="p-1">Edit Picture</p>
+      <main className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-8 lg:py-12">
+        {isLoading ? (
+          <>
+            {/* Profile Header Card Skeleton */}
+            <div className="border border-border rounded-lg bg-card p-4 sm:p-6 md:p-8 mb-6 sm:mb-8">
+              <div className="flex flex-col md:flex-row gap-8 items-start md:items-center">
+                {/* Profile Picture Section Skeleton */}
+                <div className="flex flex-col items-center md:items-start">
+                  <Skeleton className="rounded-full w-32 h-32 md:w-40 md:h-40" />
+                  <Skeleton className="h-4 w-20 mt-2" />
                 </div>
-              </DropdownMenuTrigger>
-              <DropdownMenuContent>
-                <DropdownMenuItem onClick={() => setModalOpen(true)}>
-                  <Button>
-                    <div className="">
-                      <p>Upload Profile Picture</p>
-                      <p className="text-sm text-muted-foreground">Max Size: 2MB</p>
-                    </div>
-                  </Button>
 
-                </DropdownMenuItem>
-                <DropdownMenuItem onClick={deleteProfilePicture}>
-                  <Button variant="destructive">
-                    Delete Profile Picture
-                  </Button>
-                </DropdownMenuItem>
-              </DropdownMenuContent>
-            </DropdownMenu>
-          </div>
-        </div>
-
-        {modalOpen && (
-          <Modal
-            updateProfilePic={updateProfilePic}
-            closeModal={() => setModalOpen(false)}
-          />
-        )}
-
-        <form className="mt-4 w-full">
-          <div className="flex flex-col justify-center items-center">
-            <div className="edit-first-name mb-2">
-              <div className="flex items-center">
-                <Label htmlFor="firstName" className="mr-2">
-                  First Name:
-                </Label>
-                <p className="p-2 rounded-md">{firstName}</p>
-              </div>
-            </div>
-
-            <div className="edit-last-name mb-2">
-              <div className="flex items-center">
-                <Label htmlFor="lastName" className="mr-2">
-                  Last Name:
-                </Label>
-                <p className="p-2 rounded-md">{lastName}</p>
-              </div>
-            </div>
-
-            <div className="flex gap-2">
-              <Dialog>
-                <DialogTrigger asChild>
-                  <Button variant="outline">Edit Profile</Button>
-                </DialogTrigger>
-                <DialogContent className="sm:max-w-[425px]">
-                  <DialogHeader>
-                    <DialogTitle>Edit profile</DialogTitle>
-                    <DialogDescription>
-                      Make changes to your profile here. Click save when you're
-                      done.
-                    </DialogDescription>
-                  </DialogHeader>
-                  <div className="grid gap-4 py-4">
-                    <div className="grid grid-cols-4 items-center gap-4">
-                      <Label htmlFor="firstName" className="text-right">
-                        First Name
-                      </Label>
-                      <Input
-                        id="firstName"
-                        name="firstName"
-                        value={firstName}
-                        onChange={(e) => setFirstName(e.target.value)}
-                        className="col-span-3"
-                      />
-                    </div>
-                    <div className="grid grid-cols-4 items-center gap-4">
-                      <Label htmlFor="lastName" className="text-right">
-                        Last Name
-                      </Label>
-                      <Input
-                        id="lastName"
-                        name="lastName"
-                        value={lastName}
-                        onChange={(e) => setLastName(e.target.value)}
-                        className="col-span-3"
-                      />
-                    </div>
-
-                    <div className="grid grid-cols-4 items-center gap-4">
-                      <Label htmlFor="email" className="text-right">
-                        Email
-                      </Label>
-                      <Input
-                        id="email"
-                        name="email"
-                        value={email}
-                        onChange={(e) => setEmail(e.target.value)}
-                        className="col-span-3"
-                      />
-                    </div>
+                {/* Profile Info Section Skeleton */}
+                <div className="flex-1 space-y-4 w-full">
+                  <div className="space-y-2">
+                    <Skeleton className="h-8 w-48" />
+                    <Skeleton className="h-4 w-64" />
                   </div>
-                  <DialogFooter>
-                    <Button type="submit" onClick={saveChanges}>
-                      Save changes
-                    </Button>
-                  </DialogFooter>
-                </DialogContent>
-              </Dialog>
-
-              <Button onClick={handleSignOut} variant="destructive">
-                Sign Out
-              </Button>
+                  <Skeleton className="h-20 w-full" />
+                  <Skeleton className="h-9 w-32" />
+                </div>
+              </div>
             </div>
 
-            {(
-                <div className="grid grid-cols-1 md:grid-cols-2 mt-4 gap-2 h-full">
-                {profileTeams.length > 0 ? (
-                  profileTeams.map((profileTeam) => (
-                    <TeamCardProfile
-                      key={profileTeam.teamId}
-                      team={profileTeam}
-                      location={`${location.pathname}`}
-                    />
+            {/* Skills Section Skeleton */}
+            <div className="border border-border rounded-lg bg-card p-4 sm:p-6 md:p-8 mb-6 sm:mb-8">
+              <Skeleton className="h-6 sm:h-7 w-20 mb-3 sm:mb-4" />
+              <div className="flex flex-wrap gap-2">
+                <Skeleton className="h-8 w-20" />
+                <Skeleton className="h-8 w-24" />
+                <Skeleton className="h-8 w-16" />
+                <Skeleton className="h-8 w-28" />
+              </div>
+            </div>
+
+            {/* Leads Section Skeleton */}
+            <div className="border border-border rounded-lg bg-card p-4 sm:p-6 md:p-8">
+              <Skeleton className="h-7 w-32 mb-6" />
+              <div className="space-y-4">
+                <Skeleton className="h-10 w-full" />
+                <Skeleton className="h-32 w-full" />
+              </div>
+            </div>
+          </>
+        ) : (
+          <>
+            {/* Profile Header Card */}
+            <div className="border border-border rounded-lg bg-card p-4 sm:p-6 md:p-8 mb-6 sm:mb-8">
+              <div className="flex flex-col md:flex-row gap-6 sm:gap-8 items-start md:items-center">
+                {/* Profile Picture Section */}
+                <div className="flex flex-col items-center md:items-start">
+                  <div className="relative">
+                    {isLoadingProfilePic ? (
+                      <Skeleton className="rounded-full w-32 h-32 md:w-40 md:h-40" />
+                    ) : (
+                      <>
+                        <img
+                          src={user?.photoUrl || profilePicUrl}
+                          alt="Profile"
+                          className="rounded-full w-32 h-32 md:w-40 md:h-40 object-cover border-2 border-border"
+                        />
+                        <DropdownMenu>
+                          <DropdownMenuTrigger asChild>
+                            <Button
+                              size="icon"
+                              variant="secondary"
+                              className="absolute bottom-0 right-0 rounded-full"
+                            >
+                              <Camera className="w-4 h-4" />
+                            </Button>
+                          </DropdownMenuTrigger>
+                          <DropdownMenuContent align="end">
+                            <DropdownMenuItem onClick={() => setModalOpen(true)}>
+                              Upload Profile Picture
+                            </DropdownMenuItem>
+                            <DropdownMenuItem onClick={deleteProfilePicture} className="text-destructive">
+                              Delete Profile Picture
+                            </DropdownMenuItem>
+                          </DropdownMenuContent>
+                        </DropdownMenu>
+                      </>
+                    )}
+                  </div>
+                  <p className="text-xs text-muted-foreground mt-2 text-center md:text-left">
+                    Max 5MB
+                  </p>
+                </div>
+
+                {modalOpen && (
+                  <Modal
+                    updateProfilePic={updateProfilePic}
+                    closeModal={() => setModalOpen(false)}
+                  />
+                )}
+
+                {/* Profile Info Section */}
+                <div className="flex-1 space-y-4">
+                  <div>
+                    <h1 className="text-2xl lg:text-3xl font-semibold mb-1">
+                      {user?.firstName} {user?.lastName}
+                    </h1>
+                    <p className="text-muted-foreground">{user?.email}</p>
+                  </div>
+
+                  {user?.bio && (
+                    <div>
+                      <p className="text-foreground leading-relaxed">{user.bio}</p>
+                    </div>
+                  )}
+
+                  <Dialog open={open} onOpenChange={setOpen}>
+                    <DialogTrigger asChild>
+                      <Button variant="outline" size="sm">
+                        <Edit2 className="w-4 h-4 mr-2" />
+                        Edit Profile
+                      </Button>
+                    </DialogTrigger>
+
+                    <DialogContent className="sm:max-w-[500px]">
+                      <form onSubmit={onSubmit}>
+                        <DialogHeader>
+                          <DialogTitle>Edit profile</DialogTitle>
+                          <DialogDescription>
+                            Make changes to your profile here. Click save when
+                            you&apos;re done.
+                          </DialogDescription>
+                        </DialogHeader>
+
+                        <div className="grid gap-4 py-4">
+                          <div className="grid gap-2">
+                            <Label htmlFor="firstname-1">First Name</Label>
+                            <Input
+                              id="firstname-1"
+                              name="firstname"
+                              defaultValue={`${user?.firstName || ""}`}
+                            />
+                          </div>
+                          <div className="grid gap-2">
+                            <Label htmlFor="lastname-1">Last Name</Label>
+                            <Input
+                              id="lastname-1"
+                              name="lastname"
+                              defaultValue={`${user?.lastName || ""}`}
+                            />
+                          </div>
+                          <div className="grid gap-2">
+                            <Label htmlFor="email-1">Email</Label>
+                            <Input
+                              id="email-1"
+                              name="email"
+                              defaultValue={`${user?.email || ""}`}
+                              type="email"
+                            />
+                          </div>
+                          <div className="grid gap-2">
+                            <Label htmlFor="bio-1">Bio</Label>
+                            <Input
+                              id="bio-1"
+                              name="bio"
+                              defaultValue={`${user?.bio || ""}`}
+                            />
+                          </div>
+                          <div className="grid gap-2">
+                            <Label htmlFor="skills-1">Skills</Label>
+                            <Input
+                              id="skills-1"
+                              name="skills"
+                              placeholder="Comma separated (e.g., React, TypeScript, Node.js)"
+                              defaultValue={`${user?.skills?.join(", ") || ""}`}
+                            />
+                          </div>
+                        </div>
+                        <DialogFooter>
+                          <DialogClose asChild>
+                            <Button variant="outline">Cancel</Button>
+                          </DialogClose>
+                          <Button type="submit">Save changes</Button>
+                        </DialogFooter>
+                      </form>
+                    </DialogContent>
+                  </Dialog>
+                </div>
+              </div>
+            </div>
+
+            {/* Skills Section */}
+            <div className="border border-border rounded-lg bg-card p-4 sm:p-6 md:p-8 mb-6 sm:mb-8">
+              <h2 className="text-lg sm:text-xl font-semibold mb-3 sm:mb-4">Skills</h2>
+              <div className="flex flex-wrap gap-2">
+                {user?.skills && user.skills.length > 0 ? (
+                  user.skills.map((skill, index) => (
+                    <span
+                      key={index}
+                      className="px-3 py-1.5 rounded-md text-sm bg-muted text-muted-foreground border border-border"
+                    >
+                      {skill}
+                    </span>
                   ))
                 ) : (
-                  <p className="text-lg text-gray-500">No teams created.</p>
+                  <p className="text-muted-foreground">No skills added.</p>
                 )}
               </div>
-            )}
-          </div>
-        </form>
-      </div>
-    </>
+            </div>
+
+            {/* Leads Section */}
+            <div className="border border-border rounded-lg bg-card p-4 sm:p-6 md:p-8">
+              <h2 className="text-lg sm:text-xl font-semibold mb-4 sm:mb-6">Events & Leads</h2>
+              <Leads />
+            </div>
+          </>
+        )}
+      </main>
+    </div>
   );
 }
 

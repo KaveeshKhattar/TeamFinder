@@ -33,33 +33,37 @@ function ChangePassword() {
 
     return (
         <>
+        
         <Header></Header>
-        <div className="space-y-4">
-            <p>{email}</p>
-        <Input
-              type="password"
-              id="password"
-              placeholder="Password"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              required
-            />
 
-            <Input
-              type="password"
-              id="confirmPassword"
-              placeholder="Confirm Password"
-              value={confirmPassword}
-              onChange={(e) => setConfirmPassword(e.target.value)}
-              required
-            />
+        <div className="flex items-center justify-center min-h-[calc(100vh-4rem)] scale-125">
+            <div className="flex flex-col justify-center items-center space-y-4 max-w-64 w-full px-4">
+                <p>{email}</p>
+                <Input
+                      type="password"
+                      id="password"
+                      placeholder="Password"
+                      value={password}
+                      onChange={(e) => setPassword(e.target.value)}
+                      required
+                    />
 
-            <Button onClick={onHandleSubmit}>
-                Change Password
-            </Button>
+                    <Input
+                      type="password"
+                      id="confirmPassword"
+                      placeholder="Confirm Password"
+                      value={confirmPassword}
+                      onChange={(e) => setConfirmPassword(e.target.value)}
+                      required
+                    />
 
-            {error && <p className="text-red-500 mt-2">{error}</p>}
+                    <Button onClick={onHandleSubmit}>
+                        Change Password
+                    </Button>
 
+                    {error && <p className="text-red-500 mt-2">{error}</p>}
+
+            </div>
         </div>
         </>
     );

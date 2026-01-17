@@ -15,8 +15,6 @@ import com.project.TeamFinder.dto.VerifyUserDTO;
 import com.project.TeamFinder.exception.AccountNotVerifiedException;
 import com.project.TeamFinder.exception.IncorrectEmailException;
 import com.project.TeamFinder.exception.IncorrectPasswordException;
-import com.project.TeamFinder.exception.NotRepresentativeException;
-import com.project.TeamFinder.model.Role;
 import com.project.TeamFinder.model.User;
 import com.project.TeamFinder.repository.CollegeRepresentativeRepository;
 import com.project.TeamFinder.repository.UserRepository;
@@ -25,8 +23,8 @@ import jakarta.mail.MessagingException;
 
 @Service
 public class AuthenticationService {
+
     private final UserRepository userRepository;
-    private final CollegeRepresentativeRepository collegeRepresentativeRepository;
     private final PasswordEncoder passwordEncoder;
     private final AuthenticationManager authenticationManager;
     private final EmailService emailService;
@@ -39,11 +37,11 @@ public class AuthenticationService {
             EmailService emailService) {
         this.authenticationManager = authenticationManager;
         this.userRepository = userRepository;
-        this.collegeRepresentativeRepository = collegeRepresentativeRepository;
         this.passwordEncoder = passwordEncoder;
         this.emailService = emailService;
     }
 
+    // create verification code
     private String generateVerificationCode() {
         Random random = new Random();
         int code = random.nextInt(900000) + 100000;
@@ -59,17 +57,11 @@ public class AuthenticationService {
         return user.get();
     }
 
+    // user sign up [verification code expires in 15 minutes]
     public User signup(RegisterUserDTO input) {
         User user = new User(input.getFirstName(), input.getLastName(),
-                input.getFirstName() + " " + input.getLastName(), input.getEmail(),
-                passwordEncoder.encode(input.getPassword()), input.getRole());
-
-        if (user.getRole() == Role.REPRESENTATIVE) {
-            Boolean repAllowed = collegeRepresentativeRepository.existsByEmail(input.getEmail());
-            if (!repAllowed) {
-                throw new NotRepresentativeException("You are not approved as a representative.");
-            }
-        }
+                input.getEmail(),
+                passwordEncoder.encode(input.getPassword()));
 
         user.setVerificationCode(generateVerificationCode());
         user.setVerificationCodeExpiresAt(LocalDateTime.now().plusMinutes(15));
@@ -77,25 +69,18 @@ public class AuthenticationService {
         sendVerificationEmail(user);
         return userRepository.save(user);
     }
-    
+
     public void passwordChange(String email, String password) {
         // Find the user by email
-        Optional<User> optionalUser = userRepository.findByEmail(email);
-        
-        // Check if the user exists
-        if (!optionalUser.isPresent()) {
-            throw new RuntimeException("User with email " + email + " not found");
-        }
-    
-        // Get the user from the Optional
-        User user = optionalUser.get();
-        
+        User user = userRepository.findByEmail(email)
+        .orElseThrow(() -> new RuntimeException("User with email " + email + " not found"));
+
         // Encode the password
         String encodedPassword = passwordEncoder.encode(password);
-    
+
         // Set the new password
         user.setPassword(encodedPassword);
-        
+
         // Save the updated user
         userRepository.save(user);
     }
@@ -112,23 +97,22 @@ public class AuthenticationService {
     }
 
     public void verifyUser(VerifyUserDTO input) {
-        Optional<User> optionalUser = userRepository.findByEmail(input.getEmail());
-        if (optionalUser.isPresent()) {
-            User user = optionalUser.get();
-            if (user.getVerificationCodeExpiresAt().isBefore(LocalDateTime.now())) {
-                throw new AccountNotVerifiedException("Token has expired.");
-            }
-            if (user.getVerificationCode().equals(input.getVerificationCode())) {
-                user.setEnabled(true);
-                user.setVerificationCode(null);
-                user.setVerificationCodeExpiresAt(null);
-                userRepository.save(user);
-            } else {
-                throw new AccountNotVerifiedException("Wrong token.");
-            }
-        } else {
-            throw new AccountNotVerifiedException("User not found.");
+        
+        User user = userRepository.findByEmail(input.getEmail())
+        .orElseThrow(() -> new RuntimeException("User with email " + input.getEmail() + " not found"));
+
+        if (user.getVerificationCodeExpiresAt().isBefore(LocalDateTime.now())) {
+            throw new AccountNotVerifiedException("Token has expired.");
         }
+        if (user.getVerificationCode().equals(input.getVerificationCode())) {
+            user.setEnabled(true);
+            user.setVerificationCode(null);
+            user.setVerificationCodeExpiresAt(null);
+            userRepository.save(user);
+        } else {
+            throw new AccountNotVerifiedException("Wrong token.");
+        }
+
     }
 
     public User authenticate(LoginUserDTO input) {
@@ -148,9 +132,7 @@ public class AuthenticationService {
         authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(
                         input.getEmail(),
-                        input.getPassword()
-                )
-        );
+                        input.getPassword()));
 
         return user;
     }
@@ -171,7 +153,7 @@ public class AuthenticationService {
         }
     }
 
-    private void sendVerificationEmail(User user) { 
+    private void sendVerificationEmail(User user) {
         String subject = "Account Verification";
         String verificationCode = "VERIFICATION CODE " + user.getVerificationCode();
         String htmlMessage = "<html>"
@@ -194,5 +176,5 @@ public class AuthenticationService {
             e.printStackTrace();
         }
     }
-    
+
 }

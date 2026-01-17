@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { useAuth } from "../../core/hooks/useAuth";
-import { Link, useNavigate } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import { Button } from "../../../components/ui/button";
 import { ModeToggle } from "../../../components/modeToggle";
 
@@ -9,6 +9,8 @@ function Header() {
   const { isSignedIn } = useAuth();
   const { signOut } = useAuth();
   const navigate = useNavigate();
+  const location = useLocation();
+  const isOnProfilePage = location.pathname === "/profile";
 
   const toggleMenu = () => {
     setIsOpen(!isOpen);
@@ -24,20 +26,21 @@ function Header() {
   };
 
   return (
-    <nav className="flex mb-4 items-center w-full">
+    <nav className="flex items-center w-full max-w-5xl mx-auto p-3 sm:p-4">
       {/* Wrapper for all content */}
       <div className="flex items-center justify-between w-full">
         {/* Left Section with Logo */}
         <div className="flex items-center">
           <button
-            className="z-50 text-sm px-3 py-2 mr-2 md:hidden rounded-md dark:bg-black dark:text-white"
+            className="z-50 text-base sm:text-lg px-3 py-2.5 sm:px-4 sm:py-3 mr-2 md:hidden rounded-md bg-background hover:bg-muted transition-colors min-w-[44px] min-h-[44px] flex items-center justify-center"
             onClick={toggleMenu}
+            aria-label="Toggle menu"
           >
             <i className={`fa-solid ${isOpen ? "fa-xmark" : "fa-bars"}`}></i>
           </button>
           <h2>
-            <Link to="/">
-              <span className="text-2xl font-bold text-black dark:text-white">
+            <Link to="/launch">
+              <span className="text-xl sm:text-2xl font-bold text-foreground">
                 TeamFinder
               </span>
             </Link>
@@ -45,58 +48,27 @@ function Header() {
         </div>
 
         {/* Centered Links for Medium and Above */}
-        <div className="hidden md:flex flex-1 justify-center space-x-4 ">
-          <Link to="/">
-            <Button
-              variant="ghost"
-              className="dark:bg-zinc-700 dark:text-white"
-            >
-              Home
-            </Button>
-          </Link>
-          <Link to="/colleges">
-            <Button
-              variant="ghost"
-              className="dark:bg-zinc-700 dark:text-white"
-            >
-              Colleges
-            </Button>
-          </Link>
-          <Link to="/events">
-            <Button
-              variant="ghost"
-              className="dark:bg-zinc-700 dark:text-white"
-            >
-              Events
-            </Button>
-          </Link>
-          <Link to="/teams">
-            <Button
-              variant="ghost"
-              className="dark:bg-zinc-700 dark:text-white"
-            >
-              Teams
-            </Button>
-          </Link>
-        </div>
+        
 
         {/* Right Section with Profile/Sign In Links */}
         <div className="flex items-center space-x-2">
           <ModeToggle />
-          {isSignedIn ? (
-            <>
-              <Link to="/profile">
-                <Button>Profile</Button>
-              </Link>
-              {/* <ModeToggle /> */}
-            </>
-          ) : (
-            <div className="hidden md:flex space-x-2">
-              <Link to="/signup" className="mr-2">
-                <Button>Sign Up</Button>
-              </Link>
-              {/* <ModeToggle /> */}
-            </div>
+          {isSignedIn && !isOnProfilePage && (
+            <Link to="/profile">
+              <Button size="sm" className="hidden sm:inline-flex">Profile</Button>
+            </Link>
+          )}
+
+          {isSignedIn && isOnProfilePage && (
+            <Button onClick={handleSignOut} variant="destructive" size="sm" className="hidden sm:inline-flex">
+              Sign Out
+            </Button>
+          )}
+
+          {!isSignedIn && (
+            <Link to="/signup">
+              <Button size="sm" className="hidden sm:inline-flex">Sign Up</Button>
+            </Link>
           )}
         </div>
 
@@ -105,73 +77,70 @@ function Header() {
 
       {/* Mobile Hamburger Menu */}
       <div
-        className={`md:hidden fixed mr-2 top-0 left-0 w-full h-screen bg-white dark:bg-black flex flex-col items-center justify-center space-y-8 transition-transform duration-300 z-40 ${isOpen ? "translate-x-0" : "-translate-x-full"
+        className={`md:hidden fixed top-0 left-0 w-full h-screen bg-background flex flex-col items-center justify-center space-y-4 sm:space-y-6 transition-transform duration-300 z-40 ${isOpen ? "translate-x-0" : "-translate-x-full"
           }`}
       >
         {
           token ?
-          <div className="flex flex-col gap-5 w-full p-2 mt-16">
-          <Link to="/">
-            <Button variant="destructive" className="w-full" onClick={handleSignOut}>
-              Sign Out
-            </Button>
-          </Link>
-          <Link to="/">
-            <Button variant="outline" className="w-full">
-              Home
-            </Button>
-          </Link>
-          <Link to="/colleges">
-            <Button variant="outline" className="w-full">
-              Colleges
-            </Button>
-          </Link>
-          <Link to="/events">
-            <Button variant="outline" className="w-full">
-              Events
-            </Button>
-          </Link>
-          <Link to="/teams">
-            <Button variant="outline" className="w-full">
-              Teams
-            </Button>
-          </Link>
-        </div>
-            :
-            <div className="flex flex-col gap-5 w-full p-2 mt-16">
-              <Link to="/signup">
-                <Button className="w-full">Sign Up</Button>
-              </Link>
-              <Link to="/login">
-                <Button variant="secondary" className="w-full">
-                  Sign In
+            <div className="flex flex-col gap-3 sm:gap-4 w-full max-w-xs px-4">
+              {isSignedIn && isOnProfilePage && (
+                <Button variant="destructive" className="w-full min-h-[44px]" onClick={handleSignOut}>
+                  Sign Out
                 </Button>
-              </Link>
-              <Link to="/">
-                <Button variant="outline" className="w-full">
+              )}
+              <Link to="/" onClick={() => setIsOpen(false)} className="w-full">
+                <Button variant="outline" className="w-full min-h-[44px]">
                   Home
                 </Button>
               </Link>
-              <Link to="/colleges">
-                <Button variant="outline" className="w-full">
+              <Link to="/colleges" onClick={() => setIsOpen(false)} className="w-full">
+                <Button variant="outline" className="w-full min-h-[44px]">
                   Colleges
                 </Button>
               </Link>
-              <Link to="/events">
-                <Button variant="outline" className="w-full">
+              <Link to="/events" onClick={() => setIsOpen(false)} className="w-full">
+                <Button variant="outline" className="w-full min-h-[44px]">
                   Events
                 </Button>
               </Link>
-              <Link to="/teams">
-                <Button variant="outline" className="w-full">
+              <Link to="/teams" onClick={() => setIsOpen(false)} className="w-full">
+                <Button variant="outline" className="w-full min-h-[44px]">
                   Teams
                 </Button>
               </Link>
             </div>
-            
-
+            :
+            <div className="flex flex-col gap-3 sm:gap-4 w-full max-w-xs px-4">
+              <Link to="/signup" onClick={() => setIsOpen(false)} className="w-full">
+                <Button className="w-full min-h-[44px]">Sign Up</Button>
+              </Link>
+              <Link to="/login" onClick={() => setIsOpen(false)} className="w-full">
+                <Button variant="secondary" className="w-full min-h-[44px]">
+                  Sign In
+                </Button>
+              </Link>
+              <Link to="/" onClick={() => setIsOpen(false)} className="w-full">
+                <Button variant="outline" className="w-full min-h-[44px]">
+                  Home
+                </Button>
+              </Link>
+              <Link to="/colleges" onClick={() => setIsOpen(false)} className="w-full">
+                <Button variant="outline" className="w-full min-h-[44px]">
+                  Colleges
+                </Button>
+              </Link>
+              <Link to="/events" onClick={() => setIsOpen(false)} className="w-full">
+                <Button variant="outline" className="w-full min-h-[44px]">
+                  Events
+                </Button>
+              </Link>
+              <Link to="/teams" onClick={() => setIsOpen(false)} className="w-full">
+                <Button variant="outline" className="w-full min-h-[44px]">
+                  Teams
+                </Button>
+              </Link>
+            </div>
         }
-
       </div>
     </nav>
   );

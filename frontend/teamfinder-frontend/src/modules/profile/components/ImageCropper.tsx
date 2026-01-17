@@ -18,8 +18,8 @@ const MIN_DIMENSION = 150;
 
 // Create a single supabase client for interacting with your database
 const supabase = createClient(
-  "https://wyhtuxjmdaffozmmhhxn.supabase.co",
-  "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Ind5aHR1eGptZGFmZm96bW1oaHhuIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Mjc2Nzc4OTcsImV4cCI6MjA0MzI1Mzg5N30.y8fbRONXMoayqAzYkL99HgGr8uXp9Kgwq-EQ-SsR4e8"
+  "https://allzrnbdqtbuulmoiclr.supabase.co",
+  "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImFsbHpybmJkcXRidXVsbW9pY2xyIiwicm9sZSI6InNlcnZpY2Vfcm9sZSIsImlhdCI6MTc2ODI3OTg2NiwiZXhwIjoyMDgzODU1ODY2fQ.Oe3EF9nqSVJlTDCAvkwj8j2azPkJeQCyTUky023FWmo"
 );
 
 interface JwtPayload {
@@ -79,7 +79,7 @@ const ImageCropper: React.FC<ImageCropperProps> = ({
 
   const onImageLoad = (e: React.SyntheticEvent<HTMLImageElement, Event>) => {
     const { width, height } = e.currentTarget;
-    const croppedWidthInPercent = (MIN_DIMENSION / width) * 100;
+    const croppedWidthInPercent = (MIN_DIMENSION / width) * 60;
     const crop = makeAspectCrop(
       {
         unit: "%",
@@ -143,7 +143,7 @@ const ImageCropper: React.FC<ImageCropperProps> = ({
     }
 
     if (sub) {
-      const index = sub.indexOf(".com");
+      const index = sub.indexOf("@");
       const slicedEmail = sub.slice(0, index);
       const formData = new FormData();
       const blob = dataURLtoBlob(dataURL);
@@ -156,6 +156,7 @@ const ImageCropper: React.FC<ImageCropperProps> = ({
       
       // Blob created from useRef URL. Sending this Blob to supabase now.
 
+      console.log("Uploading image for user:", slicedEmail);
       try {
         
         await axios.post(
@@ -189,6 +190,7 @@ const ImageCropper: React.FC<ImageCropperProps> = ({
         }
 
         // Created file URL
+        console.log("Preparing to send file URL to backend:", fileURL);
 
         const response = await axios.post(
           `${BASE_URL}/users/uploadImageURL`,
@@ -249,7 +251,7 @@ const ImageCropper: React.FC<ImageCropperProps> = ({
               ref={imgRef}
               src={imageSrc}
               alt=""
-              className="max-h-96"
+              className="w-full"
               onLoad={onImageLoad}
             />
           </ReactCrop>

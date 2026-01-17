@@ -23,6 +23,10 @@ import 'react-image-crop/dist/ReactCrop.css'
 import { ThemeProvider } from './components/themeProvider'
 import ChangePasswordVerification from './modules/authentication/components/ChangePasswordVerification'
 import ChangePassword from './modules/authentication/components/ChangePassword'
+import FindTeammates from './modules/find/FindTeammates'
+import FindTeams from './modules/find/FindTeams'
+import FindTeammatesPeople from './modules/find/FindTeammatesPeople'
+import ShowInterest from './modules/showInterest/ShowInterest'
 
 function App() {
 
@@ -34,6 +38,14 @@ function App() {
               <Routes>
                 <Route path="/launch" element={<LandingPagev1 />} />
                 <Route path="/" element={<LandingPage />} />
+                <Route path="/find-teammates" element={<FindTeammates />} />
+                <Route path="/show-interest" element={<ShowInterest />} />
+                <Route path="/find-teammates/events/:eventId" element={<FindTeammatesPeople />} />
+
+
+                <Route path="/find-teams" element={<FindTeams />} />
+
+
                 <Route path="/profile" element={<Profile />} />
                 <Route path="/profile/:teamUrl" element={<ProfileTeam />} />
                 <Route path="/login" element={<Login />} />

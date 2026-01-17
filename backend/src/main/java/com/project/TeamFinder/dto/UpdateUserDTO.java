@@ -1,10 +1,27 @@
 package com.project.TeamFinder.dto;
 
-
 public class UpdateUserDTO {
     private String firstName;
     private String lastName;
     private String email;
+    private String bio;
+    private String[] skills;
+
+    public String[] getSkills() {
+        return skills;
+    }
+
+    public void setSkills(String[] skills) {
+        this.skills = skills;
+    }
+
+    public String getBio() {
+        return bio;
+    }
+
+    public void setBio(String bio) {
+        this.bio = bio;
+    }
 
     public String getFirstName() {
         return firstName;
@@ -27,6 +44,9 @@ public class UpdateUserDTO {
         return "UpdateUserDTO{" +
                 "firstName='" + firstName + '\'' +
                 ", lastName='" + lastName + '\'' +
+                ", email='" + email + '\'' +
+                ", bio='" + bio + '\'' +
+                ", skills=" + String.join(", ", skills) +
                 '}';
     }
 

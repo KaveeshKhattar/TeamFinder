@@ -4,7 +4,8 @@ public interface UserProjection {
     Long getId();    
     String getFirstName();
     String getLastName();
-    String getFullName();
     String getEmail();
     String getPictureURL();
+    String getBio();
+    String[] getSkills();
 }

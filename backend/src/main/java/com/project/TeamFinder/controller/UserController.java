@@ -5,6 +5,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
+import com.project.TeamFinder.dto.ImageRequestDTO;
 import com.project.TeamFinder.dto.UpdateUserDTO;
 import com.project.TeamFinder.dto.WaitlistRequestDTO;
 import com.project.TeamFinder.model.User;
@@ -33,12 +34,11 @@ import org.springframework.web.bind.annotation.PostMapping;
 
 import java.io.IOException;
 
-
 @RestController
 @RequestMapping("/users")
 @CrossOrigin
 public class UserController {
-    
+
     private final UserService userService;
     private final JwtService jwtService;
     private final ImageHandlerService imageHandlerService;
@@ -52,31 +52,28 @@ public class UserController {
     @PostMapping("/waitlist")
     public ResponseEntity<?> addToWaitlist(@RequestBody WaitlistRequestDTO request) {
         try {
-        String email = request.getEmail();
-        userService.addToWaitlist(email);
-        return ResponseEntity.ok(Map.of(
-            "success", true,
-            "message", "Added to waitlist successfully"
-        ));
-    } catch (DataIntegrityViolationException e) {
-        // Duplicate email
-        return ResponseEntity.status(HttpStatus.CONFLICT).body(Map.of(
-            "success", false,
-            "message", "This email is already on the waitlist"
-        ));
-    } catch (Exception e) {
-        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(Map.of(
-            "success", false,
-            "message", "Failed to add to waitlist"
-        ));
-    }
+            String email = request.getEmail();
+            userService.addToWaitlist(email);
+            return ResponseEntity.ok(Map.of(
+                    "success", true,
+                    "message", "Added to waitlist successfully"));
+        } catch (DataIntegrityViolationException e) {
+            // Duplicate email
+            return ResponseEntity.status(HttpStatus.CONFLICT).body(Map.of(
+                    "success", false,
+                    "message", "This email is already on the waitlist"));
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(Map.of(
+                    "success", false,
+                    "message", "Failed to add to waitlist"));
+        }
     }
 
-    @GetMapping("/")
-    public ResponseEntity<List<User>> allUsers() {
-        List <User> users = userService.allUsers();
-        return ResponseEntity.ok(users);
-    }
+    // @GetMapping("/")
+    // public ResponseEntity<List<User>> allUsers() {
+    // List <User> users = userService.allUsers();
+    // return ResponseEntity.ok(users);
+    // }
 
     @GetMapping("/profile")
     public ResponseEntity<User> profile(@RequestHeader("Authorization") String token) {
@@ -87,28 +84,21 @@ public class UserController {
     }
 
     @PutMapping("/update")
-    public ResponseEntity<User> updateUser(@RequestHeader("Authorization") String token, @RequestBody UpdateUserDTO updateUserDTO) {
-
-        final String jwt = token.substring(7);
-        final String userEmail = jwtService.extractUsername(jwt);
-        User updatedUser = userService.updateUser(userEmail, updateUserDTO);
-        return ResponseEntity.ok(updatedUser);
-    }
-    
-    @GetMapping("/searchUsersByFullName")
-    public List<User> getUsersByFirstName(@RequestHeader("Authorization") String token, @RequestParam String name) {
-        List<User> filteredUsers = userService.getUsersByFullName(name);
-        return filteredUsers;
-    }
-    
-    @GetMapping("/checkIfUserisCollegeRepresentative")
-    public Boolean isUserCollegeRepresentative(@RequestHeader("Authorization") String token, @RequestParam("collegeId") Long collegeId) {
-
-        final String jwt = token.substring(7);
-        final String userEmail = jwtService.extractUsername(jwt);
-
-        Boolean ans = userService.isUserCollegeRepresentative(userEmail, collegeId);
-        return ans;
+    public ResponseEntity<String> updateUser(@RequestHeader("Authorization") String token,
+            @RequestBody UpdateUserDTO updateUserDTO) {
+                System.out.println("Updating user...");
+        try {
+            final String jwt = token.substring(7);
+            final String userEmail = jwtService.extractUsername(jwt);
+            if (userEmail == null) {
+                return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Invalid token");
+            }
+            System.out.println("Email from token: " + userEmail);
+            userService.updateUser(userEmail, updateUserDTO);
+            return ResponseEntity.ok("User updated successfully");
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Failed to update user");
+        }
     }
 
     @PostMapping("/upload")
@@ -120,21 +110,38 @@ public class UserController {
             return "Invalid token";
         }
 
+        // final String fileName = userEmail + ".png";
+        // if (filename in connection then delete that then post this )
+
         try {
 
             // Convert MultipartFile to File
             File tempFile = File.createTempFile("upload-", file.getOriginalFilename());
             file.transferTo(tempFile);
             System.out.println("Image name: " + tempFile.getName());
-            String result = imageHandlerService.uploadFile(userEmail, tempFile, "image-store", file.getOriginalFilename());
-            
+            String result = imageHandlerService.uploadFile(tempFile, "image-store", file.getOriginalFilename());
+
             System.out.println(result);
             return "Passed";
         } catch (IOException e) {
             return "Failed";
         }
     }
-    
+
+    @PostMapping("/uploadImageURL")
+    public ResponseEntity<String> uploadPictureURL(@RequestHeader("Authorization") String token,
+            @RequestBody ImageRequestDTO request) {
+        System.out.println("Uploading picture URL...");
+        final String jwt = token.substring(7);
+        final String userEmail = jwtService.extractUsername(jwt);
+        if (userEmail == null) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Invalid token");
+        }
+        System.out.println("email received: " + userEmail);
+        userService.saveFileURL(userEmail, request.getFileURL());
+        return ResponseEntity.ok("Success");
+    }
+
     @DeleteMapping("/deleteProfilePicture")
     public ResponseEntity<String> deleteImage(@RequestHeader("Authorization") String token) {
 
@@ -143,22 +150,40 @@ public class UserController {
         if (userEmail == null) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Invalid token");
         }
-        
+
         String prefix = "";
         int index = userEmail.indexOf('@');
         if (index != -1) {
-            prefix = userEmail.substring(0, index + 1) + userEmail.substring(index + 1, userEmail.indexOf('.', index)); // Include '@' and select until '.'
+            prefix = userEmail.substring(0, index);
+            // + userEmail.substring(index + 1, userEmail.indexOf('.', index)); // Include
+            // '@' and select until '.'
         }
 
         final String fileName = prefix + ".png";
-        
+
         try {
-            System.out.println("Calling service to delete file");
+            System.out.println("Calling service to delete file: " + fileName);
             String result = imageHandlerService.deleteFile("image-store", fileName);
             System.out.println("Delete result: " + result);
             return ResponseEntity.ok("File deleted successfully");
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Failed to delete file");
+        }
+    }
+
+    @DeleteMapping("/deleteImageURL")
+    public ResponseEntity<String> deleteImageURL(@RequestHeader("Authorization") String token) {
+        final String jwt = token.substring(7);
+        final String userEmail = jwtService.extractUsername(jwt);
+        if (userEmail == null) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Invalid token");
+        }
+
+        try {
+            userService.deleteFileURL(userEmail);
+            return ResponseEntity.ok("Picture URL removed successfully");
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Failed to remove picture URL");
         }
     }
 
@@ -170,41 +195,32 @@ public class UserController {
         String prefix = "";
         int index = userEmail.indexOf('@');
         if (index != -1) {
-            prefix = userEmail.substring(0, index + 1) + userEmail.substring(index + 1, userEmail.indexOf('.', index)); // Include '@' and select until '.'
+            prefix = userEmail.substring(0, index);
+            // + userEmail.substring(index + 1, userEmail.indexOf('.', index)); // Include
+            // '@' and select until '.'
         }
-        
+
+        System.out.println("Prefix for image retrieval: " + prefix);
+
         final String fileName = prefix + ".png";
-        
+        System.out.println(fileName);
+
         try {
             byte[] data = imageHandlerService.getFile("image-store", fileName);
             if (data == null || data.length == 0) {
+                // return ResponseEntity.notFound().build();
                 return "Fail";
             }
-            String base64String = Base64.getEncoder().encodeToString(data);
+            String base64String = Base64.getEncoder().encodeToString(data); // Convert to Base64
             return "data:image/png;base64," + base64String;
+            // return ResponseEntity.ok()
+            // .contentType(MediaType.IMAGE_PNG) // Set the content type for PNG
+            // .body(data); // Return the image data directly
 
         } catch (Exception e) {
+            // return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
             return "Fail";
         }
     }
-
-    @PostMapping("/uploadImageURL")
-    public void postImageURL(@RequestHeader("Authorization") String token, @RequestBody String fileURL) {
-        final String jwt = token.substring(7);
-        final String userEmail = jwtService.extractUsername(jwt);
-        System.out.println(userEmail + " Controller " + fileURL);
-        userService.saveFileURL(userEmail, fileURL);
-    }
-
-
-    @DeleteMapping("/deleteImageURL")
-    public void deleteImageURL(@RequestHeader("Authorization") String token) {
-        final String jwt = token.substring(7);
-        final String userEmail = jwtService.extractUsername(jwt);
-        System.out.println(userEmail + " Controller ");
-        userService.deleteFileURL(userEmail);
-    }
-    
-
 
 }

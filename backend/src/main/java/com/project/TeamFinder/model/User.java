@@ -26,14 +26,35 @@ public class User implements UserDetails {
     @Column(name="last_name")
     private String lastName;
 
-    @Column(name="full_name")
-    private String fullName;
-
     @Column(nullable = false)
     private String password;
 
     @Column(name="picture_url")
     private String pictureURL;
+
+    @Column(name="bio")
+    private String bio;
+
+    @Column(name="skills")
+    private String[] skills;
+
+    // checks whether they have verified using OTP sent to their email
+    @Column(name="enabled")
+    private boolean enabled;
+
+    @Column(name="verification_code")
+    private String verificationCode;
+
+    @Column(name = "verification_expiration")
+    private LocalDateTime verificationCodeExpiresAt;
+
+    public boolean isEnabled() {
+        return enabled;
+    }
+
+    public void setEnabled(boolean enabled) {
+        this.enabled = enabled;
+    }
 
     public String getPictureURL() {
         return pictureURL;
@@ -42,11 +63,6 @@ public class User implements UserDetails {
     public void setPictureURL(String pictureURL) {
         this.pictureURL = pictureURL;
     }
-
-    @Enumerated(EnumType.STRING)
-    private Role role;
-
-    private Boolean enabled;
     
     public Long getId() {
         return id;
@@ -80,32 +96,8 @@ public class User implements UserDetails {
         this.lastName = lastName;
     }
 
-    public String getFullName() {
-        return fullName;
-    }
-
-    public void setFullName(String fullName) {
-        this.fullName = fullName;
-    }
-
     public void setPassword(String password) {
         this.password = password;
-    }
-
-    public Role getRole() {
-        return role;
-    }
-
-    public void setRole(Role role) {
-        this.role = role;
-    }
-
-    public Boolean getEnabled() {
-        return enabled;
-    }
-
-    public void setEnabled(Boolean enabled) {
-        this.enabled = enabled;
     }
 
     public String getVerificationCode() {
@@ -124,20 +116,37 @@ public class User implements UserDetails {
         this.verificationCodeExpiresAt = verificationCodeExpiresAt;
     }
 
-    @Column(name="verification_code")
-    private String verificationCode;
+    public String getBio() {
+        return bio;
+    }
 
-    @Column(name = "verification_expiration")
-    private LocalDateTime verificationCodeExpiresAt;
+    public void setBio(String bio) {
+        this.bio = bio;
+    }
 
+    public String[] getSkills() {
+        return skills;
+    }
 
-    public User(String firstName, String lastName, String fullName, String email, String password, Role role) {
+    public void setSkills(String[] skills) {
+        this.skills = skills;
+    }
+
+    public User(String firstName, String lastName, String email, String password) {
         this.firstName = firstName;
         this.lastName = lastName;
-        this.fullName = fullName;
         this.email = email;
         this.password = password;
-        this.role = role;
+    }
+
+    public User(String firstName, String lastName, String email, String password, String bio, String pictureURL, String[] skills) {
+        this.firstName = firstName;
+        this.lastName = lastName;
+        this.email = email;
+        this.password = password;
+        this.bio = bio;
+        this.pictureURL = pictureURL;
+        this.skills = skills;
     }
 
     public User() {
@@ -175,19 +184,12 @@ public class User implements UserDetails {
     }
 
     @Override
-    public boolean isEnabled() {
-        return enabled;
-    }
-
-    @Override
     public String toString() {
         return "User{" +
                 "id=" + id +
                 ", email='" + email + '\'' +
                 ", firstName='" + firstName + '\'' +
                 ", lastName='" + lastName + '\'' +
-                ", role='" + role + '\'' +
-                ", enabled=" + enabled +
                 '}';
     }
 }

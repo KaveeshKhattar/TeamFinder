@@ -5,15 +5,6 @@ public class LoginResponse {
     private String token;
     private String refreshToken;
     private long expiresIn;
-    private String role;
-
-    public String getRole() {
-        return role;
-    }
-
-    public void setRole(String role) {
-        this.role = role;
-    }
 
     public String getToken() {
         return token;
@@ -39,10 +30,9 @@ public class LoginResponse {
         this.expiresIn = expiresIn;
     }
 
-    public LoginResponse(String jwtToken, String refreshToken, long expirationTime, String role) {
+    public LoginResponse(String jwtToken, String refreshToken, long expirationTime) {
         this.token = jwtToken;
         this.refreshToken = refreshToken;
         this.expiresIn = expirationTime;
-        this.role = role;  // Initialize role
     }
 }

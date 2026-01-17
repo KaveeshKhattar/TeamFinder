@@ -31,6 +31,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 @RestController
 @CrossOrigin
 public class AuthenticationController {
+
     private final JwtService jwtService;
     private final AuthenticationService authenticationService;
 
@@ -39,6 +40,7 @@ public class AuthenticationController {
         this.authenticationService = authenticationService;        
     }
 
+    // sign up
     @PostMapping(value="/signup", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<ApiResponse<User>> signup(@RequestBody RegisterUserDTO registerUserDto) {
         System.out.println("*** Sign up got called ***");
@@ -47,18 +49,21 @@ public class AuthenticationController {
         return ResponseEntity.ok(response);
     }
 
+    // sending token to email before able to change password
     @PostMapping(value="/changePasswordVerify", produces = MediaType.APPLICATION_JSON_VALUE)
     public void sendEmailForPasswordChange(@RequestBody EmailRequestDTO emailRequest) {
         System.out.println("*** Sending email for pwd change ***");
         authenticationService.sendEmailPassword(emailRequest.getEmail());
     }
 
+    // update the password
     @PostMapping(value="/updatePassword", produces = MediaType.APPLICATION_JSON_VALUE)
     public void changePassword(@RequestBody PasswordChangeDTO passwordChangeDTO) {
         System.out.println("*** Pwd change ***");
         authenticationService.passwordChange(passwordChangeDTO.getEmail(), passwordChangeDTO.getPassword());
     }
 
+    // login
     @PostMapping(value="/login", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<ApiResponse<LoginResponse>> authenticate(@RequestBody LoginUserDTO loginUserDto){
         System.out.println("*** Log in got called ***");
@@ -72,8 +77,8 @@ public class AuthenticationController {
         tokens.put("token", jwtToken);
         tokens.put("refreshToken", refreshToken);
 
-        String userRole = authenticatedUser.getRole().name();
-        LoginResponse loginResponse = new LoginResponse(jwtToken, refreshToken, jwtService.getExpirationTime(), userRole);
+        
+        LoginResponse loginResponse = new LoginResponse(jwtToken, refreshToken, jwtService.getExpirationTime());
         
         // LoginResponse loginResponse = new LoginResponse(jwtToken, jwtService.getExpirationTime());
         ApiResponse<LoginResponse> response = new ApiResponse<LoginResponse>(true, loginResponse, "Login Successful");
@@ -81,6 +86,7 @@ public class AuthenticationController {
         return ResponseEntity.ok(response);
     }
 
+    // refresh the JWT
     @PostMapping("/refresh-token")
     public ResponseEntity<Map<String, String>> refreshAccessToken(@RequestBody Map<String, String> request) {
         String refreshToken = request.get("refreshToken");
@@ -98,6 +104,7 @@ public class AuthenticationController {
         }
     }
 
+    // verify the OTP sent to the user email
     @PostMapping("/verify")
     public ResponseEntity<ApiResponse<String>> verifyUser(@RequestBody VerifyUserDTO verifyUserDto) {
         System.out.println("*** Verify got called ***");
@@ -106,6 +113,7 @@ public class AuthenticationController {
         return ResponseEntity.ok(response);
     }
 
+    // resend the OTP to verify user
     @PostMapping("/resend")
     public ResponseEntity<?> resendVerificationCode(@RequestParam String email) {
         try {

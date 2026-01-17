@@ -3,7 +3,6 @@ package com.project.TeamFinder.dto;
 import com.project.TeamFinder.model.Role;
 
 public class RegisterUserDTO {
-    private Role role;
     private String firstName;
     private String lastName;
     private String email;
@@ -39,13 +38,5 @@ public class RegisterUserDTO {
 
     public void setPassword(String password) {
         this.password = password;
-    }
-
-    public Role getRole() {
-        return role;
-    }
-
-    public void setRole(Role role) {
-        this.role = role;
     }
 }

@@ -1,6 +1,7 @@
-import { Users, Lightbulb, Zap, Trophy, Quote } from "lucide-react";
+import { Users, Lightbulb, Zap, Trophy, Quote, ArrowRight } from "lucide-react";
 import { Button } from "../../../components/ui/button";
 import { Link } from "react-router-dom";
+import Header from "./Header";
 
 function TeamFinderSections() {
     const testimonials = [
@@ -34,42 +35,33 @@ function TeamFinderSections() {
         },
     ];
     return (
-        <div className="overflow-y-auto">
+        <div className="min-h-screen bg-background">
             {/* Hero Section */}
-            <div className="bg-gradient-to-br to-blue-600 from-blue-800 text-white py-4 px-4">
-                <div className="max-w-6xl mx-auto text-center flex justify-between items-center">
-                    <p className="text-xl font-bold">TeamFinder</p>
-                    <div className="flex space-x-4">
-                        <Button variant="outline" className="text-black">
-                            Log In
-                        </Button>
-                        <Button className="bg-sky-400 hover:bg-sky-800">Sign Up</Button>
-                    </div>
-                </div>
-            </div>
+            <Header />
 
-            {/* Two Column Section */}
-            <div className="bg-gradient-to-br from-slate-50 to-slate-100 py-16">
-                <div className="max-w-7xl mx-auto px-4">
-                    <div className="grid md:grid-cols-2 gap-8">
+            {/* Main Content */}
+            <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                {/* Two Column Section */}
+                <section className="py-12 sm:py-16 md:py-24 lg:py-32">
+                    <div className="grid md:grid-cols-2 gap-6 sm:gap-8 lg:gap-12">
                         {/* Left Section - Looking for Team Members */}
-                        <div className="bg-gradient-to-br from-sky-100 to-sky-50 rounded-2xl shadow-lg p-8">
-                            <div className="mb-6">
-                                <p className="text-blue-600 font-semibold text-sm uppercase tracking-wide mb-2">
+                        <div className="border border-border rounded-lg p-4 sm:p-6 md:p-8 lg:p-10 bg-card">
+                            <div className="mb-6 sm:mb-8">
+                                <p className="text-xs sm:text-sm font-medium text-muted-foreground uppercase tracking-wide mb-2 sm:mb-3">
                                     Looking for People?
                                 </p>
-                                <h2 className="text-4xl font-bold text-gray-900 mb-4">
+                                <h2 className="text-xl sm:text-2xl lg:text-3xl font-semibold mb-4 sm:mb-6">
                                     What is in it for teams
                                 </h2>
                             </div>
 
-                            <div className="space-y-6">
+                            <div className="space-y-4 sm:space-y-6 mb-6 sm:mb-8">
                                 <div className="flex items-start gap-4">
-                                    <div className="bg-blue-100 rounded-full p-3 flex-shrink-0">
-                                        <Users className="w-6 h-6 text-blue-600" />
+                                    <div className="rounded-md p-2 bg-muted flex-shrink-0">
+                                        <Users className="w-5 h-5 text-foreground" />
                                     </div>
                                     <div>
-                                        <p className="text-gray-700 leading-relaxed">
+                                        <p className="text-muted-foreground leading-relaxed">
                                             Connect directly with talented individuals ready to join
                                             your team - no middlemen, just genuine connections.
                                         </p>
@@ -77,11 +69,11 @@ function TeamFinderSections() {
                                 </div>
 
                                 <div className="flex items-start gap-4">
-                                    <div className="bg-blue-100 rounded-full p-3 flex-shrink-0">
-                                        <Lightbulb className="w-6 h-6 text-blue-600" />
+                                    <div className="rounded-md p-2 bg-muted flex-shrink-0">
+                                        <Lightbulb className="w-5 h-5 text-foreground" />
                                     </div>
                                     <div>
-                                        <p className="text-gray-700 leading-relaxed">
+                                        <p className="text-muted-foreground leading-relaxed">
                                             Post your team details for the hackathon you're attending.
                                             Find people who align with your goals.
                                         </p>
@@ -89,11 +81,11 @@ function TeamFinderSections() {
                                 </div>
 
                                 <div className="flex items-start gap-4">
-                                    <div className="bg-blue-100 rounded-full p-3 flex-shrink-0">
-                                        <Zap className="w-6 h-6 text-blue-600" />
+                                    <div className="rounded-md p-2 bg-muted flex-shrink-0">
+                                        <Zap className="w-5 h-5 text-foreground" />
                                     </div>
                                     <div>
-                                        <p className="text-gray-700 leading-relaxed">
+                                        <p className="text-muted-foreground leading-relaxed">
                                             Browse profiles, review skills and chat with potential
                                             members to join your team with one click.
                                         </p>
@@ -101,43 +93,52 @@ function TeamFinderSections() {
                                 </div>
 
                                 <div className="flex items-start gap-4">
-                                    <div className="bg-blue-100 rounded-full p-3 flex-shrink-0">
-                                        <Trophy className="w-6 h-6 text-blue-600" />
+                                    <div className="rounded-md p-2 bg-muted flex-shrink-0">
+                                        <Trophy className="w-5 h-5 text-foreground" />
                                     </div>
                                     <div>
-                                        <p className="text-gray-700 leading-relaxed">
+                                        <p className="text-muted-foreground leading-relaxed">
                                             Find committed team members who want to build something
                                             great, not just browse opportunities.
                                         </p>
                                     </div>
                                 </div>
+                            </div>
 
+                            <div className="space-y-3">
                                 <Link to="/find-teammates" className="block">
-                                    <Button className="hover:bg-blue-200 hover:text-black w-full">
+                                    <Button className="w-full" variant="default">
                                         Find your next teammate
+                                        <ArrowRight className="w-4 h-4 ml-2" />
+                                    </Button>
+                                </Link>
+
+                                <Link to="/let-people-find-you" className="block">
+                                    <Button className="w-full" variant="outline">
+                                        Post your team
                                     </Button>
                                 </Link>
                             </div>
                         </div>
 
                         {/* Right Section - Looking for Teams */}
-                        <div className="bg-gradient-to-br from-rose-50 to-pink-50 rounded-2xl shadow-lg p-8">
-                            <div className="mb-6">
-                                <p className="text-rose-600 font-semibold text-sm uppercase tracking-wide mb-2">
+                        <div className="border border-border rounded-lg p-4 sm:p-6 md:p-8 lg:p-10 bg-card">
+                            <div className="mb-6 sm:mb-8">
+                                <p className="text-xs sm:text-sm font-medium text-muted-foreground uppercase tracking-wide mb-2 sm:mb-3">
                                     Looking for a Team?
                                 </p>
-                                <h2 className="text-4xl font-bold text-gray-900 mb-4">
+                                <h2 className="text-xl sm:text-2xl lg:text-3xl font-semibold mb-4 sm:mb-6">
                                     What is in it for individuals
                                 </h2>
                             </div>
 
-                            <div className="space-y-6">
+                            <div className="space-y-4 sm:space-y-6 mb-6 sm:mb-8">
                                 <div className="flex items-start gap-4">
-                                    <div className="bg-rose-100 rounded-full p-3 flex-shrink-0">
-                                        <Users className="w-6 h-6 text-rose-600" />
+                                    <div className="rounded-md p-2 bg-muted flex-shrink-0">
+                                        <Users className="w-5 h-5 text-foreground" />
                                     </div>
                                     <div>
-                                        <p className="text-gray-700 leading-relaxed">
+                                        <p className="text-muted-foreground leading-relaxed">
                                             Discover teams looking for your exact skillset & connect
                                             with collaborators directly.
                                         </p>
@@ -145,11 +146,11 @@ function TeamFinderSections() {
                                 </div>
 
                                 <div className="flex items-start gap-4">
-                                    <div className="bg-rose-100 rounded-full p-3 flex-shrink-0">
-                                        <Lightbulb className="w-6 h-6 text-rose-600" />
+                                    <div className="rounded-md p-2 bg-muted flex-shrink-0">
+                                        <Lightbulb className="w-5 h-5 text-foreground" />
                                     </div>
                                     <div>
-                                        <p className="text-gray-700 leading-relaxed">
+                                        <p className="text-muted-foreground leading-relaxed">
                                             See team composition, tech stack and chat with them before
                                             you apply. No surprises.
                                         </p>
@@ -157,11 +158,11 @@ function TeamFinderSections() {
                                 </div>
 
                                 <div className="flex items-start gap-4">
-                                    <div className="bg-rose-100 rounded-full p-3 flex-shrink-0">
-                                        <Zap className="w-6 h-6 text-rose-600" />
+                                    <div className="rounded-md p-2 bg-muted flex-shrink-0">
+                                        <Zap className="w-5 h-5 text-foreground" />
                                     </div>
                                     <div>
-                                        <p className="text-gray-700 leading-relaxed">
+                                        <p className="text-muted-foreground leading-relaxed">
                                             Create your profile once and express interest in events.
                                             Your skills speak for themselves.
                                         </p>
@@ -169,236 +170,228 @@ function TeamFinderSections() {
                                 </div>
 
                                 <div className="flex items-start gap-4">
-                                    <div className="bg-rose-100 rounded-full p-3 flex-shrink-0">
-                                        <Trophy className="w-6 h-6 text-rose-600" />
+                                    <div className="rounded-md p-2 bg-muted flex-shrink-0">
+                                        <Trophy className="w-5 h-5 text-foreground" />
                                     </div>
                                     <div>
-                                        <p className="text-gray-700 leading-relaxed">
+                                        <p className="text-muted-foreground leading-relaxed">
                                             Join passionate or familiar teams participating in
                                             hackathons you can't find on traditional job boards.
                                         </p>
                                     </div>
                                 </div>
+                            </div>
 
+                            <div className="space-y-3">
                                 <Link to="/find-team" className="block">
-                                    <Button className="hover:bg-red-200 hover:text-black w-full">
+                                    <Button className="w-full" variant="default">
                                         Find your next team
+                                        <ArrowRight className="w-4 h-4 ml-2" />
+                                    </Button>
+                                </Link>
+
+                                <Link to="/show-interest" className="block">
+                                    <Button className="w-full" variant="outline">
+                                        Show your interest
                                     </Button>
                                 </Link>
                             </div>
                         </div>
                     </div>
-                </div>
-            </div>
+                </section>
 
-            {/* Stats Section */}
-            <div className="m-4 rounded-lg bg-gradient-to-br from-cyan-700 to-cyan-900 text-white py-20 px-4">
-                <div className="max-w-7xl mx-auto">
-                    <div className="grid md:grid-cols-3 gap-12 text-center">
+                {/* Stats Section */}
+                <section className="py-12 sm:py-16 md:py-24 border-t border-border">
+                    <div className="grid md:grid-cols-3 gap-8 sm:gap-12 text-center">
                         <div>
-                            <h2 className="text-6xl md:text-7xl font-extrabold">0</h2>
-                            <p className="mt-4 text-lg text-gray-200">Matches Made</p>
+                            <h2 className="text-4xl sm:text-5xl lg:text-6xl font-semibold mb-2 sm:mb-3">0</h2>
+                            <p className="text-sm sm:text-base text-muted-foreground">Matches Made</p>
                         </div>
 
                         <div>
-                            <h2 className="text-6xl md:text-7xl font-extrabold">0</h2>
-                            <p className="mt-4 text-lg text-gray-200">Events</p>
+                            <h2 className="text-4xl sm:text-5xl lg:text-6xl font-semibold mb-2 sm:mb-3">5+</h2>
+                            <p className="text-sm sm:text-base text-muted-foreground">Events</p>
                         </div>
 
                         <div>
-                            <h2 className="text-6xl md:text-7xl font-extrabold">0</h2>
-                            <p className="mt-4 text-lg text-gray-200">Ready Candidates</p>
+                            <h2 className="text-4xl sm:text-5xl lg:text-6xl font-semibold mb-2 sm:mb-3">5+</h2>
+                            <p className="text-sm sm:text-base text-muted-foreground">Ready Candidates</p>
                         </div>
                     </div>
-                </div>
-            </div>
+                </section>
 
-            {/* AI Helper Section */}
-            <div className="mx-12 rounded-lg bg-gradient-to-br from-sky-700 to-cyan-900 text-white py-20 px-4">
-                <div className="max-w-7xl mx-auto">
-                    <div className="grid md:grid-cols-3 gap-12 lg:text-center">
-                        <div>
-                            <h2 className="text-6xl md:text-7xl font-extrabold">
-                                Meet TeamFinder's AI Helper
-                            </h2>
-                        </div>
+                {/* AI Helper Section */}
+                <section className="py-12 sm:py-16 md:py-24 border-t border-border">
+                    <div className="text-center px-4">
+                        <h2 className="text-2xl sm:text-3xl lg:text-4xl font-semibold mb-3 sm:mb-4">
+                            TeamFinder's AI Helper
+                        </h2>
+                        <p className="text-sm sm:text-base text-muted-foreground max-w-2xl mx-auto">
+                            Coming soon
+                        </p>
                     </div>
-                </div>
-            </div>
+                </section>
 
-            {/* Testimonials Section */}
-            <div className="m-4 rounded-lg text-white py-10 px-4">
-                <div className="max-w-7xl mx-auto">
-                    <div className="text-center flex flex-col">
-                        <div>
-                            <p className="text-2xl mb-2 md:text-4xl font-extrabold text-black">
-                                What people are saying
-                            </p>
-                            <p className="m-4 text-black">
-                                Hear from teams and individuals who found their perfect match
-                            </p>
-                        </div>
+                {/* Testimonials Section */}
+                <section className="py-12 sm:py-16 md:py-24 border-t border-border">
+                    <div className="text-center mb-8 sm:mb-12 px-4">
+                        <h2 className="text-2xl sm:text-3xl lg:text-4xl font-semibold mb-2 sm:mb-3">
+                            What people are saying
+                        </h2>
+                        <p className="text-sm sm:text-base text-muted-foreground">
+                            Hear from teams and individuals who found their perfect match
+                        </p>
+                    </div>
 
-                        {/* Auto-scrolling horizontal carousel */}
-                        <div className="overflow-x-hidden w-full relative">
-                            <div
-                                className="flex gap-8 animate-scroll-x"
-                                style={{
-                                    width: `calc(3 * 380px * 2)`, // 3 cards, 380px each, duplicated for seamless loop
-                                }}
-                            >
-                                {/* Duplicate testimonials for seamless loop */}
-                                {[...testimonials, ...testimonials].map((testimonial, index) => (
-                                    <div
-                                        key={index}
-                                        className="bg-gradient-to-br from-sky-100 to-sky-200 rounded-2xl shadow-lg p-8 hover:shadow-xl transition-shadow duration-300 min-w-[380px] max-w-[380px] flex-shrink-0"
-                                    >
-                                        {/* Quote Icon */}
-                                        <div className="flex justify-center mb-6">
-                                            <div className="bg-rose-100 rounded-full p-4 w-20 h-20 flex items-center justify-center">
-                                                <div className="flex items-center gap-1">
-                                                    <Quote className="w-6 h-6 text-sky-500 transform rotate-180" />
-                                                    <Quote className="w-6 h-6 text-blue-600" />
-                                                </div>
-                                            </div>
-                                        </div>
-
-                                        {/* Quote Text */}
-                                        <blockquote className="text-gray-800 text-lg leading-relaxed mb-6 text-center">
-                                            "{testimonial.quote}"
-                                        </blockquote>
-
-                                        {/* Author Info */}
-                                        <div className="text-center border-t border-rose-200 pt-6">
-                                            <p className="font-semibold text-gray-900">
-                                                {testimonial.author}
-                                            </p>
-                                            <p className="text-sm text-gray-600">
-                                                {testimonial.role}
-                                            </p>
-                                            <p className="text-sm text-gray-500">
-                                                {testimonial.company}
-                                            </p>
+                    {/* Auto-scrolling horizontal carousel */}
+                    <div className="overflow-x-hidden w-full relative px-4">
+                        <div className="flex gap-4 sm:gap-6 animate-scroll-x">
+                            {[...testimonials, ...testimonials].map((testimonial, index) => (
+                                <div
+                                    key={index}
+                                    className="border border-border rounded-lg p-4 sm:p-6 md:p-8 bg-card hover:shadow-md transition-shadow duration-300 min-w-[280px] sm:min-w-[320px] md:min-w-[380px] max-w-[280px] sm:max-w-[320px] md:max-w-[380px] flex-shrink-0"
+                                >
+                                    <div className="flex justify-center mb-6">
+                                        <div className="rounded-full p-3 bg-muted">
+                                            <Quote className="w-5 h-5 text-foreground" />
                                         </div>
                                     </div>
-                                ))}
-                            </div>
+
+                                    <blockquote className="text-foreground text-base leading-relaxed mb-6 text-center">
+                                        "{testimonial.quote}"
+                                    </blockquote>
+
+                                    <div className="text-center border-t border-border pt-6">
+                                        <p className="font-medium text-foreground">
+                                            {testimonial.author}
+                                        </p>
+                                        <p className="text-sm text-muted-foreground">
+                                            {testimonial.role}
+                                        </p>
+                                        <p className="text-sm text-muted-foreground">
+                                            {testimonial.company}
+                                        </p>
+                                    </div>
+                                </div>
+                            ))}
                         </div>
-                        {/* Carousel animation style */}
-                        <style>{`
+                    </div>
+                    <style>{`
+                        @keyframes scroll-x {
+                            0% { transform: translateX(0); }
+                            100% { transform: translateX(-1140px); }
+                        }
+                        .animate-scroll-x {
+                            animation: scroll-x 18s linear infinite;
+                        }
+                        @media (max-width: 640px) {
                             @keyframes scroll-x {
                                 0% { transform: translateX(0); }
-                                100% { transform: translateX(-1140px); }
+                                100% { transform: translateX(-840px); }
                             }
-                            .animate-scroll-x {
-                                animation: scroll-x 18s linear infinite;
-                            }
-                        `}</style>
-                    </div>
-                </div>
-            </div>
+                        }
+                    `}</style>
+                </section>
+            </main>
 
             {/* Footer Section */}
-            <div className="bg-gradient-to-br from-blue-700 to-blue-900 text-white pt-20 pb-5 px-4 md:pr-16">
-                <div className="max-w-7xl mx-auto">
-                    <div className="flex flex-col">
-                        {/* Main Footer Content */}
-                        <div className="flex flex-col lg:flex-row lg:justify-between gap-8 lg:gap-0">
-                            {/* Logo */}
-                            <div className="text-center lg:text-left">
-                                <p className="text-4xl md:text-5xl lg:text-6xl font-bold">
-                                    teamfinder
-                                </p>
-                            </div>
-
-                            {/* Footer Links */}
-                            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8 lg:gap-16">
-                                {/* For Individuals */}
-                                <div className="flex flex-col">
-                                    <p className="text-xl font-bold mb-4">For Individuals</p>
-                                    <ul className="flex flex-col space-y-2">
-                                        <Link
-                                            to="/"
-                                            className="hover:text-blue-200 transition-colors"
-                                        >
-                                            Overview
-                                        </Link>
-                                        <Link
-                                            to="/"
-                                            className="hover:text-blue-200 transition-colors"
-                                        >
-                                            Find Teams
-                                        </Link>
-                                        <Link
-                                            to="/"
-                                            className="hover:text-blue-200 transition-colors"
-                                        >
-                                            Let Teams Find You
-                                        </Link>
-                                    </ul>
-                                </div>
-
-                                {/* For Teams */}
-                                <div className="flex flex-col">
-                                    <p className="text-xl font-bold mb-4">For Teams</p>
-                                    <ul className="flex flex-col space-y-2">
-                                        <Link
-                                            to="/"
-                                            className="hover:text-blue-200 transition-colors"
-                                        >
-                                            Overview
-                                        </Link>
-                                        <Link
-                                            to="/"
-                                            className="hover:text-blue-200 transition-colors"
-                                        >
-                                            Find People
-                                        </Link>
-                                        <Link
-                                            to="/"
-                                            className="hover:text-blue-200 transition-colors"
-                                        >
-                                            Let People Find You
-                                        </Link>
-                                    </ul>
-                                </div>
-
-                                {/* Company */}
-                                <div className="flex flex-col">
-                                    <p className="text-xl font-bold mb-4">Company</p>
-                                    <ul className="flex flex-col space-y-2">
-                                        <Link
-                                            to="/"
-                                            className="hover:text-blue-200 transition-colors"
-                                        >
-                                            About
-                                        </Link>
-                                        <Link
-                                            to="/"
-                                            className="hover:text-blue-200 transition-colors"
-                                        >
-                                            Trust
-                                        </Link>
-                                        <Link
-                                            to="/"
-                                            className="hover:text-blue-200 transition-colors"
-                                        >
-                                            Blog
-                                        </Link>
-                                    </ul>
-                                </div>
-                            </div>
+            <footer className="border-t border-border mt-12 sm:mt-16 md:mt-24">
+                <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 sm:py-12 md:py-16">
+                    <div className="flex flex-col lg:flex-row lg:justify-between gap-8 sm:gap-12 lg:gap-0">
+                        {/* Logo */}
+                        <div className="text-center lg:text-left">
+                            <h3 className="text-xl sm:text-2xl lg:text-3xl font-semibold">
+                                TeamFinder
+                            </h3>
                         </div>
 
-                        {/* Copyright */}
-                        <div className="mt-10 pt-6 border-t border-blue-600">
-                            <p className="text-center text-sm md:text-base">
-                                Copyright © 2026 TeamFinder. All rights reserved.
-                            </p>
+                        {/* Footer Links */}
+                        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8 lg:gap-16">
+                            {/* For Individuals */}
+                            <div className="flex flex-col">
+                                <p className="text-sm font-semibold mb-4">For Individuals</p>
+                                <ul className="flex flex-col space-y-3">
+                                    <Link
+                                        to="/"
+                                        className="text-sm text-muted-foreground hover:text-foreground transition-colors"
+                                    >
+                                        Overview
+                                    </Link>
+                                    <Link
+                                        to="/"
+                                        className="text-sm text-muted-foreground hover:text-foreground transition-colors"
+                                    >
+                                        Find Teams
+                                    </Link>
+                                    <Link
+                                        to="/"
+                                        className="text-sm text-muted-foreground hover:text-foreground transition-colors"
+                                    >
+                                        Let Teams Find You
+                                    </Link>
+                                </ul>
+                            </div>
+
+                            {/* For Teams */}
+                            <div className="flex flex-col">
+                                <p className="text-sm font-semibold mb-4">For Teams</p>
+                                <ul className="flex flex-col space-y-3">
+                                    <Link
+                                        to="/"
+                                        className="text-sm text-muted-foreground hover:text-foreground transition-colors"
+                                    >
+                                        Overview
+                                    </Link>
+                                    <Link
+                                        to="/"
+                                        className="text-sm text-muted-foreground hover:text-foreground transition-colors"
+                                    >
+                                        Find People
+                                    </Link>
+                                    <Link
+                                        to="/"
+                                        className="text-sm text-muted-foreground hover:text-foreground transition-colors"
+                                    >
+                                        Let People Find You
+                                    </Link>
+                                </ul>
+                            </div>
+
+                            {/* Company */}
+                            <div className="flex flex-col">
+                                <p className="text-sm font-semibold mb-4">Company</p>
+                                <ul className="flex flex-col space-y-3">
+                                    <Link
+                                        to="/"
+                                        className="text-sm text-muted-foreground hover:text-foreground transition-colors"
+                                    >
+                                        About
+                                    </Link>
+                                    <Link
+                                        to="/"
+                                        className="text-sm text-muted-foreground hover:text-foreground transition-colors"
+                                    >
+                                        Trust
+                                    </Link>
+                                    <Link
+                                        to="/"
+                                        className="text-sm text-muted-foreground hover:text-foreground transition-colors"
+                                    >
+                                        Blog
+                                    </Link>
+                                </ul>
+                            </div>
                         </div>
                     </div>
+
+                    {/* Copyright */}
+                    <div className="mt-8 sm:mt-12 pt-6 sm:pt-8 border-t border-border">
+                        <p className="text-center text-xs sm:text-sm text-muted-foreground">
+                            Copyright © 2026 TeamFinder. All rights reserved.
+                        </p>
+                    </div>
                 </div>
-            </div>
+            </footer>
         </div>
     );
 }
