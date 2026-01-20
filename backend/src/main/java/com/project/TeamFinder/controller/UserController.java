@@ -69,11 +69,11 @@ public class UserController {
         }
     }
 
-    // @GetMapping("/")
-    // public ResponseEntity<List<User>> allUsers() {
-    // List <User> users = userService.allUsers();
-    // return ResponseEntity.ok(users);
-    // }
+    @GetMapping("/getAllUsers")
+    public ResponseEntity<List<User>> allUsers() {
+    List <User> users = userService.allUsers();
+    return ResponseEntity.ok(users);
+    }
 
     @GetMapping("/profile")
     public ResponseEntity<User> profile(@RequestHeader("Authorization") String token) {

@@ -42,7 +42,7 @@ function TeamFinderSections() {
             {/* Main Content */}
             <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
                 {/* Two Column Section */}
-                <section className="py-12 sm:py-16 md:py-24 lg:py-32">
+                <section className="py-12">
                     <div className="grid md:grid-cols-2 gap-6 sm:gap-8 lg:gap-12">
                         {/* Left Section - Looking for Team Members */}
                         <div className="border border-border rounded-lg p-4 sm:p-6 md:p-8 lg:p-10 bg-card">
@@ -113,7 +113,7 @@ function TeamFinderSections() {
                                     </Button>
                                 </Link>
 
-                                <Link to="/let-people-find-you" className="block">
+                                <Link to="/post-your-team" className="block">
                                     <Button className="w-full" variant="outline">
                                         Post your team
                                     </Button>

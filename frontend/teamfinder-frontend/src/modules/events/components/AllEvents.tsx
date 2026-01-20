@@ -79,20 +79,20 @@ function AllEvents() {
             const eventName = event.name || "";
             const formattedName = eventName.replace(/\s+/g, "-");
             const eventUrl = formattedName.toLowerCase();
-            const oldDate = event.date;
-            const date = new Date(oldDate);
-            const day = date.getDate();
-            const month = date.toLocaleString("default", { month: "short" });
-            const year = date.getFullYear();
-            const time = date.toLocaleString("en-US", {
-              hour: "numeric",
-              minute: "numeric",
-              hour12: true,
-            });
+            // const oldDate = event.date;
+            // const date = new Date(oldDate);
+            // const day = date.getDate();
+            // const month = date.toLocaleString("default", { month: "short" });
+            // const year = date.getFullYear();
+            // const time = date.toLocaleString("en-US", {
+            //   hour: "numeric",
+            //   minute: "numeric",
+            //   hour12: true,
+            // });
 
             // Create the formatted date string
-            const formattedDate = `${day} ${month} ${year}`;
-            const formattedTime = `${time}`;
+            // const formattedDate = `${day} ${month} ${year}`;
+            // const formattedTime = `${time}`;
 
             return (
               <div
@@ -114,12 +114,12 @@ function AllEvents() {
 
                     <div className="flex items-center">
                       <p className="text-sm mr-1">Date:</p>
-                      <p className="text-sm">{formattedDate}</p>
+                      {/* <p className="text-sm">{formattedDate}</p> */}
                     </div>
 
                     <div className="flex items-center">
                       <p className="text-sm mr-1">Time:</p>
-                      <p className="text-sm">{formattedTime}</p>
+                      {/* <p className="text-sm">{formattedTime}</p> */}
                     </div>
 
                     <div className="flex items-center">

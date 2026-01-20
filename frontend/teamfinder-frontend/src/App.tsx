@@ -24,9 +24,12 @@ import { ThemeProvider } from './components/themeProvider'
 import ChangePasswordVerification from './modules/authentication/components/ChangePasswordVerification'
 import ChangePassword from './modules/authentication/components/ChangePassword'
 import FindTeammates from './modules/find/FindTeammates'
-import FindTeams from './modules/find/FindTeams'
+
 import FindTeammatesPeople from './modules/find/FindTeammatesPeople'
 import ShowInterest from './modules/showInterest/ShowInterest'
+import FindTeams from './modules/teams/components/FindTeam'
+import FindActualTeams from './modules/teams/components/FindActualTeams'
+import PostTeamLandingPage from './modules/teams/components/PostTeamLandingPage'
 
 function App() {
 
@@ -40,10 +43,12 @@ function App() {
                 <Route path="/" element={<LandingPage />} />
                 <Route path="/find-teammates" element={<FindTeammates />} />
                 <Route path="/show-interest" element={<ShowInterest />} />
+                <Route path="/post-your-team" element={<PostTeamLandingPage />} />
                 <Route path="/find-teammates/events/:eventId" element={<FindTeammatesPeople />} />
+                <Route path="/find-team" element={<FindTeams />} />
+                <Route path="/find-team/events/:eventId" element={<FindActualTeams />} />
+                
 
-
-                <Route path="/find-teams" element={<FindTeams />} />
 
 
                 <Route path="/profile" element={<Profile />} />

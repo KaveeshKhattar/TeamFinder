@@ -169,10 +169,10 @@ function FindTeammatesPeople() {
             <Carousel className="w-full max-w-2xl">
               <CarouselContent>
                 {users.map((user) => (
-                <CarouselItem key={user.id} className="md:basis-1/2">
-                  <div className="p-1 sm:p-2">
-                    <Card className="border border-border">
-                      <CardContent className="flex flex-col p-4 sm:p-6">
+                  <CarouselItem key={user.id} className="md:basis-1/2">
+                    <div className="p-1 sm:p-2">
+                      <Card className="border border-border">
+                        <CardContent className="flex flex-col p-4 sm:p-6">
                           {/* Profile Picture and Name */}
                           <div className="flex flex-col items-center mb-6">
                             <img
@@ -235,11 +235,10 @@ function FindTeammatesPeople() {
                                 className="w-full data-[state=on]:bg-primary data-[state=on]:text-primary-foreground"
                               >
                                 <Heart
-                                  className={`w-4 h-4 mr-2 ${
-                                    interestedInUser[user.id]
+                                  className={`w-4 h-4 mr-2 ${interestedInUser[user.id]
                                       ? "fill-primary-foreground stroke-primary-foreground"
                                       : ""
-                                  }`}
+                                    }`}
                                 />
                                 {interestedInUser[user.id] ? "Favorited" : "Add to Favorites"}
                               </Toggle>

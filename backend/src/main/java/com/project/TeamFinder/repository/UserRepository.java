@@ -21,7 +21,11 @@ public interface UserRepository extends CrudRepository<User, Long> {
     List<UserProjection> findAllByIdIn(List<Long> userIds);
     // List<User> findByFullNameContainingIgnoreCase(String firstName);
 
-    
+    @Modifying
+    @Transactional
+    @Query(value="SELECT * FROM users", nativeQuery = true)
+    List<User> getAllUsers();
+
     @Modifying
     @Transactional
     @Query(value="INSERT INTO waitlist (email) VALUES (:email)", nativeQuery = true)

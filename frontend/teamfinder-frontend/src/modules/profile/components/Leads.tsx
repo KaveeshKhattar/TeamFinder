@@ -23,12 +23,12 @@ import { Check, ChevronsUpDown } from "lucide-react";
 import { cn } from "../../../lib/utils";
 import axios from "axios";
 import { BASE_URL } from "../../../config";
-import { Event } from "../../../types";
+import { Event, Team } from "../../../types";
 import IndividualsUserIsInterestedInForEvent from "./IndividualsUserIsInterestedInForEvent";
+import TeamsUserIsInterestedInForEvent from "./TeamsUserIsInterestedInForEvent";
 
 function Leads() {
   const [events, setEvents] = useState<Event[]>([]);
-  
 
   useEffect(() => {
     async function fetchAllEvents() {
@@ -102,7 +102,7 @@ function Leads() {
           </TabsContent>
 
           <TabsContent value="teams" className="mt-4">
-            {/* <TeamsUserIsInterestedInForEvent /> */}
+            <TeamsUserIsInterestedInForEvent event={selectedEvent} />
           </TabsContent>
         </Tabs>
       </div>

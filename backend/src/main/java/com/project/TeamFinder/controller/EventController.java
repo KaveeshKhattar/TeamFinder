@@ -1,5 +1,6 @@
 package com.project.TeamFinder.controller;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -13,12 +14,15 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.project.TeamFinder.dto.LeadRequestDTO;
+import com.project.TeamFinder.dto.TeamWithMembersDTO;
 import com.project.TeamFinder.model.Event;
+import com.project.TeamFinder.model.Team;
 import com.project.TeamFinder.model.User;
 import com.project.TeamFinder.projection.UserProjection;
 import com.project.TeamFinder.repository.EventUserRepository;
 import com.project.TeamFinder.service.EventService;
 import com.project.TeamFinder.service.JwtService;
+import com.project.TeamFinder.service.TeamService;
 import com.project.TeamFinder.service.UserService;
 
 import org.springframework.web.bind.annotation.PostMapping;
@@ -31,12 +35,14 @@ import org.springframework.web.bind.annotation.RequestHeader;
 public class EventController {
 
     private final EventService eventService;
+    private final TeamService teamService;
     private final UserService userService;
     private final JwtService jwtService;
 
     public EventController(EventService eventService, UserService userService, JwtService jwtService,
-            EventUserRepository eventUserRepository) {
+            EventUserRepository eventUserRepository, TeamService teamService) {
         this.eventService = eventService;
+        this.teamService = teamService;
         this.userService = userService;
         this.jwtService = jwtService;
     }
@@ -96,7 +102,8 @@ public class EventController {
     }
 
     @PostMapping("/leads")
-    public ResponseEntity<String> toggleLead(@RequestHeader("Authorization") String token, @RequestBody LeadRequestDTO leadRequestDTO) {
+    public ResponseEntity<String> toggleLead(@RequestHeader("Authorization") String token,
+            @RequestBody LeadRequestDTO leadRequestDTO) {
         final String jwt = token.substring(7);
         final String userEmail = jwtService.extractUsername(jwt);
         if (userEmail == null) {
@@ -111,14 +118,16 @@ public class EventController {
         System.out.println("user id: " + user.get().getId());
         System.out.println("target user id: " + leadRequestDTO.getUserId());
         System.out.println("event id: " + leadRequestDTO.getEventId());
-        System.out.println("Adding lead: " + user.get().getId() + leadRequestDTO.getUserId() + leadRequestDTO.getEventId());
+        System.out.println(
+                "Adding lead: " + user.get().getId() + leadRequestDTO.getUserId() + leadRequestDTO.getEventId());
         eventService.toggleLead(leadRequestDTO.getEventId(), user.get().getId(), leadRequestDTO.getUserId());
 
         return ResponseEntity.ok("All ok!");
     }
 
     @DeleteMapping("/leads")
-    public ResponseEntity<String> deleteLead(@RequestHeader("Authorization") String token, @RequestBody LeadRequestDTO leadRequestDTO) {
+    public ResponseEntity<String> deleteLead(@RequestHeader("Authorization") String token,
+            @RequestBody LeadRequestDTO leadRequestDTO) {
         final String jwt = token.substring(7);
         final String userEmail = jwtService.extractUsername(jwt);
         if (userEmail == null) {
@@ -137,7 +146,8 @@ public class EventController {
     }
 
     @GetMapping("/events/{eventId}/leads")
-    public ResponseEntity<List<UserProjection>> getLeadsForUser(@RequestHeader("Authorization") String token, @PathVariable Long eventId) {
+    public ResponseEntity<List<UserProjection>> getLeadsForUser(@RequestHeader("Authorization") String token,
+            @PathVariable Long eventId) {
         final String jwt = token.substring(7);
         final String userEmail = jwtService.extractUsername(jwt);
         if (userEmail == null) {
@@ -150,11 +160,42 @@ public class EventController {
         }
 
         List<UserProjection> leads = eventService.getLeadsForUser(eventId, user.get().getId());
-        
+
         System.out.println("leads: " + leads.toString());
         return ResponseEntity.ok(leads);
     }
-    
+
+    @GetMapping("/events/{eventId}/leadsForTeams")
+    public ResponseEntity<List<TeamWithMembersDTO>> getLeadsTeamsForUser(@RequestHeader("Authorization") String token,
+            @PathVariable Long eventId) {
+        final String jwt = token.substring(7);
+        final String userEmail = jwtService.extractUsername(jwt);
+        if (userEmail == null) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+        }
+
+        Optional<User> user = userService.findByEmail(userEmail);
+        if (user.isEmpty()) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+        }
+
+        List<Team> leads = eventService.getLeadsTeamsForUser(eventId, user.get().getId());
+        System.out.println("leads: " + leads);
+
+        List<TeamWithMembersDTO> newLeads = new ArrayList<>();
+
+        System.out.println("getting members...");
+        for (Team lead : leads) {
+            System.out.println("getting members");
+            TeamWithMembersDTO team = teamService.getTeam(lead.getId());
+            newLeads.add(team);
+        }
+        
+        System.out.println("newLeads: " + newLeads);
+        return ResponseEntity.ok(newLeads);
+        
+    }
+
     // @GetMapping("/{collegeId}/events")
     // public ResponseEntity<List<Event>> getEvents(@PathVariable Long collegeId) {
     // List<Event> events = eventService.getEventsByCollegeId(collegeId);

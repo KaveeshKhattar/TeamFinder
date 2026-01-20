@@ -373,7 +373,7 @@ function Profile() {
 
             {/* Leads Section */}
             <div className="border border-border rounded-lg bg-card p-4 sm:p-6 md:p-8">
-              <h2 className="text-lg sm:text-xl font-semibold mb-4 sm:mb-6">Events & Leads</h2>
+              <h2 className="text-lg sm:text-xl font-semibold mb-4 sm:mb-6">Leads (Individuals & Teams)</h2>
               <Leads />
             </div>
           </>

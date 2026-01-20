@@ -8,9 +8,12 @@ import org.springframework.stereotype.Service;
 import com.project.TeamFinder.exception.NoCollegesException;
 import com.project.TeamFinder.model.Event;
 import com.project.TeamFinder.model.EventUser;
+import com.project.TeamFinder.model.Team;
 import com.project.TeamFinder.projection.UserProjection;
 import com.project.TeamFinder.repository.EventRepository;
 import com.project.TeamFinder.repository.EventUserRepository;
+import com.project.TeamFinder.repository.TeamRepository;
+import com.project.TeamFinder.repository.UserInterestedInTeamRepository;
 import com.project.TeamFinder.repository.UserRepository;
 import com.project.TeamFinder.repository.EventLeadRepository;
 
@@ -20,13 +23,18 @@ public class EventService {
     private final EventUserRepository eventUserRepository;
     private final UserRepository userRepository;
     private final EventLeadRepository eventLeadRepository;
+    private final UserInterestedInTeamRepository userInterestedInTeamRepository;
+    private final TeamRepository teamRepository;
     
     public EventService(EventRepository eventRepository, EventUserRepository eventUserRepository,
-            UserRepository userRepository, EventLeadRepository eventLeadRepository) {
+            UserRepository userRepository, EventLeadRepository eventLeadRepository, UserInterestedInTeamRepository userInterestedInTeamRepository,
+        TeamRepository teamRepository) {
         this.eventRepository = eventRepository;
         this.eventUserRepository = eventUserRepository;
         this.userRepository = userRepository;
         this.eventLeadRepository = eventLeadRepository;
+        this.userInterestedInTeamRepository = userInterestedInTeamRepository;
+        this.teamRepository = teamRepository;
     }
 
     public List<Event> getAllEvents() {
@@ -41,6 +49,8 @@ public class EventService {
         System.out.println("service " + userId);
         return eventUserRepository.findInterestedEventIDsPerUser(userId);
     }
+
+    
 
     // public List<Event> getEventsByCollegeId(Long collegeId) {
     //     List<Event> events = eventRepository.findByCollegeId(collegeId);
@@ -115,6 +125,33 @@ public class EventService {
             return List.of();
         }
         return userRepository.findAllByIdIn(userIds);
+    }
+
+    public List<Team> getLeadsTeamsForUser(Long eventId, Long userId) {
+        System.out.println("=== DEBUG START ===");
+        System.out.println("eventId: " + eventId + ", userId: " + userId);
+        
+        // Test 1: Get all team IDs for this user
+        List<Long> userTeams = userInterestedInTeamRepository.findInterestedTeamIdbyUserId(userId);
+        System.out.println("All teams user is interested in: " + userTeams);
+        
+        // Test 2: Get the full query result
+        List<Number> teamIds = userInterestedInTeamRepository.findInterestedTeamIdsByUserAndEvent(userId, eventId);
+        System.out.println("Filtered teamIds: " + teamIds);
+        System.out.println("teamIds size: " + teamIds.size());
+        System.out.println("teamIds isEmpty: " + teamIds.isEmpty());
+        
+        if (teamIds.isEmpty()) {
+            System.out.println("No teams found - returning empty list");
+            return List.of();
+        }
+        
+        System.out.println("Looking up teams with IDs: " + teamIds);
+        List<Team> teams = teamRepository.findAllByIdIn(teamIds);
+        System.out.println("Found teams: " + teams.size());
+        System.out.println("=== DEBUG END ===");
+        
+        return teams;
     }
 
 }
