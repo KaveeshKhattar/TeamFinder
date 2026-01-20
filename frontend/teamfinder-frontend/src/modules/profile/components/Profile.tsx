@@ -27,6 +27,7 @@ import { Camera, Edit2 } from "lucide-react";
 import Modal from "./Modal";
 import defaultProfilePicture from "../assets/blank-profile-picture-973460_1280.webp";
 import Leads from "./Leads";
+import TeamsCreatedPerEventByUser from "./TeamsCreatedPerEventByUser";
 
 type User = {
   id: number;
@@ -372,6 +373,7 @@ function Profile() {
             </div>
 
             {/* Leads Section */}
+
             <div className="border border-border rounded-lg bg-card p-4 sm:p-6 md:p-8">
               <h2 className="text-lg sm:text-xl font-semibold mb-4 sm:mb-6">Leads (Individuals & Teams)</h2>
               <Leads />

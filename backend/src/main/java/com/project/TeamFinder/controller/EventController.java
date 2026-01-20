@@ -196,6 +196,36 @@ public class EventController {
         
     }
 
+    @GetMapping("/events/{eventId}/teams-part-of")
+    public ResponseEntity<List<TeamWithMembersDTO>> getTeamsCreatedByUserForEvent(@RequestHeader("Authorization") String token,
+            @PathVariable Long eventId) {
+        final String jwt = token.substring(7);
+        final String userEmail = jwtService.extractUsername(jwt);
+        if (userEmail == null) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+        }
+
+        Optional<User> user = userService.findByEmail(userEmail);
+        if (user.isEmpty()) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+        }
+
+        List<Team> leads = eventService.getTeamsCreatedByUserForEvent(eventId, user.get().getId());
+
+        List<TeamWithMembersDTO> newLeads = new ArrayList<>();
+
+        for (Team lead : leads) {
+            TeamWithMembersDTO team = teamService.getTeam(lead.getId());
+            newLeads.add(team);
+        }
+        
+        System.out.println("teams part of: " + newLeads);
+        return ResponseEntity.ok(newLeads);
+        
+    }
+
+    
+
     // @GetMapping("/{collegeId}/events")
     // public ResponseEntity<List<Event>> getEvents(@PathVariable Long collegeId) {
     // List<Event> events = eventService.getEventsByCollegeId(collegeId);

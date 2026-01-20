@@ -154,4 +154,20 @@ public class EventService {
         return teams;
     }
 
+    public List<Team> getTeamsCreatedByUserForEvent(Long eventId, Long userId) {
+
+        List<Number> teamIds = teamRepository.findUserTeamsByEvent(userId, eventId);
+        
+        if (teamIds.isEmpty()) {
+            System.out.println("No teams found - returning empty list");
+            return List.of();
+        }
+        
+        List<Team> teams = teamRepository.findAllByIdIn(teamIds);
+        
+        return teams;
+    }
+
+    
+
 }

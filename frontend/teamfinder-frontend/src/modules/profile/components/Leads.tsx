@@ -26,6 +26,7 @@ import { BASE_URL } from "../../../config";
 import { Event, Team } from "../../../types";
 import IndividualsUserIsInterestedInForEvent from "./IndividualsUserIsInterestedInForEvent";
 import TeamsUserIsInterestedInForEvent from "./TeamsUserIsInterestedInForEvent";
+import TeamsCreatedPerEventByUser from "./TeamsCreatedPerEventByUser";
 
 function Leads() {
   const [events, setEvents] = useState<Event[]>([]);
@@ -94,8 +95,9 @@ function Leads() {
       <div className="flex-1 w-full">
         <Tabs defaultValue="individuals" className="w-full">
           <TabsList>
-            <TabsTrigger value="individuals">Individuals</TabsTrigger>
-            <TabsTrigger value="teams">Teams</TabsTrigger>
+            <TabsTrigger value="individuals" className="m-2">Individuals</TabsTrigger>
+            <TabsTrigger value="teams" className="m-2">Teams</TabsTrigger>
+            <TabsTrigger value="teamsCreated" className="m-2">Teams Created by You</TabsTrigger>
           </TabsList>
           <TabsContent value="individuals" className="mt-4">
             <IndividualsUserIsInterestedInForEvent event={selectedEvent} />
@@ -103,6 +105,10 @@ function Leads() {
 
           <TabsContent value="teams" className="mt-4">
             <TeamsUserIsInterestedInForEvent event={selectedEvent} />
+          </TabsContent>
+
+          <TabsContent value="teamsCreated" className="mt-4">
+            <TeamsCreatedPerEventByUser event={selectedEvent}/>
           </TabsContent>
         </Tabs>
       </div>

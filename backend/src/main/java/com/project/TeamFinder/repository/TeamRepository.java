@@ -6,6 +6,7 @@ import java.util.Optional;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.CrudRepository;
+import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import com.project.TeamFinder.model.Team;
@@ -15,7 +16,9 @@ import jakarta.transaction.Transactional;
 @Repository
 public interface TeamRepository extends CrudRepository<Team, Long> {
     List<Team> findByEventId(Long id);
+
     Optional<Team> findById(long id);
+
     List<Team> findAllByIdIn(List<Number> teamIds);
 
     @Modifying
@@ -27,4 +30,17 @@ public interface TeamRepository extends CrudRepository<Team, Long> {
     @Transactional
     @Query(value = "INSERT INTO teams (name, event_id) VALUES (:name, :eventId)", nativeQuery = true)
     void createTeam(String name, Long eventId);
+
+    @Modifying
+    @Transactional
+    @Query(value = """
+                SELECT t.id
+                FROM teams t
+                JOIN team_members tm ON tm.team_id = t.id
+                WHERE tm.user_id = :userId
+                  AND t.event_id = :eventId
+            """, nativeQuery = true)
+    List<Number> findUserTeamsByEvent(
+            @Param("userId") Long userId,
+            @Param("eventId") Long eventId);
 }
