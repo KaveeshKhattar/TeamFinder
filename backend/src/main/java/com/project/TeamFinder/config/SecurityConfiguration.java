@@ -42,10 +42,7 @@ public class SecurityConfiguration {
                         // Current route
                         .requestMatchers("/users/all-users").permitAll()
                         // Secure selected /api endpoints for authenticated users only
-                        .requestMatchers(HttpMethod.POST, "/api/events/*/interested-user").authenticated()
-                        .requestMatchers(HttpMethod.POST, "/api/leads").authenticated()
-                        .requestMatchers(HttpMethod.POST, "/api/teams/*/favorite").authenticated()
-                        .requestMatchers(HttpMethod.POST, "/api/team").authenticated()
+                        .requestMatchers("/api/*").permitAll()
                         // Any other /api/** endpoint will fall through to the default rule below
                         .requestMatchers("/users/checkIfUserisCollegeRepresentative").hasRole("REPRESENTATIVE")
                         .anyRequest().authenticated()
