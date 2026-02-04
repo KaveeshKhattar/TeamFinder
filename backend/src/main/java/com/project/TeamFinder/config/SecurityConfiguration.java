@@ -4,6 +4,7 @@ import java.util.List;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
@@ -40,7 +41,12 @@ public class SecurityConfiguration {
                         // Backward-compatible: older frontend used /users/getAllUsers
                         // Current route
                         .requestMatchers("/users/all-users").permitAll()
-                        .requestMatchers("/api/**").permitAll()
+                        // Secure selected /api endpoints for authenticated users only
+                        .requestMatchers(HttpMethod.POST, "/api/events/*/interested-user").authenticated()
+                        .requestMatchers(HttpMethod.POST, "/api/leads").authenticated()
+                        .requestMatchers(HttpMethod.POST, "/api/teams/*/favorite").authenticated()
+                        .requestMatchers(HttpMethod.POST, "/api/team").authenticated()
+                        // Any other /api/** endpoint will fall through to the default rule below
                         .requestMatchers("/users/checkIfUserisCollegeRepresentative").hasRole("REPRESENTATIVE")
                         .anyRequest().authenticated()
                 )

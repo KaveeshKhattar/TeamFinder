@@ -25,8 +25,9 @@ import axios from "axios";
 import { BASE_URL } from "../../../config";
 import { Event } from "../../../types";
 import IndividualsUserIsInterestedInForEvent from "./IndividualsUserIsInterestedInForEvent";
-import TeamsUserIsInterestedInForEvent from "./TeamsUserIsInterestedInForEvent";
+
 import TeamsCreatedPerEventByUser from "./TeamsCreatedPerEventByUser";
+import TeamsUserIsInterestedInForEvent from "./TeamsUserIsInterestedInForEvent";
 
 function Leads() {
   const [events, setEvents] = useState<Event[]>([]);

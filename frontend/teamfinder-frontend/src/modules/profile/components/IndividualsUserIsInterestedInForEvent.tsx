@@ -3,7 +3,6 @@ import axios from "axios";
 import { BASE_URL } from "../../../config";
 import { Event } from "../../../types";
 import { Card, CardContent } from "../../../components/ui/card";
-import { Button } from "../../../components/ui/button";
 
 type User = {
   id: number;
