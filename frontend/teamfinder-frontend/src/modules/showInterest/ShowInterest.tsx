@@ -16,16 +16,15 @@ import { Card, CardContent } from "../../components/ui/card";
 
 import { Toggle } from "../../components/ui/toggle";
 
-
 function ShowInterest() {
   const [allEvents, setAllEvents] = useState<Event[]>([]);
-  // Track interest state per event by id
   const [interested, setInterested] = useState<{ [eventId: number]: boolean }>({});
 
   const fetchAllEvents = useCallback(async () => {
     const fetchAllEventsResponse = await axios.get(`${BASE_URL}/api/events`);
+    console.log(fetchAllEventsResponse);
     if (fetchAllEventsResponse.status === 200) {
-      setAllEvents(fetchAllEventsResponse.data);
+      setAllEvents(fetchAllEventsResponse.data.data);
     }
   }, []);
 
@@ -38,14 +37,13 @@ function ShowInterest() {
           Authorization: `Bearer ${token}`,
         },
       });
-      if (response.status === 200 && Array.isArray(response.data)) {
+      if (response.status === 200 && Array.isArray(response.data.data)) {
         // assuming response.data is an array of event IDs
         const interestedMap: { [eventId: number]: boolean } = {};
-        response.data.forEach((eventId: number) => {
+        response.data.data.forEach((eventId: number) => {
           interestedMap[eventId] = true;
         });
         setInterested(interestedMap);
-        console.log("interestedMap" + interestedMap);
       }
     } catch (err) {
       console.error("Failed to fetch interested events:", err);
@@ -102,10 +100,10 @@ function ShowInterest() {
 
         {/* Events Carousel */}
         <div className="flex items-center justify-center">
-          <Carousel className="w-full max-w-2xl">
+          <Carousel className="w-full max-w-2xl px-10">
             <CarouselContent>
               {allEvents.map((event) => (
-                <CarouselItem key={event.id} className="md:basis-1/2">
+                <CarouselItem key={event.id} className="">
                   <div className="p-1 sm:p-2">
                     <Card className="border border-border">
                       <CardContent className="flex flex-col p-4 sm:p-6">

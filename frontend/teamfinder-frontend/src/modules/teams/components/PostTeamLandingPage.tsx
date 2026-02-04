@@ -44,7 +44,7 @@ function PostTeamLandingPage() {
     const fetchAllEvents = useCallback(async () => {
         const res = await axios.get(`${BASE_URL}/api/events`)
         if (res.status === 200) {
-            setAllEvents(res.data)
+            setAllEvents(res.data.data)
         }
     }, [])
 
@@ -68,7 +68,7 @@ function PostTeamLandingPage() {
             );
       
             if (response.status >= 200 && response.status < 300) {
-              setCurrentUserId(response.data.id);
+              setCurrentUserId(response.data.data.id);
             }
           } catch (err) {
             console.error("Assigning self to members list failed!", err);
@@ -102,13 +102,19 @@ function PostTeamLandingPage() {
     }
 
     useEffect(() => {
+        if (!token) return;
+
         const fetchUsers = async () => {
-            const res = await axios.get(`${BASE_URL}/users/getAllUsers`)
-            setUsers(Array.isArray(res.data) ? res.data : res.data.users)
+            const res = await axios.get(`${BASE_URL}/users/all-users`, {
+                headers: {
+                    Authorization: `Bearer ${token}`,
+                },
+            })
+            setUsers(Array.isArray(res.data.data) ? res.data.data : res.data.data.users)
         }
 
         fetchUsers()
-    }, [])
+    }, [token])
 
     const filteredUsers = users.filter(user => {
         const fullName = `${user.firstName} ${user.lastName}`.toLowerCase();

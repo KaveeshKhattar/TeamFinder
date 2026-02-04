@@ -9,9 +9,9 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import com.project.TeamFinder.dto.LoginUserDTO;
-import com.project.TeamFinder.dto.RegisterUserDTO;
-import com.project.TeamFinder.dto.VerifyUserDTO;
+import com.project.TeamFinder.dto.auth.LoginUserDTO;
+import com.project.TeamFinder.dto.auth.RegisterUserDTO;
+import com.project.TeamFinder.dto.auth.VerifyUserDTO;
 import com.project.TeamFinder.exception.AccountNotVerifiedException;
 import com.project.TeamFinder.exception.IncorrectEmailException;
 import com.project.TeamFinder.exception.IncorrectPasswordException;

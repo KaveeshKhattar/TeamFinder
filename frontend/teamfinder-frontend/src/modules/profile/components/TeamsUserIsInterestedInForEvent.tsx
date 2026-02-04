@@ -31,8 +31,8 @@ function TeamsUserIsInterestedInForEvent({ event }: TeamsUserIsInterestedInForEv
                 }
             );
 
-            if (response.status === 200 && Array.isArray(response.data)) {
-                setTeams(response.data);
+            if (response.status === 200 && Array.isArray(response.data.data)) {
+                setTeams(response.data.data);
                 console.log(response.data); // Changed from teams to response.data
             }
         } catch (err) {

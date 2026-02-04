@@ -37,7 +37,9 @@ public class SecurityConfiguration {
                 .authorizeHttpRequests(authorize -> authorize
                         .requestMatchers("/auth/**").permitAll()
                         .requestMatchers("/users/waitlist").permitAll()
-                        .requestMatchers("/users/getAllUsers").permitAll()
+                        // Backward-compatible: older frontend used /users/getAllUsers
+                        // Current route
+                        .requestMatchers("/users/all-users").permitAll()
                         .requestMatchers("/api/**").permitAll()
                         .requestMatchers("/users/checkIfUserisCollegeRepresentative").hasRole("REPRESENTATIVE")
                         .anyRequest().authenticated()

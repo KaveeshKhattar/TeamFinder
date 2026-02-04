@@ -1,6 +1,4 @@
-package com.project.TeamFinder.dto;
-
-import com.project.TeamFinder.model.Role;
+package com.project.TeamFinder.dto.auth;
 
 public class RegisterUserDTO {
     private String firstName;

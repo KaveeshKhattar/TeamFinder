@@ -1,17 +1,19 @@
-package com.project.TeamFinder.dto;
+package com.project.TeamFinder.dto.auth;
+
+import java.util.List;
 
 public class UpdateUserDTO {
     private String firstName;
     private String lastName;
     private String email;
     private String bio;
-    private String[] skills;
+    private List<String> skills;
 
-    public String[] getSkills() {
+    public List<String> getSkills() {
         return skills;
     }
 
-    public void setSkills(String[] skills) {
+    public void setSkills(List<String> skills) {
         this.skills = skills;
     }
 

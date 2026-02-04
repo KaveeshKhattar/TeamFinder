@@ -1,4 +1,4 @@
-package com.project.TeamFinder.responses;
+package com.project.TeamFinder.dto.responses;
 
 public class ApiResponse<T> {
     private boolean success;

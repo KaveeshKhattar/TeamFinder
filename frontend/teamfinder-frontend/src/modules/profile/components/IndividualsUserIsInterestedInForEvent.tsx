@@ -43,8 +43,9 @@ function IndividualsUserIsInterestedInForEvent({ event }: IndividualsUserIsInter
         }
       );
 
-      if (response.status === 200 && Array.isArray(response.data)) {
-        setUsers(response.data);
+      if (response.status === 200 && Array.isArray(response.data.data)) {
+        console.log("response.data: " + response.data.data);
+        setUsers(response.data.data);
       }
     } catch (err) {
       console.error("Failed to fetch leads:", err);

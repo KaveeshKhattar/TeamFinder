@@ -2,10 +2,11 @@ package com.project.TeamFinder.controller;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -15,19 +16,18 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.project.TeamFinder.dto.LeadRequestDTO;
 import com.project.TeamFinder.dto.TeamWithMembersDTO;
+import com.project.TeamFinder.dto.UserDTO;
+import com.project.TeamFinder.dto.responses.ApiResponse;
 import com.project.TeamFinder.model.Event;
 import com.project.TeamFinder.model.Team;
-import com.project.TeamFinder.model.User;
 import com.project.TeamFinder.projection.UserProjection;
 import com.project.TeamFinder.repository.EventUserRepository;
 import com.project.TeamFinder.service.EventService;
-import com.project.TeamFinder.service.JwtService;
 import com.project.TeamFinder.service.TeamService;
 import com.project.TeamFinder.service.UserService;
 
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestHeader;
 
 @RestController
 @RequestMapping("/api")
@@ -37,283 +37,157 @@ public class EventController {
     private final EventService eventService;
     private final TeamService teamService;
     private final UserService userService;
-    private final JwtService jwtService;
 
-    public EventController(EventService eventService, UserService userService, JwtService jwtService,
+    public EventController(EventService eventService, UserService userService,
             EventUserRepository eventUserRepository, TeamService teamService) {
         this.eventService = eventService;
         this.teamService = teamService;
         this.userService = userService;
-        this.jwtService = jwtService;
     }
 
     @GetMapping("/events")
-    public ResponseEntity<List<Event>> getAllEvents() {
+    public ResponseEntity<ApiResponse<List<Event>>> getAllEvents() {
         List<Event> events = eventService.getAllEvents();
-        return ResponseEntity.ok(events); // If no exception is thrown, this will return 200 OK
+        return ResponseEntity.status(HttpStatus.OK)
+                    .body(new ApiResponse<>(
+                            true,
+                            events,
+                            "all events"));
     }
 
     @GetMapping("/events/{eventId}/interested-users")
     public List<UserProjection> getInterestedUsers(@PathVariable Long eventId) {
-        System.out.println("Fetching interested users for event ID: " + eventId);
+
         // fetch all user ids who are interested in the event, then return user objects
-        List<UserProjection> interestedUsers = eventService.getInterestedUsers(eventId);
-
-        return interestedUsers;
-    }
-
-    @GetMapping("/interested-events")
-    public ResponseEntity<List<Long>> getInterestedEventsForUser(@RequestHeader("Authorization") String token) {
-        final String jwt = token.substring(7);
-        final String userEmail = jwtService.extractUsername(jwt);
-        if (userEmail == null) {
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
-        }
-
-        Optional<User> user = userService.findByEmail(userEmail);
-        if (user.isEmpty()) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
-        }
-
-        List<Long> interestedEvents = eventService.getInterestedEventsForUser(user.get().getId());
-        return ResponseEntity.ok(interestedEvents);
+        return eventService.getInterestedUsers(eventId);
     }
 
     @PostMapping("/events/{eventId}/interested-user")
-    public ResponseEntity<String> addInterestedUsers(@RequestHeader("Authorization") String token,
+    public ResponseEntity<ApiResponse<String>> addInterestedUsers(@AuthenticationPrincipal UserDetails userDetails,
             @PathVariable Long eventId) {
-        System.out.println("Adding interested user" + " for event ID: " + eventId);
-        final String jwt = token.substring(7);
-        final String userEmail = jwtService.extractUsername(jwt);
-        if (userEmail == null) {
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Invalid token");
-        }
-        System.out.println("Adding interested user" + " for event ID: " + eventId);
-
-        // get user id using userEmail
-        Optional<User> user = userService.findByEmail(userEmail);
-        if (user.isEmpty()) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("User not found");
-        }
+        
+        final String userEmail = userDetails.getUsername();
+        UserDTO userProfile = userService.getProfile(userEmail);
+        
         // toggle instead of just add
-        System.out.println("gonna toggle now!");
-        eventService.toggleInterestedUser(eventId, user.get().getId());
-        return ResponseEntity.ok("User interest toggled");
+        eventService.toggleInterestedUser(eventId, userProfile.getId());
+        return ResponseEntity.status(HttpStatus.OK)
+                    .body(new ApiResponse<>(
+                            true,
+                            "user interest added",
+                            "user interest added"));
     }
 
-    @PostMapping("/leads")
-    public ResponseEntity<String> toggleLead(@RequestHeader("Authorization") String token,
-            @RequestBody LeadRequestDTO leadRequestDTO) {
-        final String jwt = token.substring(7);
-        final String userEmail = jwtService.extractUsername(jwt);
-        if (userEmail == null) {
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Invalid token");
-        }
+    // fetch events user is interested in
+    @GetMapping("/interested-events")
+    public ResponseEntity<ApiResponse<List<Long>>> getInterestedEventsForUser(@AuthenticationPrincipal UserDetails userDetails) {
 
-        // get user id using userEmail
-        Optional<User> user = userService.findByEmail(userEmail);
-        if (user.isEmpty()) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("User not found");
-        }
-        System.out.println("user id: " + user.get().getId());
-        System.out.println("target user id: " + leadRequestDTO.getUserId());
-        System.out.println("event id: " + leadRequestDTO.getEventId());
-        System.out.println(
-                "Adding lead: " + user.get().getId() + leadRequestDTO.getUserId() + leadRequestDTO.getEventId());
-        eventService.toggleLead(leadRequestDTO.getEventId(), user.get().getId(), leadRequestDTO.getUserId());
+        final String userEmail = userDetails.getUsername();
+        UserDTO userProfile = userService.getProfile(userEmail);
 
-        return ResponseEntity.ok("All ok!");
+        List<Long> interestedEvents = eventService.getInterestedEventsForUser(userProfile.getId());
+        return ResponseEntity.status(HttpStatus.OK)
+                    .body(new ApiResponse<>(
+                            true,
+                            interestedEvents,
+                            "interested events"));
     }
-
-    @DeleteMapping("/leads")
-    public ResponseEntity<String> deleteLead(@RequestHeader("Authorization") String token,
-            @RequestBody LeadRequestDTO leadRequestDTO) {
-        final String jwt = token.substring(7);
-        final String userEmail = jwtService.extractUsername(jwt);
-        if (userEmail == null) {
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Invalid token");
-        }
-        Optional<User> targetUser = userService.findByEmail(userEmail);
-        if (targetUser.isEmpty()) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Target user not found");
-        }
-        Optional<User> user = userService.findByEmail(userEmail);
-        if (user.isEmpty()) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("User not found");
-        }
-        eventService.toggleLead(leadRequestDTO.getEventId(), targetUser.get().getId(), user.get().getId());
-        return ResponseEntity.ok("Lead toggled successfully");
-    }
-
-    @GetMapping("/events/{eventId}/leads")
-    public ResponseEntity<List<UserProjection>> getLeadsForUser(@RequestHeader("Authorization") String token,
-            @PathVariable Long eventId) {
-        final String jwt = token.substring(7);
-        final String userEmail = jwtService.extractUsername(jwt);
-        if (userEmail == null) {
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
-        }
-
-        Optional<User> user = userService.findByEmail(userEmail);
-        if (user.isEmpty()) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
-        }
-
-        List<UserProjection> leads = eventService.getLeadsForUser(eventId, user.get().getId());
-
-        System.out.println("leads: " + leads.toString());
-        return ResponseEntity.ok(leads);
-    }
-
-    @GetMapping("/events/{eventId}/leadsForTeams")
-    public ResponseEntity<List<TeamWithMembersDTO>> getLeadsTeamsForUser(@RequestHeader("Authorization") String token,
-            @PathVariable Long eventId) {
-        final String jwt = token.substring(7);
-        final String userEmail = jwtService.extractUsername(jwt);
-        if (userEmail == null) {
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
-        }
-
-        Optional<User> user = userService.findByEmail(userEmail);
-        if (user.isEmpty()) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
-        }
-
-        List<Team> leads = eventService.getLeadsTeamsForUser(eventId, user.get().getId());
-        System.out.println("leads: " + leads);
-
-        List<TeamWithMembersDTO> newLeads = new ArrayList<>();
-
-        System.out.println("getting members...");
-        for (Team lead : leads) {
-            System.out.println("getting members");
-            TeamWithMembersDTO team = teamService.getTeam(lead.getId());
-            newLeads.add(team);
-        }
-        
-        System.out.println("newLeads: " + newLeads);
-        return ResponseEntity.ok(newLeads);
-        
-    }
-
-    @GetMapping("/events/{eventId}/teams-part-of")
-    public ResponseEntity<List<TeamWithMembersDTO>> getTeamsCreatedByUserForEvent(@RequestHeader("Authorization") String token,
-            @PathVariable Long eventId) {
-        final String jwt = token.substring(7);
-        final String userEmail = jwtService.extractUsername(jwt);
-        if (userEmail == null) {
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
-        }
-
-        Optional<User> user = userService.findByEmail(userEmail);
-        if (user.isEmpty()) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
-        }
-
-        List<Team> leads = eventService.getTeamsCreatedByUserForEvent(eventId, user.get().getId());
-
-        List<TeamWithMembersDTO> newLeads = new ArrayList<>();
-
-        for (Team lead : leads) {
-            TeamWithMembersDTO team = teamService.getTeam(lead.getId());
-            newLeads.add(team);
-        }
-        
-        System.out.println("teams part of: " + newLeads);
-        return ResponseEntity.ok(newLeads);
-        
-    }
-
     
+    // fetch people user is interested in for an event
+    @GetMapping("/events/{eventId}/leads")
+    public ResponseEntity<ApiResponse<List<UserProjection>>> getLeadsForUser(@AuthenticationPrincipal UserDetails userDetails,
+            @PathVariable Long eventId) {
+        
+        final String userEmail = userDetails.getUsername();
+        UserDTO userProfile = userService.getProfile(userEmail);
 
-    // @GetMapping("/{collegeId}/events")
-    // public ResponseEntity<List<Event>> getEvents(@PathVariable Long collegeId) {
-    // List<Event> events = eventService.getEventsByCollegeId(collegeId);
-    // if (events.isEmpty()) {
-    // return ResponseEntity.noContent().build(); // 204 No Content
-    // }
-    // return ResponseEntity.ok(events);
-    // }
+        List<UserProjection> leads = eventService.getLeadsForUser(eventId, userProfile.getId());
+        return ResponseEntity.status(HttpStatus.OK)
+                    .body(new ApiResponse<>(
+                            true,
+                            leads,
+                            "interested events"));
+    }
 
-    // @GetMapping("/events/searchAllEvents")
-    // public List<Event> getSearchAllEvents(
-    // @RequestParam String eventSearchTerm) {
-    // List<Event> globalEvents = eventService.getAllEvents();
-    // List<Event> filteredEvents = eventService.searchEvents(globalEvents,
-    // eventSearchTerm);
-    // return filteredEvents;
-    // }
+    // add people user is interested in for an event
+    @PostMapping("/leads")
+    public ResponseEntity<ApiResponse<String>> toggleLead(@AuthenticationPrincipal UserDetails userDetails,
+            @RequestBody LeadRequestDTO leadRequestDTO) {
+        
+        final String userEmail = userDetails.getUsername();
+        // get user id using userEmail
+        UserDTO userProfile = userService.getProfile(userEmail);
+        eventService.toggleLead(leadRequestDTO.getEventId(), userProfile.getId(), leadRequestDTO.getUserId());
 
-    // @GetMapping("/{collegeId}/searchEvents")
-    // public List<Event> getFilteredEvents(
-    // @RequestParam String eventSearchTerm, @PathVariable Long collegeId) {
+        return ResponseEntity.status(HttpStatus.OK)
+                    .body(new ApiResponse<>(
+                            true,
+                            "interested in event",
+                            "interested events"));
+    }
 
-    // // List<Event> globalEvents = eventService.getEventsByCollegeId(collegeId);
-    // List<Event> filteredEvents = eventService.searchEvents(globalEvents,
-    // eventSearchTerm);
-    // return filteredEvents;
-    // }
+    // remove people user is not interested in for an event
+    @DeleteMapping("/leads")
+    public ResponseEntity<ApiResponse<String>> deleteLead(@AuthenticationPrincipal UserDetails userDetails,
+            @RequestBody LeadRequestDTO leadRequestDTO) {
+        
+        final String userEmail = userDetails.getUsername();
+        UserDTO user = userService.getProfile(userEmail);
+        
+        eventService.toggleLead(leadRequestDTO.getEventId(), leadRequestDTO.getUserId(), user.getId());
+        return ResponseEntity.status(HttpStatus.OK)
+                    .body(new ApiResponse<>(
+                            true,
+                            "not interested in event",
+                            "not interested events"));
+        
+    }
 
-    // @GetMapping("/events/isUserInterestedAlready")
-    // public Boolean isUserInterestedAlready(@RequestParam Long userId,
-    // @RequestParam Long eventId) {
-    // List<Long> userIdsWhoAreAlreadyInterested =
-    // eventService.getUserIdsWhoAreInterestedAlready(eventId);
-    // return userIdsWhoAreAlreadyInterested.contains(userId);
-    // }
+    // fetch teams user is interested in for an event
+    @GetMapping("/events/{eventId}/leadsForTeams")
+    public ResponseEntity<ApiResponse<List<TeamWithMembersDTO>>> getLeadsTeamsForUser(@AuthenticationPrincipal UserDetails userDetails,
+            @PathVariable Long eventId) {
 
-    // @PostMapping("events/createEvent")
-    // public String createEvent(@RequestBody EventRequestDTO eventRequest) {
-    // eventService.createEvent(
-    // // eventRequest.getCollegeId(),
-    // eventRequest.getEventName(),
-    // // eventRequest.getEventDate(),
-    // eventRequest.getEventTime(),
-    // eventRequest.getEventVenue(),
-    // eventRequest.getTeamSize(),
-    // // eventRequest.getEventDescription());
-    // return eventRequest.getEventName();
-    // }
+        final String userEmail = userDetails.getUsername();
+        UserDTO user = userService.getProfile(userEmail);
 
-    // @PutMapping("events/event/{eventId}")
-    // public void updateEvent(
-    // @PathVariable("eventId") Long eventId,
-    // @RequestParam("eventName") String eventName,
-    // @RequestParam("eventDate") String eventDate,
-    // @RequestParam("eventTime") String eventTime,
-    // @RequestParam("teamSize") Long teamSize,
-    // @RequestParam("eventVenue") String eventVenue,
-    // @RequestParam("eventDescription") String eventDescription) {
+        List<Team> leads = eventService.getLeadsTeamsForUser(eventId, user.getId());
 
-    // System.out.println("Updating..." + eventName + " " + eventDate);
-    // eventService.updateEvent(eventId, eventName, eventDate, eventTime, teamSize,
-    // eventVenue, eventDescription);
-    // }
+        List<TeamWithMembersDTO> newLeads = new ArrayList<>();
 
-    // @DeleteMapping("/events/event/{eventId}")
-    // public void deleteEvent( @PathVariable Long eventId) {
-    // eventService.deleteEvent(eventId);
-    // }
+        for (Team lead : leads) {
 
-    // @GetMapping("/events/{eventId}/InterestedIndividuals")
-    // public List<UserProjection> getInterestedUsers(@PathVariable long eventId) {
-    // List<UserProjection> interestedUsers =
-    // eventService.getInterestedUsers(eventId);
-    // return interestedUsers;
-    // }
+            TeamWithMembersDTO team = teamService.getTeam(lead.getId());
+            newLeads.add(team);
+        }
+        
+        return ResponseEntity.status(HttpStatus.OK)
+                    .body(new ApiResponse<>(
+                            true,
+                            newLeads,
+                            "not interested events"));
+        
+    }
 
-    // @PostMapping("/events/{eventId}/InterestedIndividual")
-    // public ResponseEntity<Long> postInterestedUser(@PathVariable long eventId,
-    // @RequestBody EventUserDTO request) {
-    // eventService.addInterestedUser(eventId, request.getUserId());
-    // return ResponseEntity.ok(request.getUserId());
-    // }
+    // fetch teams user created for an event
+    @GetMapping("/events/{eventId}/teams-part-of")
+    public ResponseEntity<List<TeamWithMembersDTO>> getTeamsCreatedByUserForEvent(@AuthenticationPrincipal UserDetails userDetails,
+            @PathVariable Long eventId) {
 
-    // @DeleteMapping("/events/{eventId}/InterestedIndividual")
-    // public ResponseEntity<Long> dropInterestedUser(@PathVariable long eventId,
-    // @RequestParam Long userID) {
-    // eventService.removeInterestedUser(eventId, userID);
-    // return ResponseEntity.ok(userID);
-    // }
+        final String userEmail = userDetails.getUsername();
+        UserDTO user = userService.getProfile(userEmail);
+
+        List<Team> leads = eventService.getTeamsCreatedByUserForEvent(eventId, user.getId());
+
+        List<TeamWithMembersDTO> newLeads = new ArrayList<>();
+
+        for (Team lead : leads) {
+            TeamWithMembersDTO team = teamService.getTeam(lead.getId());
+            newLeads.add(team);
+        }
+        
+        return ResponseEntity.ok(newLeads);
+        
+    }
 
 }

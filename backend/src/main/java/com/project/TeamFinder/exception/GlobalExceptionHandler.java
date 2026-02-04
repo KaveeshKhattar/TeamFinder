@@ -8,7 +8,7 @@ import org.springframework.orm.jpa.JpaSystemException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 
-import com.project.TeamFinder.responses.ApiResponse;
+import com.project.TeamFinder.dto.responses.ApiResponse;
 
 @ControllerAdvice
 public class GlobalExceptionHandler {
@@ -50,7 +50,6 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(NoCollegesException.class)
     public ResponseEntity<ApiResponse<String>> handleNoCollegesException(NoCollegesException ex) {
-        System.out.println("Called here");
         ApiResponse<String> response = new ApiResponse<>(true, null, ex.getMessage());
         return ResponseEntity.status(HttpStatus.NO_CONTENT).body(response);
     }

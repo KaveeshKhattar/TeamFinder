@@ -43,8 +43,8 @@ function FindTeammatesPeople() {
         const res = await axios.get(`${BASE_URL}/users/profile`, {
           headers: { Authorization: `Bearer ${token}` },
         });
-        if (res.data && res.data.id) {
-          setLoggedInUserId(res.data.id);
+        if (res.data && res.data.data && res.data.data.id) {
+          setLoggedInUserId(res.data.data.id);
         }
       } catch (err) {
         console.error("Failed to fetch logged-in user profile", err);
@@ -90,9 +90,9 @@ function FindTeammatesPeople() {
       );
       // Set interestedInUser state for easy favourite status
       // Backend returns UserProjection objects, so we need to extract the IDs
-      if (Array.isArray(res.data)) {
+      if (Array.isArray(res.data.data)) {
         const interestedObj: { [userId: number]: boolean } = {};
-        res.data.forEach((user: { id: number }) => {
+        res.data.data.forEach((user: { id: number }) => {
           if (user && user.id) {
             interestedObj[user.id] = true;
           }

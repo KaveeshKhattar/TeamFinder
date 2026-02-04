@@ -44,8 +44,9 @@ function FindActualTeams() {
                 const res = await axios.get(`${BASE_URL}/users/profile`, {
                     headers: { Authorization: `Bearer ${token}` },
                 });
-                if (res.data && res.data.id) {
-                    setLoggedInUserId(res.data.id);
+                if (res.data && res.data.data.id) {
+                    console.log("logged in user id: ", res.data.data.id);
+                    setLoggedInUserId(res.data.data.id);
                 }
             } catch (err) {
                 console.error("Failed to fetch logged-in user profile", err);
@@ -127,10 +128,10 @@ function FindActualTeams() {
               Authorization: `Bearer ${token}`,
             },
           });
-          if (response.status === 200 && Array.isArray(response.data)) {
+          if (response.status === 200 && Array.isArray(response.data.data)) {
             // assuming response.data is an array of event IDs
             const interestedMap: { [teamId: number]: boolean } = {};
-            response.data.forEach((teamId: number) => {
+            response.data.data.forEach((teamId: number) => {
               interestedMap[teamId] = true;
             });
             setInterested(interestedMap);
@@ -164,7 +165,7 @@ function FindActualTeams() {
                         </div>
                     ) : (
                         <div className="flex items-center justify-center">
-                            <Carousel className="w-full max-w-2xl">
+                            <Carousel className="w-full max-w-2xl px-10">
                                 <CarouselContent>
                                     {teams.map((team) => (
                                         <CarouselItem key={team.teamId} className="md:basis-1/2">

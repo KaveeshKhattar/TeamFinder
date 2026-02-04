@@ -46,41 +46,12 @@ public class EventService {
     }
 
     public List<Long> getInterestedEventsForUser(Long userId) {
-        System.out.println("service " + userId);
         return eventUserRepository.findInterestedEventIDsPerUser(userId);
     }
-
-    
-
-    // public List<Event> getEventsByCollegeId(Long collegeId) {
-    //     List<Event> events = eventRepository.findByCollegeId(collegeId);
-    //     return events;
-    // }
-
-    // public List<Event> searchEvents(List<Event> globalEvents, String name) {
-    //     return globalEvents.stream()
-    //             .filter(event -> event.getName() != null && event.getName().toLowerCase().contains(name.toLowerCase()))
-    //             .collect(Collectors.toList());
-    // }
 
     public List<Long> getUserIdsWhoAreInterestedAlready(Long eventId) {
         return eventUserRepository.findUserIdsOfAlreadyInterestedUsers(eventId);
     }
-
-    // public void createEvent(Long collegeId, String eventName, String eventDate, String eventTime, String eventVenue,
-    //         Long teamSize, String eventDescription) {
-    //     eventRepository.createEvent(collegeId, eventName, eventDate, eventTime, eventVenue, teamSize, eventDescription);
-    // }
-
-    // public void updateEvent(Long eventId, String eventName, String eventDate, String eventTime, Long teamSize,
-    //         String eventVenue, String eventDescription) {
-    //     System.out.println("Updating more...");
-    //     eventRepository.updateEvent(eventId, eventName, eventDate, eventTime, eventVenue, teamSize, eventDescription);
-    // }
-
-    // public void deleteEvent(Long eventId) {
-    //     eventRepository.deleteById(eventId);
-    // }
 
     public List<UserProjection> getInterestedUsers(Long eventID) {
         
@@ -102,7 +73,6 @@ public class EventService {
     }
 
     public void toggleInterestedUser(Long eventId, Long id) {
-        System.out.println("gonna toggle now again!");
         if (eventUserRepository.existsByEventIdAndId(eventId, id)) {
             eventUserRepository.removeInterestedUserFromEvent(eventId, id);
         } else {
@@ -111,7 +81,6 @@ public class EventService {
     }
 
     public void toggleLead(Long eventId, Long userId1, Long userId2) {
-        System.out.println("gonna toggle now again!");
         if (eventLeadRepository.existsByEventIdAndUserId1AndUserId2(eventId, userId1, userId2)) {
             eventLeadRepository.removeLeadFromEvent(eventId, userId1, userId2);
         } else {
@@ -128,28 +97,17 @@ public class EventService {
     }
 
     public List<Team> getLeadsTeamsForUser(Long eventId, Long userId) {
-        System.out.println("=== DEBUG START ===");
-        System.out.println("eventId: " + eventId + ", userId: " + userId);
         
         // Test 1: Get all team IDs for this user
-        List<Long> userTeams = userInterestedInTeamRepository.findInterestedTeamIdbyUserId(userId);
-        System.out.println("All teams user is interested in: " + userTeams);
         
         // Test 2: Get the full query result
         List<Number> teamIds = userInterestedInTeamRepository.findInterestedTeamIdsByUserAndEvent(userId, eventId);
-        System.out.println("Filtered teamIds: " + teamIds);
-        System.out.println("teamIds size: " + teamIds.size());
-        System.out.println("teamIds isEmpty: " + teamIds.isEmpty());
         
         if (teamIds.isEmpty()) {
-            System.out.println("No teams found - returning empty list");
             return List.of();
         }
         
-        System.out.println("Looking up teams with IDs: " + teamIds);
         List<Team> teams = teamRepository.findAllByIdIn(teamIds);
-        System.out.println("Found teams: " + teams.size());
-        System.out.println("=== DEBUG END ===");
         
         return teams;
     }
@@ -167,7 +125,5 @@ public class EventService {
         
         return teams;
     }
-
-    
 
 }

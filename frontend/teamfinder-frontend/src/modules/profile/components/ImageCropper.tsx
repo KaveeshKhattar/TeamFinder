@@ -160,7 +160,7 @@ const ImageCropper: React.FC<ImageCropperProps> = ({
       try {
         
         await axios.post(
-          `${BASE_URL}/users/upload`,
+          `${BASE_URL}/users/profilePicture`,
           formData,
           {
             headers: {
@@ -193,7 +193,7 @@ const ImageCropper: React.FC<ImageCropperProps> = ({
         console.log("Preparing to send file URL to backend:", fileURL);
 
         const response = await axios.post(
-          `${BASE_URL}/users/uploadImageURL`,
+          `${BASE_URL}/users/imageURL`,
           { fileURL: fileURL },
           {
             headers: {

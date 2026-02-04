@@ -6,30 +6,32 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.project.TeamFinder.dto.ImageRequestDTO;
-import com.project.TeamFinder.dto.UpdateUserDTO;
-import com.project.TeamFinder.dto.WaitlistRequestDTO;
-import com.project.TeamFinder.model.User;
+import com.project.TeamFinder.dto.UserDTO;
+import com.project.TeamFinder.dto.auth.UpdateUserDTO;
+import com.project.TeamFinder.dto.auth.WaitlistRequestDTO;
+import com.project.TeamFinder.dto.responses.ApiResponse;
+import com.project.TeamFinder.projection.UserProjection;
 import com.project.TeamFinder.service.ImageHandlerService;
-import com.project.TeamFinder.service.JwtService;
 import com.project.TeamFinder.service.UserService;
 
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 
 import java.io.File;
 import java.util.Base64;
 import java.util.List;
-import java.util.Map;
+import java.util.Objects;
 
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.PostMapping;
 
 import java.io.IOException;
@@ -40,186 +42,238 @@ import java.io.IOException;
 public class UserController {
 
     private final UserService userService;
-    private final JwtService jwtService;
     private final ImageHandlerService imageHandlerService;
 
-    public UserController(UserService userService, JwtService jwtService, ImageHandlerService imageHandlerService) {
+    public UserController(UserService userService, ImageHandlerService imageHandlerService) {
         this.userService = userService;
-        this.jwtService = jwtService;
         this.imageHandlerService = imageHandlerService;
     }
 
     @PostMapping("/waitlist")
-    public ResponseEntity<?> addToWaitlist(@RequestBody WaitlistRequestDTO request) {
+    public ResponseEntity<ApiResponse<String>> addToWaitlist(@RequestBody WaitlistRequestDTO request) {
         try {
             String email = request.getEmail();
             userService.addToWaitlist(email);
-            return ResponseEntity.ok(Map.of(
-                    "success", true,
-                    "message", "Added to waitlist successfully"));
+
+            return ResponseEntity.status(HttpStatus.OK)
+                    .body(new ApiResponse<>(
+                            true,
+                            null,
+                            "Added to waitlist successfully"));
         } catch (DataIntegrityViolationException e) {
             // Duplicate email
-            return ResponseEntity.status(HttpStatus.CONFLICT).body(Map.of(
-                    "success", false,
-                    "message", "This email is already on the waitlist"));
+
+            return ResponseEntity.status(HttpStatus.CONFLICT)
+                    .body(new ApiResponse<>(
+                            false,
+                            null,
+                            "This email is already on the waitlist"));
         } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(Map.of(
-                    "success", false,
-                    "message", "Failed to add to waitlist"));
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body(new ApiResponse<>(
+                            false,
+                            null,
+                            "Failed to add to waitlist"));
         }
     }
 
-    @GetMapping("/getAllUsers")
-    public ResponseEntity<List<User>> allUsers() {
-    List <User> users = userService.allUsers();
-    return ResponseEntity.ok(users);
+    // Fetch all users
+    @GetMapping("/all-users")
+    public ResponseEntity<ApiResponse<List<UserProjection>>> allUsers() {
+        List<UserProjection> users = userService.getAllUsers();
+        return ResponseEntity.status(HttpStatus.OK)
+                    .body(new ApiResponse<>(
+                            true,
+                            users,
+                            "all users"));
     }
 
     @GetMapping("/profile")
-    public ResponseEntity<User> profile(@RequestHeader("Authorization") String token) {
+    public ApiResponse<UserDTO> profile() {
 
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        User currentUser = (User) authentication.getPrincipal();
-        return ResponseEntity.ok(currentUser);
+        UserDetails currentUser = (UserDetails) authentication.getPrincipal();
+        String email = currentUser.getUsername();
+
+        UserDTO user = userService.getProfile(email);
+        
+        return new ApiResponse<>(
+                            true,
+                            user,
+                            "User");
     }
 
-    @PutMapping("/update")
-    public ResponseEntity<String> updateUser(@RequestHeader("Authorization") String token,
+    @PutMapping("/profile")
+    public ResponseEntity<ApiResponse<String>> updateUser(@AuthenticationPrincipal UserDetails userDetails,
             @RequestBody UpdateUserDTO updateUserDTO) {
-                System.out.println("Updating user...");
+
         try {
-            final String jwt = token.substring(7);
-            final String userEmail = jwtService.extractUsername(jwt);
+            final String userEmail = userDetails.getUsername();
             if (userEmail == null) {
-                return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Invalid token");
+                return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
+                    .body(new ApiResponse<>(
+                            true,
+                            null,
+                            "Invalid token"));
             }
-            System.out.println("Email from token: " + userEmail);
+
             userService.updateUser(userEmail, updateUserDTO);
-            return ResponseEntity.ok("User updated successfully");
+            return ResponseEntity.status(HttpStatus.OK)
+                    .body(new ApiResponse<>(
+                            true,
+                            null,
+                            "User updated successfully"));
         } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Failed to update user");
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body(new ApiResponse<>(
+                            true,
+                            null,
+                            "Failed to update user"));
         }
     }
 
-    @PostMapping("/upload")
-    public String uploadImage(@RequestHeader("Authorization") String token, @RequestParam("file") MultipartFile file) {
-        System.out.println("uploading...");
-        final String jwt = token.substring(7);
-        final String userEmail = jwtService.extractUsername(jwt);
-        if (userEmail == null) {
-            return "Invalid token";
-        }
+    @GetMapping("/profilePicture")
+    public ResponseEntity<ApiResponse<String>> getImage(
+            @AuthenticationPrincipal UserDetails userDetails) {
 
-        // final String fileName = userEmail + ".png";
-        // if (filename in connection then delete that then post this )
-
-        try {
-
-            // Convert MultipartFile to File
-            File tempFile = File.createTempFile("upload-", file.getOriginalFilename());
-            file.transferTo(tempFile);
-            System.out.println("Image name: " + tempFile.getName());
-            String result = imageHandlerService.uploadFile(tempFile, "image-store", file.getOriginalFilename());
-
-            System.out.println(result);
-            return "Passed";
-        } catch (IOException e) {
-            return "Failed";
-        }
-    }
-
-    @PostMapping("/uploadImageURL")
-    public ResponseEntity<String> uploadPictureURL(@RequestHeader("Authorization") String token,
-            @RequestBody ImageRequestDTO request) {
-        System.out.println("Uploading picture URL...");
-        final String jwt = token.substring(7);
-        final String userEmail = jwtService.extractUsername(jwt);
-        if (userEmail == null) {
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Invalid token");
-        }
-        System.out.println("email received: " + userEmail);
-        userService.saveFileURL(userEmail, request.getFileURL());
-        return ResponseEntity.ok("Success");
-    }
-
-    @DeleteMapping("/deleteProfilePicture")
-    public ResponseEntity<String> deleteImage(@RequestHeader("Authorization") String token) {
-
-        final String jwt = token.substring(7);
-        final String userEmail = jwtService.extractUsername(jwt);
-        if (userEmail == null) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Invalid token");
-        }
+        final String userEmail = userDetails.getUsername();
 
         String prefix = "";
         int index = userEmail.indexOf('@');
         if (index != -1) {
             prefix = userEmail.substring(0, index);
-            // + userEmail.substring(index + 1, userEmail.indexOf('.', index)); // Include
-            // '@' and select until '.'
         }
 
         final String fileName = prefix + ".png";
-
-        try {
-            System.out.println("Calling service to delete file: " + fileName);
-            String result = imageHandlerService.deleteFile("image-store", fileName);
-            System.out.println("Delete result: " + result);
-            return ResponseEntity.ok("File deleted successfully");
-        } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Failed to delete file");
-        }
-    }
-
-    @DeleteMapping("/deleteImageURL")
-    public ResponseEntity<String> deleteImageURL(@RequestHeader("Authorization") String token) {
-        final String jwt = token.substring(7);
-        final String userEmail = jwtService.extractUsername(jwt);
-        if (userEmail == null) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Invalid token");
-        }
-
-        try {
-            userService.deleteFileURL(userEmail);
-            return ResponseEntity.ok("Picture URL removed successfully");
-        } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Failed to remove picture URL");
-        }
-    }
-
-    @GetMapping("/fetchProfilePic")
-    public String getImage(@RequestHeader("Authorization") String token) {
-        final String jwt = token.substring(7);
-        final String userEmail = jwtService.extractUsername(jwt);
-
-        String prefix = "";
-        int index = userEmail.indexOf('@');
-        if (index != -1) {
-            prefix = userEmail.substring(0, index);
-            // + userEmail.substring(index + 1, userEmail.indexOf('.', index)); // Include
-            // '@' and select until '.'
-        }
-
-        System.out.println("Prefix for image retrieval: " + prefix);
-
-        final String fileName = prefix + ".png";
-        System.out.println(fileName);
 
         try {
             byte[] data = imageHandlerService.getFile("image-store", fileName);
             if (data == null || data.length == 0) {
-                // return ResponseEntity.notFound().build();
-                return "Fail";
+                return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                        .body(new ApiResponse<>(
+                                false,
+                                null,
+                                "Profile picture not found"));
             }
             String base64String = Base64.getEncoder().encodeToString(data); // Convert to Base64
-            return "data:image/png;base64," + base64String;
-            // return ResponseEntity.ok()
-            // .contentType(MediaType.IMAGE_PNG) // Set the content type for PNG
-            // .body(data); // Return the image data directly
+            String imageData = "data:image/png;base64," + base64String;
+            return ResponseEntity.ok(
+                    new ApiResponse<>(
+                            true,
+                            imageData,
+                            "Profile picture fetched successfully"));
 
         } catch (Exception e) {
-            // return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
-            return "Fail";
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body(new ApiResponse<>(
+                            false,
+                            null,
+                            "Failed to fetch profile picture"));
+        }
+    }
+
+    @PostMapping("/profilePicture")
+    public ResponseEntity<ApiResponse<String>> uploadImage(@RequestParam("file") MultipartFile file) {
+        // Convert MultipartFile to File
+        try {
+
+            // File tempFile = File.createTempFile("upload-", file.getOriginalFilename());
+            // file.transferTo(tempFile);
+
+            File tempFile = Objects.requireNonNull(
+                    File.createTempFile("upload-", file.getOriginalFilename()),
+                    "Temp file creation failed");
+
+            file.transferTo(tempFile);
+
+            imageHandlerService.uploadFile(tempFile, "image-store", file.getOriginalFilename());
+
+            ApiResponse<String> response = new ApiResponse<>(
+                    true,
+                    "URL to be added here.",
+                    "Image uploaded successfully");
+
+            return ResponseEntity.status(HttpStatus.CREATED).body(response);
+        } catch (IOException e) {
+            ApiResponse<String> errorResponse = new ApiResponse<>(
+                    false,
+                    null,
+                    "Failed to upload image");
+
+            return ResponseEntity
+                    .status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body(errorResponse);
+        }
+    }
+
+    @PostMapping("/imageURL")
+    public ResponseEntity<ApiResponse<String>> uploadPictureURL(@AuthenticationPrincipal UserDetails userDetails,
+            @RequestBody ImageRequestDTO request) {
+
+        final String userEmail = userDetails.getUsername();
+        
+
+        userService.saveFileURL(userEmail, request.getFileURL());
+        
+        return ResponseEntity.status(HttpStatus.OK)
+                    .body(new ApiResponse<>(
+                            true,
+                            null,
+                            "Success"));
+    }
+
+    @DeleteMapping("/profilePicture")
+    public ResponseEntity<ApiResponse<String>> deleteImage(@AuthenticationPrincipal UserDetails userDetails) {
+
+        final String userEmail = userDetails.getUsername();
+        
+        String prefix = "";
+        int index = userEmail.indexOf('@');
+        if (index != -1) {
+            prefix = userEmail.substring(0, index);
+            // + userEmail.substring(index + 1, userEmail.indexOf('.', index)); // Include
+            // '@' and select until '.'
+        }
+
+        final String fileName = prefix + ".png";
+
+        try {
+
+            String result = imageHandlerService.deleteFile("image-store", fileName);
+
+            return ResponseEntity.status(HttpStatus.OK)
+                    .body(new ApiResponse<>(
+                            true,
+                            result,
+                            "File deleted successfully"));
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body(new ApiResponse<>(
+                            true,
+                            null,
+                            "Failed to delete file"));
+        }
+    }
+
+    @DeleteMapping("/imageURL")
+    public ResponseEntity<ApiResponse<String>> deleteImageURL(@AuthenticationPrincipal UserDetails userDetails) {
+
+        final String userEmail = userDetails.getUsername();
+        
+
+        try {
+            userService.deleteFileURL(userEmail);
+            return ResponseEntity.status(HttpStatus.NO_CONTENT)
+                    .body(new ApiResponse<>(
+                            true,
+                            null,
+                            "Picture URL removed successfully"));
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body(new ApiResponse<>(
+                            false,
+                            null,
+                            "Picture URL removal failed"));
         }
     }
 

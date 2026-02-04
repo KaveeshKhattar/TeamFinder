@@ -5,6 +5,7 @@ import { Input } from "../../../components/ui/input";
 import { Button } from "../../../components/ui/button";
 import { ReloadIcon } from "@radix-ui/react-icons";
 import { BASE_URL } from '../../../../src/config';
+import Header from "../../landingPage/components/Header";
 
 function Signup() {
   
@@ -55,13 +56,9 @@ function Signup() {
   return (
     <>
     
-      <div className="flex h-screen">
-
-        <div className="bg-gradient-to-br from-sky-100 to-sky-500 dark:from-sky-600 dark:to-sky-900 h-full w-1/2 flex flex-col justify-center items-center">
-          <p className="text-white text-6xl">teamfinder</p>
-        </div>
-
-        <div className="h-full w-1/2 flex flex-col justify-center items-center">
+      <div className="flex-col">
+        <Header />
+        <div className="h-full w-full flex flex-col justify-center items-center">
           <p className="mt-8 text-lg font-bold">
             Your next event is just a sign up away.
           </p>

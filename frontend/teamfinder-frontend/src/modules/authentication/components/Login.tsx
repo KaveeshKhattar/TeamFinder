@@ -54,13 +54,13 @@ function Login() {
 
     return (
         <>
-            <div className="flex h-screen">
-                
-                <div className="bg-gradient-to-br from-sky-100 to-sky-500 dark:from-sky-600 dark:to-sky-900 h-full w-1/2 flex flex-col justify-center items-center">
-                    <p className="text-white text-6xl">teamfinder</p>
-                </div>
+        
+            <div className="flex-col">
+            
+            <Header />
 
-                <div className="h-full w-1/2 flex flex-col justify-center items-center">
+                <div className="h-full w-full flex flex-col justify-center items-center px-4 ">
+
                     <>
                         <p className="mt-8 text-xl text-left">Log In</p>
 
@@ -116,60 +116,6 @@ function Login() {
                     </>
                 </div>
             </div>
-
-            {/* <div className="flex flex-col justify-start items-center min-h-screen">
-
-                <p className="mt-8 text-lg font-bold">Log in to TeamFinder</p>
-
-                <form className="mt-4 mb-4 w-full md:w-2/5" onSubmit={handleSubmit}>
-                    <div className="flex flex-col justify-center items-center gap-1.5">
-                        <Input
-                            type="email"
-                            id="email"
-                            placeholder="Email"
-                            value={email}
-                            onChange={(e: { target: { value: SetStateAction<string> } }) =>
-                                setEmail(e.target.value)
-                            }
-                            required
-                        />
-
-                        <Input
-                            type="password"
-                            id="password"
-                            placeholder="Password"
-                            value={password}
-                            onChange={(e: { target: { value: SetStateAction<string> } }) =>
-                                setPassword(e.target.value)
-                            }
-                            required
-                        />
-                        {
-                            loading ?
-                                <Button disabled>
-                                    <ReloadIcon className="mr-2 h-4 w-4 animate-spin" /> Please wait
-                                </Button>
-                                :
-                                <Button>
-                                    Submit
-                                </Button>
-                        }
-                    </div>
-                    {error && <p className="text-red-500 mt-2">{error}</p>}
-                </form>
-                <p className="md:text-xl">
-                    Don't have an account? Sign up{" "}
-                    <Link to="/signup">
-                        <span className="text-blue-500">here.</span>
-                    </Link>
-                </p>
-                <p className="md:text-xl mt-2">
-                    Forgot Password?{" "}
-                    <Link to="/changePasswordVerify" state= {{email}}>
-                        <span className="text-blue-500">Click here.</span>
-                    </Link>
-                </p>
-            </div> */}
         </>
     );
 }

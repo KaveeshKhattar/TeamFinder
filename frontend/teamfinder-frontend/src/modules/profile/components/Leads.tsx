@@ -23,7 +23,7 @@ import { Check, ChevronsUpDown } from "lucide-react";
 import { cn } from "../../../lib/utils";
 import axios from "axios";
 import { BASE_URL } from "../../../config";
-import { Event, Team } from "../../../types";
+import { Event } from "../../../types";
 import IndividualsUserIsInterestedInForEvent from "./IndividualsUserIsInterestedInForEvent";
 import TeamsUserIsInterestedInForEvent from "./TeamsUserIsInterestedInForEvent";
 import TeamsCreatedPerEventByUser from "./TeamsCreatedPerEventByUser";
@@ -35,7 +35,7 @@ function Leads() {
     async function fetchAllEvents() {
       const fetchAllEventsResponse = await axios.get(`${BASE_URL}/api/events`);
       if (fetchAllEventsResponse.status === 200) {
-        setEvents(fetchAllEventsResponse.data);
+        setEvents(fetchAllEventsResponse.data.data);
       }
     }
     fetchAllEvents();
@@ -54,7 +54,8 @@ function Leads() {
               variant="outline"
               role="combobox"
               aria-expanded={open}
-              className="w-[200px] justify-between"
+              className="w-full sm:w-[200px] justify-between"
+
             >
               {value
                 ? events.find((event) => event.name === value)?.name
@@ -62,7 +63,8 @@ function Leads() {
               <ChevronsUpDown className="w-4 h-4 opacity-50" />
             </Button>
           </PopoverTrigger>
-          <PopoverContent className="w-[200px] p-0">
+          <PopoverContent className="w-full sm:w-[200px] p-0">
+
             <Command>
               <CommandInput placeholder="Search event..." className="h-9" />
               <CommandList>
@@ -94,7 +96,7 @@ function Leads() {
       </div>
       <div className="flex-1 w-full">
         <Tabs defaultValue="individuals" className="w-full">
-          <TabsList>
+        <TabsList className="w-full overflow-x-auto overflow-y-hidden flex-nowrap justify-start py-8">
             <TabsTrigger value="individuals" className="m-2">Individuals</TabsTrigger>
             <TabsTrigger value="teams" className="m-2">Teams</TabsTrigger>
             <TabsTrigger value="teamsCreated" className="m-2">Teams Created by You</TabsTrigger>

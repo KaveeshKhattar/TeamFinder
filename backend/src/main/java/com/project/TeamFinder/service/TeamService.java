@@ -11,7 +11,6 @@ import com.project.TeamFinder.dto.CreateTeamRequestDTO;
 import com.project.TeamFinder.dto.TeamWithMembersDTO;
 import com.project.TeamFinder.model.Team;
 import com.project.TeamFinder.model.TeamMembers;
-import com.project.TeamFinder.model.UserInterestedInTeam;
 import com.project.TeamFinder.projection.UserProjection;
 import com.project.TeamFinder.repository.EventUserRepository;
 import com.project.TeamFinder.repository.TeamMembersRepository;
@@ -207,7 +206,6 @@ public class TeamService {
     // }
 
     public void toggleLead(Long teamId, Long userId) {
-        System.out.println("gonna toggle now again!");
         if (userInterestedInTeamRepository.existsByUserIdAndTeamId(teamId, userId)) {
             userInterestedInTeamRepository.removeUserInterestedInTeam(teamId, userId);
         } else {

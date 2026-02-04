@@ -1,5 +1,4 @@
 package com.project.TeamFinder.model;
-import java.time.OffsetDateTime;
 import java.util.Date;
 
 import jakarta.persistence.Column;
@@ -26,14 +25,11 @@ public class Event {
     @Column
     private String venue;
 
-    @Column
+    @Column(name = "start_date")
     private Date start_date;
     
-    @Column
+    @Column(name = "end_date")
     private Date end_date;
-
-    // @Column
-    // private int size;
 
     public Long getId() {
         return id;
@@ -83,13 +79,5 @@ public class Event {
     public void setEnd_date(Date end_date) {
         this.end_date = end_date;
     }
-
-    // public int getSize() {
-    //     return size;
-    // }
-
-    // public void setSize(int size) {
-    //     this.size = size;
-    // }
 
 }

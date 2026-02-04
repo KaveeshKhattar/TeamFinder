@@ -21,7 +21,7 @@ function FindTeammates() {
     const fetchAllEvents = useCallback(async () => {
         const fetchAllEventsResponse = await axios.get(`${BASE_URL}/api/events`);
         if (fetchAllEventsResponse.status === 200) {
-            setAllEvents(fetchAllEventsResponse.data);
+            setAllEvents(fetchAllEventsResponse.data.data);
         }
     }, []);
 
@@ -52,7 +52,7 @@ function FindTeammates() {
 
                 {/* Events Carousel */}
                 <div className="flex items-center justify-center">
-                    <Carousel className="w-full max-w-2xl">
+                    <Carousel className="w-full max-w-2xl px-10">
                         <CarouselContent>
                             {allEvents.map((event) => (
                 <CarouselItem key={event.id} className="md:basis-1/2">

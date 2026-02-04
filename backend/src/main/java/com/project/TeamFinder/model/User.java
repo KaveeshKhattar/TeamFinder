@@ -36,7 +36,7 @@ public class User implements UserDetails {
     private String bio;
 
     @Column(name="skills")
-    private String[] skills;
+    private List<String> skills;
 
     // checks whether they have verified using OTP sent to their email
     @Column(name="enabled")
@@ -124,11 +124,11 @@ public class User implements UserDetails {
         this.bio = bio;
     }
 
-    public String[] getSkills() {
+    public List<String> getSkills() {
         return skills;
     }
 
-    public void setSkills(String[] skills) {
+    public void setSkills(List<String> skills) {
         this.skills = skills;
     }
 
@@ -139,7 +139,7 @@ public class User implements UserDetails {
         this.password = password;
     }
 
-    public User(String firstName, String lastName, String email, String password, String bio, String pictureURL, String[] skills) {
+    public User(String firstName, String lastName, String email, String password, String bio, String pictureURL, List<String> skills) {
         this.firstName = firstName;
         this.lastName = lastName;
         this.email = email;

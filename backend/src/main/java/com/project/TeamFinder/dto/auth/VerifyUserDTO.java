@@ -1,4 +1,4 @@
-package com.project.TeamFinder.dto;
+package com.project.TeamFinder.dto.auth;
 
 
 public class VerifyUserDTO {

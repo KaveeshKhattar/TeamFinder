@@ -1,5 +1,4 @@
 import { SetStateAction, useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
 import Header from "../../landingPage/components/Header";
 import axios from "axios";
 import { BASE_URL } from "../../../config";
@@ -27,32 +26,24 @@ import { Camera, Edit2 } from "lucide-react";
 import Modal from "./Modal";
 import defaultProfilePicture from "../assets/blank-profile-picture-973460_1280.webp";
 import Leads from "./Leads";
-import TeamsCreatedPerEventByUser from "./TeamsCreatedPerEventByUser";
-
-type User = {
-  id: number;
-  firstName: string;
-  lastName: string;
-  email: string;
-  photoUrl: string;
-  bio: string;
-  skills: string[];
-};
+import { User } from "../../../types";
 
 function Profile() {
-  const navigate = useNavigate();
   const [user, setUser] = useState<User | null>(null);
   const [isLoading, setIsLoading] = useState(true);
+  const [open, setOpen] = useState(false);
+  const token = localStorage.getItem("token");
+  const [modalOpen, setModalOpen] = useState(false);
+  const [profilePicUrl, setProfilePicUrl] = useState(defaultProfilePicture);
+  const [isLoadingProfilePic, setIsLoadingProfilePic] = useState(true);
+
+  const updateProfilePic = (imgSrc: SetStateAction<string>) => {
+    setProfilePicUrl(imgSrc);
+  };
+
 
   useEffect(() => {
-    if (localStorage.getItem("token") === null) {
-      navigate("/login");
-    }
-  });
-
-  useEffect(() => {
-    const token = localStorage.getItem("token");
-
+    // Fetch Current User Details
     const fetchUser = async () => {
       try {
         setIsLoading(true);
@@ -63,7 +54,7 @@ function Profile() {
         });
 
         if (response.status === 200) {
-          setUser(response.data);
+          setUser(response.data.data);
         }
       } catch (err) {
         console.log(err, "Fetching user failed.");
@@ -74,51 +65,14 @@ function Profile() {
 
     fetchUser();
   }, []);
+  
 
-  const [open, setOpen] = useState(false);
-  async function onSubmit(e: React.FormEvent<HTMLFormElement>) {
-    e.preventDefault();
-    setOpen(false);
-
-    console.log("Form submitted");
-    const formData = new FormData(e.currentTarget);
-    const data = {
-      firstName: formData.get("firstname"),
-      lastName: formData.get("lastname"),
-      email: formData.get("email"),
-      bio: formData.get("bio"),
-      skills: formData.get("skills")?.toString().split(",").map(skill => skill.trim()),
-    };
-    console.log("Submitting data:", data);
-    try {
-      const token = localStorage.getItem("token");
-      const response = await axios.put(`${BASE_URL}/users/update`, data, {
-        headers: {
-          Authorization: `Bearer ${token}`,
-          "Content-Type": "application/json",
-        },
-      });
-      if (response.status === 200) {
-        setUser(response.data);
-      }
-    } catch (err) {
-      console.error("Profile update failed:", err);
-    }
-  }
-
-  const [modalOpen, setModalOpen] = useState(false);
-  const [profilePicUrl, setProfilePicUrl] = useState(defaultProfilePicture);
-  const [isLoadingProfilePic, setIsLoadingProfilePic] = useState(true);
-
-  const updateProfilePic = (imgSrc: SetStateAction<string>) => {
-    setProfilePicUrl(imgSrc);
-  };
-
+  // Fetch Profile Picture
   const fetchProfilePic = async () => {
     const token = localStorage.getItem("token");
     try {
       setIsLoadingProfilePic(true);
-      const response = await axios.get(`${BASE_URL}/users/fetchProfilePic`, {
+      const response = await axios.get(`${BASE_URL}/users/profilePicture`, {
         headers: {
           Authorization: `Bearer ${token}`,
         },
@@ -141,10 +95,40 @@ function Profile() {
     fetchProfilePic();
   }, []);
 
+  // Edit Profile
+  async function onSubmit(e: React.FormEvent<HTMLFormElement>) {
+    e.preventDefault();
+    setOpen(false);
+
+    const formData = new FormData(e.currentTarget);
+    const data = {
+      firstName: formData.get("firstname"),
+      lastName: formData.get("lastname"),
+      email: formData.get("email"),
+      bio: formData.get("bio"),
+      skills: formData.get("skills")?.toString().split(",").map(skill => skill.trim()),
+    };
+    try {
+      const token = localStorage.getItem("token");
+      const response = await axios.put(`${BASE_URL}/users/profile`, data, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+          "Content-Type": "application/json",
+        },
+      });
+      if (response.status === 200) {
+        setUser(response.data);
+      }
+    } catch (err) {
+      console.error("Profile update failed:", err);
+    }
+  }
+
+  // Delete Profile Picture
   const deleteProfilePicture = async () => {
     const token = localStorage.getItem("token");
     try {
-      await axios.delete(`${BASE_URL}/users/deleteProfilePicture`, {
+      await axios.delete(`${BASE_URL}/users/profilePicture`, {
         headers: {
           Authorization: `Bearer ${token}`,
         },
@@ -154,7 +138,7 @@ function Profile() {
     }
     setProfilePicUrl(defaultProfilePicture);
     try {
-      await axios.delete(`${BASE_URL}/users/deleteImageURL`, {
+      await axios.delete(`${BASE_URL}/users/imageURL`, {
         headers: {
           Authorization: `Bearer ${token}`,
         },
@@ -216,7 +200,8 @@ function Profile() {
           <>
             {/* Profile Header Card */}
             <div className="border border-border rounded-lg bg-card p-4 sm:p-6 md:p-8 mb-6 sm:mb-8">
-              <div className="flex flex-col md:flex-row gap-6 sm:gap-8 items-start md:items-center">
+            <div className="flex flex-col flex-1 space-y-4 text-center md:text-left items-center md:items-start">
+
                 {/* Profile Picture Section */}
                 <div className="flex flex-col items-center md:items-start">
                   <div className="relative">
@@ -225,7 +210,7 @@ function Profile() {
                     ) : (
                       <>
                         <img
-                          src={user?.photoUrl || profilePicUrl}
+                          src={user?.pictureURL || profilePicUrl}
                           alt="Profile"
                           className="rounded-full w-32 h-32 md:w-40 md:h-40 object-cover border-2 border-border"
                         />

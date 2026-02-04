@@ -83,29 +83,34 @@ function Header() {
         {
           token ?
             <div className="flex flex-col gap-3 sm:gap-4 w-full max-w-xs px-4">
-              {isSignedIn && isOnProfilePage && (
+              {isSignedIn  && (
                 <Button variant="destructive" className="w-full min-h-[44px]" onClick={handleSignOut}>
                   Sign Out
                 </Button>
               )}
-              <Link to="/" onClick={() => setIsOpen(false)} className="w-full">
-                <Button variant="outline" className="w-full min-h-[44px]">
-                  Home
+              <Link to="/profile" onClick={() => setIsOpen(false)} className="w-full">
+              <Button variant="outline" className="w-full min-h-[44px]">
+                <p className="dark:text-white">Profile</p>
                 </Button>
               </Link>
-              <Link to="/colleges" onClick={() => setIsOpen(false)} className="w-full">
-                <Button variant="outline" className="w-full min-h-[44px]">
-                  Colleges
+              <Link to="/show-interest" onClick={() => setIsOpen(false)} className="w-full">
+              <Button variant="outline" className="w-full min-h-[44px] underline">
+                <p className="dark:text-white">Show your interest</p>
                 </Button>
               </Link>
-              <Link to="/events" onClick={() => setIsOpen(false)} className="w-full">
-                <Button variant="outline" className="w-full min-h-[44px]">
-                  Events
+              <Link to="/find-teammates" onClick={() => setIsOpen(false)} className="w-full">
+                <Button variant="outline" className="w-full min-h-[44px] underline">
+                <p className="dark:text-white">Find your next teammate</p>
                 </Button>
               </Link>
-              <Link to="/teams" onClick={() => setIsOpen(false)} className="w-full">
-                <Button variant="outline" className="w-full min-h-[44px]">
-                  Teams
+              <Link to="/post-your-team" onClick={() => setIsOpen(false)} className="w-full">
+              <Button variant="outline" className="w-full min-h-[44px] underline">
+                <p className="dark:text-white">Post your team</p>
+                </Button>
+              </Link>
+              <Link to="/find-team" onClick={() => setIsOpen(false)} className="w-full">
+              <Button variant="outline" className="w-full min-h-[44px] underline">
+              <p className="dark:text-white">Find your next team</p>
                 </Button>
               </Link>
             </div>
@@ -115,28 +120,28 @@ function Header() {
                 <Button className="w-full min-h-[44px]">Sign Up</Button>
               </Link>
               <Link to="/login" onClick={() => setIsOpen(false)} className="w-full">
-                <Button variant="secondary" className="w-full min-h-[44px]">
-                  Sign In
+                <Button variant="outline" className="w-full min-h-[44px]">
+                  <p>Sign In</p>
                 </Button>
               </Link>
-              <Link to="/" onClick={() => setIsOpen(false)} className="w-full">
-                <Button variant="outline" className="w-full min-h-[44px]">
-                  Home
+              <Link to="/show-interest" onClick={() => setIsOpen(false)} className="w-full">
+              <Button variant="outline" className="w-full min-h-[44px] underline">
+                <p className="dark:text-white">Show your interest</p>
                 </Button>
               </Link>
-              <Link to="/colleges" onClick={() => setIsOpen(false)} className="w-full">
-                <Button variant="outline" className="w-full min-h-[44px]">
-                  Colleges
+              <Link to="/find-teammates" onClick={() => setIsOpen(false)} className="w-full">
+                <Button variant="outline" className="w-full min-h-[44px] underline">
+                <p className="dark:text-white">Find your next teammate</p>
                 </Button>
               </Link>
-              <Link to="/events" onClick={() => setIsOpen(false)} className="w-full">
-                <Button variant="outline" className="w-full min-h-[44px]">
-                  Events
+              <Link to="/post-your-team" onClick={() => setIsOpen(false)} className="w-full">
+              <Button variant="outline" className="w-full min-h-[44px] underline">
+                <p className="dark:text-white">Post your team</p>
                 </Button>
               </Link>
-              <Link to="/teams" onClick={() => setIsOpen(false)} className="w-full">
-                <Button variant="outline" className="w-full min-h-[44px]">
-                  Teams
+              <Link to="/find-team" onClick={() => setIsOpen(false)} className="w-full">
+              <Button variant="outline" className="w-full min-h-[44px] underline">
+              <p className="dark:text-white">Find your next team</p>
                 </Button>
               </Link>
             </div>

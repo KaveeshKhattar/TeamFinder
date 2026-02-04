@@ -1,5 +1,7 @@
 package com.project.TeamFinder.projection;
 
+import java.util.List;
+
 public interface UserProjection {
     Long getId();    
     String getFirstName();
@@ -7,5 +9,5 @@ public interface UserProjection {
     String getEmail();
     String getPictureURL();
     String getBio();
-    String[] getSkills();
+    List<String> getSkills();
 }
