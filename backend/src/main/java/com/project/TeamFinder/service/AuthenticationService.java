@@ -16,7 +16,6 @@ import com.project.TeamFinder.exception.AccountNotVerifiedException;
 import com.project.TeamFinder.exception.IncorrectEmailException;
 import com.project.TeamFinder.exception.IncorrectPasswordException;
 import com.project.TeamFinder.model.User;
-import com.project.TeamFinder.repository.CollegeRepresentativeRepository;
 import com.project.TeamFinder.repository.UserRepository;
 
 import jakarta.mail.MessagingException;
@@ -31,7 +30,6 @@ public class AuthenticationService {
 
     public AuthenticationService(
             UserRepository userRepository,
-            CollegeRepresentativeRepository collegeRepresentativeRepository,
             AuthenticationManager authenticationManager,
             PasswordEncoder passwordEncoder,
             EmailService emailService) {
