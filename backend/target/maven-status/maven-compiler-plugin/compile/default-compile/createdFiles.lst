@@ -30,9 +30,11 @@ com/project/TeamFinder/service/ImageHandlerService.class
 com/project/TeamFinder/projection/UserProjection.class
 com/project/TeamFinder/dto/UserDTO.class
 com/project/TeamFinder/dto/auth/UpdateUserDTO.class
+com/project/TeamFinder/config/WebSocketAuthInterceptor.class
 com/project/TeamFinder/dto/responses/ApiResponse.class
 com/project/TeamFinder/exception/AccountNotVerifiedException.class
 com/project/TeamFinder/repository/ChatRoomRepository.class
+com/project/TeamFinder/controller/ChatMessageController.class
 com/project/TeamFinder/config/EmailConfiguration.class
 com/project/TeamFinder/exception/IncorrectPasswordException.class
 com/project/TeamFinder/repository/TeamMembersRepository.class
@@ -68,5 +70,6 @@ com/project/TeamFinder/repository/MessageRepository.class
 com/project/TeamFinder/config/ApplicationConfiguration.class
 com/project/TeamFinder/dto/auth/LoginUserDTO.class
 com/project/TeamFinder/model/TeamMembers.class
+com/project/TeamFinder/dto/ChatRoomListItemDTO.class
 com/project/TeamFinder/dto/EventUserDTO.class
 com/project/TeamFinder/model/User.class

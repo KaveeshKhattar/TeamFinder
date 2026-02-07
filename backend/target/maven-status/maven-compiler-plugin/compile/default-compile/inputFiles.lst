@@ -3,14 +3,17 @@
 /Users/heeshi/00-me/2026/projects/TeamFinder/backend/src/main/java/com/project/TeamFinder/config/EmailConfiguration.java
 /Users/heeshi/00-me/2026/projects/TeamFinder/backend/src/main/java/com/project/TeamFinder/config/JwtAuthenticationFilter.java
 /Users/heeshi/00-me/2026/projects/TeamFinder/backend/src/main/java/com/project/TeamFinder/config/SecurityConfiguration.java
+/Users/heeshi/00-me/2026/projects/TeamFinder/backend/src/main/java/com/project/TeamFinder/config/WebSocketAuthInterceptor.java
 /Users/heeshi/00-me/2026/projects/TeamFinder/backend/src/main/java/com/project/TeamFinder/config/WebSocketConfig.java
 /Users/heeshi/00-me/2026/projects/TeamFinder/backend/src/main/java/com/project/TeamFinder/controller/AuthenticationController.java
+/Users/heeshi/00-me/2026/projects/TeamFinder/backend/src/main/java/com/project/TeamFinder/controller/ChatMessageController.java
 /Users/heeshi/00-me/2026/projects/TeamFinder/backend/src/main/java/com/project/TeamFinder/controller/ChatRoomController.java
 /Users/heeshi/00-me/2026/projects/TeamFinder/backend/src/main/java/com/project/TeamFinder/controller/ChatWebSocketController.java
 /Users/heeshi/00-me/2026/projects/TeamFinder/backend/src/main/java/com/project/TeamFinder/controller/CollegeController.java
 /Users/heeshi/00-me/2026/projects/TeamFinder/backend/src/main/java/com/project/TeamFinder/controller/EventController.java
 /Users/heeshi/00-me/2026/projects/TeamFinder/backend/src/main/java/com/project/TeamFinder/controller/TeamController.java
 /Users/heeshi/00-me/2026/projects/TeamFinder/backend/src/main/java/com/project/TeamFinder/controller/UserController.java
+/Users/heeshi/00-me/2026/projects/TeamFinder/backend/src/main/java/com/project/TeamFinder/dto/ChatRoomListItemDTO.java
 /Users/heeshi/00-me/2026/projects/TeamFinder/backend/src/main/java/com/project/TeamFinder/dto/ChatSendRequestDTO.java
 /Users/heeshi/00-me/2026/projects/TeamFinder/backend/src/main/java/com/project/TeamFinder/dto/CreateTeamRequestDTO.java
 /Users/heeshi/00-me/2026/projects/TeamFinder/backend/src/main/java/com/project/TeamFinder/dto/EmailRequestDTO.java
