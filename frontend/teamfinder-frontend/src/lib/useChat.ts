@@ -1,7 +1,7 @@
 import { Client } from "@stomp/stompjs";
 import { useEffect, useRef, useState } from "react";
 import axios from "axios";
-import { BASE_URL } from "@/config";
+import { BASE_URL, BROKER_URL } from "@/config";
 import { ChatMessage } from "@/types";
 
 export function useChat(roomId: string) {
@@ -37,7 +37,7 @@ export function useChat(roomId: string) {
     const token = localStorage.getItem("token");
 
     const client = new Client({
-      brokerURL: "ws://localhost:8080/ws",
+      brokerURL: `${BROKER_URL}`,
       connectHeaders: {
         Authorization: `Bearer ${token}`,
       },

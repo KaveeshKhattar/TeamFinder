@@ -1,15 +1,13 @@
 import { BASE_URL } from "@/config";
 import { useChat } from "@/lib/useChat";
 import axios from "axios";
-import { SendHorizontal, ArrowLeft, MoreVertical, Loader2 } from "lucide-react";
+import { SendHorizontal, Loader2 } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
-import { useNavigate } from "react-router-dom";
 
 export const ChatWindow: React.FC<{ roomId: string; }> = ({ 
   roomId, 
 }) => {
   const { messages, send } = useChat(roomId);
-  const navigate = useNavigate();
 
   const [text, setText] = useState("");
   const [currentUserId, setCurrentUserId] = useState(-1);
