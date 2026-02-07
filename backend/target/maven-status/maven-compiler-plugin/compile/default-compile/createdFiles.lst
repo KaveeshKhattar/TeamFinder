@@ -1,4 +1,5 @@
 com/project/TeamFinder/model/Event.class
+com/project/TeamFinder/model/ChatRoom.class
 com/project/TeamFinder/dto/ImageRequestDTO.class
 com/project/TeamFinder/TeamFinderApplication.class
 com/project/TeamFinder/exception/NotRepresentativeException.class
@@ -12,7 +13,9 @@ com/project/TeamFinder/repository/EventRepository.class
 com/project/TeamFinder/service/AuthenticationService.class
 com/project/TeamFinder/dto/auth/VerifyUserDTO.class
 com/project/TeamFinder/model/Lead.class
+com/project/TeamFinder/dto/ChatSendRequestDTO.class
 com/project/TeamFinder/dto/CreateTeamRequestDTO.class
+com/project/TeamFinder/controller/ChatRoomController.class
 com/project/TeamFinder/exception/IncorrectEmailException.class
 com/project/TeamFinder/service/TeamService.class
 com/project/TeamFinder/repository/UserRepository.class
@@ -29,6 +32,7 @@ com/project/TeamFinder/dto/UserDTO.class
 com/project/TeamFinder/dto/auth/UpdateUserDTO.class
 com/project/TeamFinder/dto/responses/ApiResponse.class
 com/project/TeamFinder/exception/AccountNotVerifiedException.class
+com/project/TeamFinder/repository/ChatRoomRepository.class
 com/project/TeamFinder/config/EmailConfiguration.class
 com/project/TeamFinder/exception/IncorrectPasswordException.class
 com/project/TeamFinder/repository/TeamMembersRepository.class
@@ -38,10 +42,13 @@ com/project/TeamFinder/repository/EventUserRepository.class
 com/project/TeamFinder/controller/EventController.class
 com/project/TeamFinder/model/CollegeRepresentative.class
 com/project/TeamFinder/config/SecurityConfiguration.class
+com/project/TeamFinder/model/Message.class
+com/project/TeamFinder/config/WebSocketConfig.class
 com/project/TeamFinder/service/UserService.class
 com/project/TeamFinder/dto/EventRequestDTO.class
 com/project/TeamFinder/controller/CollegeController.class
 com/project/TeamFinder/repository/TeamRepository.class
+com/project/TeamFinder/controller/ChatWebSocketController.class
 com/project/TeamFinder/dto/LeadRequestDTO.class
 com/project/TeamFinder/dto/EmailRequestDTO.class
 com/project/TeamFinder/dto/TeamWithMembersDTO.class
@@ -49,12 +56,15 @@ com/project/TeamFinder/service/JwtService.class
 com/project/TeamFinder/model/College.class
 com/project/TeamFinder/model/Team.class
 com/project/TeamFinder/controller/TeamController.class
+com/project/TeamFinder/service/ChatRoomService.class
 com/project/TeamFinder/exception/AccountAlreadyExists.class
 com/project/TeamFinder/controller/AuthenticationController.class
+com/project/TeamFinder/dto/StartChatRequestDTO.class
 com/project/TeamFinder/model/Role.class
 com/project/TeamFinder/service/EmailService.class
 com/project/TeamFinder/dto/auth/WaitlistRequestDTO.class
 com/project/TeamFinder/repository/CollegeRepository.class
+com/project/TeamFinder/repository/MessageRepository.class
 com/project/TeamFinder/config/ApplicationConfiguration.class
 com/project/TeamFinder/dto/auth/LoginUserDTO.class
 com/project/TeamFinder/model/TeamMembers.class

@@ -27,6 +27,7 @@ import Modal from "./Modal";
 import defaultProfilePicture from "../assets/blank-profile-picture-973460_1280.webp";
 import Leads from "./Leads";
 import { User } from "../../../types";
+import { useNavigate } from "react-router-dom";
 
 function Profile() {
   const [user, setUser] = useState<User | null>(null);
@@ -65,7 +66,7 @@ function Profile() {
 
     fetchUser();
   }, []);
-  
+
 
   // Fetch Profile Picture
   const fetchProfilePic = async () => {
@@ -148,6 +149,8 @@ function Profile() {
     }
   };
 
+  const navigate = useNavigate();
+
   return (
     <div className="min-h-screen bg-background">
       <Header />
@@ -200,7 +203,7 @@ function Profile() {
           <>
             {/* Profile Header Card */}
             <div className="border border-border rounded-lg bg-card p-4 sm:p-6 md:p-8 mb-6 sm:mb-8">
-            <div className="flex flex-col flex-1 space-y-4 text-center md:text-left items-center md:items-start">
+              <div className="flex flex-col flex-1 space-y-4 text-center md:text-left items-center md:items-start">
 
                 {/* Profile Picture Section */}
                 <div className="flex flex-col items-center md:items-start">
@@ -212,7 +215,7 @@ function Profile() {
                         <img
                           src={user?.pictureURL || profilePicUrl}
                           alt="Profile"
-                          className="rounded-full w-32 h-32 md:w-40 md:h-40 object-cover border-2 border-border"
+                          className="rounded-full w-32 h-32 md:w-40 md:h-40 object-cover"
                         />
                         <DropdownMenu>
                           <DropdownMenuTrigger asChild>
@@ -334,7 +337,13 @@ function Profile() {
                       </form>
                     </DialogContent>
                   </Dialog>
+
+                  
+
                 </div>
+                <Button onClick={() => navigate("/chats")}>
+                    View Chats
+                  </Button>
               </div>
             </div>
 

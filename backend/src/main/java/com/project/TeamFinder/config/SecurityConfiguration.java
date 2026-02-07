@@ -45,6 +45,7 @@ public class SecurityConfiguration {
                         .requestMatchers("/api/*").permitAll()
                         // Any other /api/** endpoint will fall through to the default rule below
                         .requestMatchers("/users/checkIfUserisCollegeRepresentative").hasRole("REPRESENTATIVE")
+                        .requestMatchers("/ws/**").permitAll()
                         .anyRequest().authenticated()
                 )
                 .sessionManagement(session -> session

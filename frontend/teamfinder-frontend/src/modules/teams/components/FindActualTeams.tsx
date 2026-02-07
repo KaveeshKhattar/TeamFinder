@@ -1,7 +1,7 @@
 import { useCallback, useEffect, useState } from "react";
 import axios from "axios";
 import { BASE_URL } from "../../../config";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import Header from "../../landingPage/components/Header";
 import {
     Carousel,
@@ -12,7 +12,9 @@ import {
 } from "../../../components/ui/carousel";
 import { Card, CardContent } from "../../../components/ui/card";
 import { Toggle } from "../../../components/ui/toggle";
-import { Heart } from "lucide-react";
+import { Heart, MessageCircle } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { ChatRoom } from "@/types";
 
 type Team = {
     teamId: number;
@@ -35,6 +37,7 @@ function FindActualTeams() {
     const [loggedInUserId, setLoggedInUserId] = useState<number | null>(null);
     const token = localStorage.getItem("token");
     const [interested, setInterested] = useState<{ [teamId: number]: boolean }>({});
+    const navigate = useNavigate();
 
     // Fetch logged-in user id
     useEffect(() => {
@@ -60,7 +63,12 @@ function FindActualTeams() {
 
         try {
             const res = await axios.get(
-                `${BASE_URL}/api/events/${eventId}/teams`
+                `${BASE_URL}/api/events/${eventId}/teams`,
+                {
+                  headers: {
+                    Authorization: `Bearer ${token}`,
+                  },
+                }
             );
 
             const data = Array.isArray(res.data) ? res.data : [];
@@ -112,6 +120,22 @@ function FindActualTeams() {
             }));
         }
     };
+
+    const handleChatClick = async (otherUserId: number): Promise<void> => {
+        const res = await axios.post<ChatRoom>(
+          `${BASE_URL}/api/chats/start`,
+          {otherUserId},
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          }
+        );
+      
+        const roomId = res.data.id;
+      
+        navigate(`/chats?room=${roomId}`);
+      };
 
     // Check if current user is in the team
     const isUserInTeam = (team: Team) => {
@@ -203,6 +227,11 @@ function FindActualTeams() {
                                                                                 (You)
                                                                             </span>
                                                                         )}
+                                                                    </div>
+                                                                    <div>
+                                                                        <Button className="w-full mt-4 bg-blue-600 hover:bg-blue-700 focus:bg-blue-800" onClick={() => handleChatClick(Number(member.id))}>
+                                                                        <MessageCircle />
+                                                                        </Button>
                                                                     </div>
                                                                 </div>
                                                             ))}

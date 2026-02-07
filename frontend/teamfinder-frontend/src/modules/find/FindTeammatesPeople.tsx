@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useState } from "react";
-import { Heart } from "lucide-react";
+import { Heart, MessageCircle } from "lucide-react";
 import axios from "axios";
 import { BASE_URL } from "../../config";
 import Header from "../landingPage/components/Header";
@@ -14,6 +14,9 @@ import {
 import { Card, CardContent } from "../../components/ui/card";
 import { Toggle } from "../../components/ui/toggle";
 import defaultProfilePicture from "../profile/assets/blank-profile-picture-973460_1280.webp";
+import { Button } from "@/components/ui/button";
+import { useNavigate } from 'react-router-dom';
+import { ChatRoom } from "@/types";
 
 type User = {
   id: number;
@@ -32,6 +35,7 @@ function FindTeammatesPeople() {
   const [interestedInUser, setInterestedInUser] = useState<{ [userId: number]: boolean }>({});
 
   const token = localStorage.getItem("token");
+  const navigate = useNavigate();
 
   // Fetch logged-in user id
   useEffect(() => {
@@ -58,10 +62,15 @@ function FindTeammatesPeople() {
 
     try {
       const res = await axios.get(
-        `${BASE_URL}/api/events/${eventId}/interested-users`
+        `${BASE_URL}/api/events/${eventId}/leads`,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
       );
 
-      const data = Array.isArray(res.data) ? res.data : [];
+      const data = Array.isArray(res.data.data) ? res.data.data : [];
       setUsers(data);
     } catch (err) {
       console.error("Failed to fetch interested users", err);
@@ -147,6 +156,23 @@ function FindTeammatesPeople() {
       console.error("Failed to toggle favourite", err);
     }
   };
+        
+  const handleChatClick = async (otherUserId: number): Promise<void> => {
+    const res = await axios.post<ChatRoom>(
+      `${BASE_URL}/api/chats/start`,
+      {otherUserId},
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      }
+    );
+  
+    const roomId = res.data.id;
+  
+    navigate(`/chats?room=${roomId}`);
+  };
+
 
   return (
     <div className="min-h-screen bg-background">
@@ -178,7 +204,7 @@ function FindTeammatesPeople() {
                             <img
                               src={user.pictureURL || defaultProfilePicture}
                               alt={`${user.firstName} ${user.lastName}`}
-                              className="w-24 h-24 rounded-full object-cover border-2 border-border mb-4"
+                              className="w-24 h-24 rounded-full object-cover mb-4"
                             />
                             <h2 className="text-xl font-semibold mb-1">
                               {user.firstName} {user.lastName}
@@ -242,13 +268,20 @@ function FindTeammatesPeople() {
                                 />
                                 {interestedInUser[user.id] ? "Favorited" : "Add to Favorites"}
                               </Toggle>
+
+                              
                             </div>
                           )}
+                          <Button className="w-full mt-4 bg-blue-600 hover:bg-blue-700 focus:bg-blue-800" onClick={() => handleChatClick(user.id)}>
+                              <MessageCircle />
+                                Chat
+                              </Button>
                         </CardContent>
                       </Card>
                     </div>
                   </CarouselItem>
                 ))}
+
               </CarouselContent>
               <CarouselPrevious />
               <CarouselNext />

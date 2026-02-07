@@ -24,3 +24,20 @@ export interface Team {
     eventId: number;
     members: User[];
 }
+
+export interface ChatRoom {
+    id: string;
+    otherUserId: string;
+    otherUserName: string;
+    otherUserPictureUrl: string;
+}
+  
+export interface ChatMessage {
+    id: number;
+    chatRoomId: string;
+    senderId: number;
+    senderName: string;
+    content: string;
+    timestamp: string;
+}
+  

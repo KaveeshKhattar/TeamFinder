@@ -23,6 +23,7 @@ import FindTeammatesPeople from './modules/find/FindTeammatesPeople'
 import PostTeamLandingPage from './modules/teams/components/PostTeamLandingPage'
 import FindTeams from './modules/teams/components/FindTeam'
 import FindActualTeams from './modules/teams/components/FindActualTeams'
+import { AllChatsPage } from './modules/chat/AllChatsPage'
 
 function App() {
 
@@ -54,6 +55,9 @@ function App() {
               <Route path="/post-your-team" element={<PostTeamLandingPage />} />
               <Route path="/find-team" element={<FindTeams />} />
               <Route path="/find-team/events/:eventId" element={<FindActualTeams />} />
+
+              {/* Chats */}
+              <Route path="/chats" element={<AllChatsPage />} />
 
             </Routes>
           </Suspense>
