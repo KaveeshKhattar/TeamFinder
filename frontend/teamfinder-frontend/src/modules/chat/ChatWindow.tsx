@@ -73,15 +73,6 @@ export const ChatWindow: React.FC<{ roomId: string }> = ({ roomId }) => {
     }
   };
 
-  const getInitials = (name: string) => {
-    return name
-      .split(" ")
-      .map((n) => n[0])
-      .join("")
-      .toUpperCase()
-      .slice(0, 2);
-  };
-
   const handleSend = async () => {
     if (!text.trim() || sending) return;
 
@@ -128,10 +119,8 @@ export const ChatWindow: React.FC<{ roomId: string }> = ({ roomId }) => {
               </div>
             ) : (
               <div className="space-y-4">
-                {messages.map((m, index) => {
+                {messages.map((m) => {
                   const isCurrentUser = m.senderId === currentUserId;
-                  const showAvatar =
-                    index === 0 || messages[index - 1].senderId !== m.senderId;
 
                   return (
                     <div

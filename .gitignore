@@ -1,11 +1,10 @@
 HELP.md
 
-!.mvn/wrapper/maven-wrapper.jar
-!**/src/main/**/target/
-!**/src/test/**/target/
 backend/target/
-*.jar
-*.war
+target/
+dist
+node_modules
+.env
 
 ### STS ###
 .apt_generated
@@ -62,6 +61,3 @@ dist-ssr
 *.njsproj
 *.sln
 *.sw?
-
-backend/src/main/resources/application.properties
-backend/target/classes/application.properties

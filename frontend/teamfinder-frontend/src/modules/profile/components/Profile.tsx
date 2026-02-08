@@ -65,7 +65,7 @@ function Profile() {
     };
 
     fetchUser();
-  }, []);
+  }, [token]);
 
 
   // Fetch Profile Picture
