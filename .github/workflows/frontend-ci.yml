@@ -16,7 +16,7 @@ jobs:
     # All commands run in frontend/ folder
     defaults:
       run:
-        working-directory: frontend
+        working-directory: frontend/teamfinder-frontend
     
     steps:
       # Step 1: Download code
