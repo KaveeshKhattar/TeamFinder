@@ -5,7 +5,6 @@ import java.util.stream.Collectors;
 
 import org.springframework.stereotype.Service;
 
-import com.project.TeamFinder.exception.NoCollegesException;
 import com.project.TeamFinder.model.Event;
 import com.project.TeamFinder.model.EventUser;
 import com.project.TeamFinder.model.Team;
@@ -40,7 +39,7 @@ public class EventService {
     public List<Event> getAllEvents() {
         List<Event> events = (List<Event>) eventRepository.findAll();
         if (events.isEmpty()) {
-            throw new NoCollegesException("Error fetching events.");
+            throw new RuntimeException("Error fetching events.");
         }
         return events; 
     }

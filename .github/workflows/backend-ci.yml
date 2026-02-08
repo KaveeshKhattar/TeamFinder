@@ -1,36 +1,43 @@
-# Backend CI: test, build JAR, upload artifact for manual deploy (no webhook deploy)
+# Professional backend CI workflow
 name: Backend CI
 
+# When to run
 on:
   push:
     branches: [main, develop]
   pull_request:
     branches: [main]
 
+# What to do
 jobs:
   build-and-test:
     runs-on: ubuntu-latest
+    
+    # All commands run in backend/ folder
     defaults:
       run:
         working-directory: backend
-
+    
     steps:
-      - name: Checkout
+      # Step 1: Download code
+      - name: Checkout code
         uses: actions/checkout@v4
-
-      - name: Set up Java 17
+      
+      # Step 2: Install Java 17 (with caching)
+      - name: Setup Java 17
         uses: actions/setup-java@v4
         with:
-          distribution: "temurin"
-          java-version: "17"
-          cache: "maven"
-
-      - name: Run tests and package
+          java-version: '17'
+          distribution: 'temurin'
+          cache: 'maven'
+      
+      # Step 3: Run tests and build JAR
+      - name: Run tests and build
         run: mvn -B verify
-
+      
+      # Step 4: Save JAR file
       - name: Upload JAR artifact
         uses: actions/upload-artifact@v4
         with:
           name: backend-jar-${{ github.ref_name }}-${{ github.sha }}
           path: backend/target/TeamFinder-*.jar
-          retention-days: 14

@@ -9,7 +9,6 @@
 /Users/heeshi/00-me/2026/projects/TeamFinder/backend/src/main/java/com/project/TeamFinder/controller/ChatMessageController.java
 /Users/heeshi/00-me/2026/projects/TeamFinder/backend/src/main/java/com/project/TeamFinder/controller/ChatRoomController.java
 /Users/heeshi/00-me/2026/projects/TeamFinder/backend/src/main/java/com/project/TeamFinder/controller/ChatWebSocketController.java
-/Users/heeshi/00-me/2026/projects/TeamFinder/backend/src/main/java/com/project/TeamFinder/controller/CollegeController.java
 /Users/heeshi/00-me/2026/projects/TeamFinder/backend/src/main/java/com/project/TeamFinder/controller/EventController.java
 /Users/heeshi/00-me/2026/projects/TeamFinder/backend/src/main/java/com/project/TeamFinder/controller/TeamController.java
 /Users/heeshi/00-me/2026/projects/TeamFinder/backend/src/main/java/com/project/TeamFinder/controller/UserController.java
@@ -39,7 +38,6 @@
 /Users/heeshi/00-me/2026/projects/TeamFinder/backend/src/main/java/com/project/TeamFinder/exception/GlobalExceptionHandler.java
 /Users/heeshi/00-me/2026/projects/TeamFinder/backend/src/main/java/com/project/TeamFinder/exception/IncorrectEmailException.java
 /Users/heeshi/00-me/2026/projects/TeamFinder/backend/src/main/java/com/project/TeamFinder/exception/IncorrectPasswordException.java
-/Users/heeshi/00-me/2026/projects/TeamFinder/backend/src/main/java/com/project/TeamFinder/exception/NoCollegesException.java
 /Users/heeshi/00-me/2026/projects/TeamFinder/backend/src/main/java/com/project/TeamFinder/exception/NotRepresentativeException.java
 /Users/heeshi/00-me/2026/projects/TeamFinder/backend/src/main/java/com/project/TeamFinder/model/ChatRoom.java
 /Users/heeshi/00-me/2026/projects/TeamFinder/backend/src/main/java/com/project/TeamFinder/model/College.java
@@ -55,8 +53,6 @@
 /Users/heeshi/00-me/2026/projects/TeamFinder/backend/src/main/java/com/project/TeamFinder/model/UserInterestedInTeam.java
 /Users/heeshi/00-me/2026/projects/TeamFinder/backend/src/main/java/com/project/TeamFinder/projection/UserProjection.java
 /Users/heeshi/00-me/2026/projects/TeamFinder/backend/src/main/java/com/project/TeamFinder/repository/ChatRoomRepository.java
-/Users/heeshi/00-me/2026/projects/TeamFinder/backend/src/main/java/com/project/TeamFinder/repository/CollegeRepository.java
-/Users/heeshi/00-me/2026/projects/TeamFinder/backend/src/main/java/com/project/TeamFinder/repository/CollegeRepresentativeRepository.java
 /Users/heeshi/00-me/2026/projects/TeamFinder/backend/src/main/java/com/project/TeamFinder/repository/EventLeadRepository.java
 /Users/heeshi/00-me/2026/projects/TeamFinder/backend/src/main/java/com/project/TeamFinder/repository/EventRepository.java
 /Users/heeshi/00-me/2026/projects/TeamFinder/backend/src/main/java/com/project/TeamFinder/repository/EventUserRepository.java
@@ -68,7 +64,6 @@
 /Users/heeshi/00-me/2026/projects/TeamFinder/backend/src/main/java/com/project/TeamFinder/service/AuthenticationService.java
 /Users/heeshi/00-me/2026/projects/TeamFinder/backend/src/main/java/com/project/TeamFinder/service/ChatRoomService.java
 /Users/heeshi/00-me/2026/projects/TeamFinder/backend/src/main/java/com/project/TeamFinder/service/CollegeRepresentativeService.java
-/Users/heeshi/00-me/2026/projects/TeamFinder/backend/src/main/java/com/project/TeamFinder/service/CollegeService.java
 /Users/heeshi/00-me/2026/projects/TeamFinder/backend/src/main/java/com/project/TeamFinder/service/EmailService.java
 /Users/heeshi/00-me/2026/projects/TeamFinder/backend/src/main/java/com/project/TeamFinder/service/EventService.java
 /Users/heeshi/00-me/2026/projects/TeamFinder/backend/src/main/java/com/project/TeamFinder/service/ImageHandlerService.java
