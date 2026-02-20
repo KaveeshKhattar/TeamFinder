@@ -1,7 +1,6 @@
 import { useCallback, useEffect, useState } from "react";
 import { BASE_URL } from "../../config";
 import axios from "axios";
-import { Event } from "../../types";
 import { BookmarkIcon, Calendar, MapPin } from "lucide-react";
 
 import Header from "../landingPage/components/Header";
@@ -15,20 +14,13 @@ import {
 import { Card, CardContent } from "../../components/ui/card";
 
 import { Toggle } from "../../components/ui/toggle";
+import { useEvents } from "../core/hooks/useEvents";
 
 function ShowInterest() {
-  const [allEvents, setAllEvents] = useState<Event[]>([]);
+  const { events: allEvents } = useEvents();
   const [interested, setInterested] = useState<{ [eventId: number]: boolean }>({});
 
-  const fetchAllEvents = useCallback(async () => {
-    const fetchAllEventsResponse = await axios.get(`${BASE_URL}/api/events`);
-    console.log(fetchAllEventsResponse);
-    if (fetchAllEventsResponse.status === 200) {
-      setAllEvents(fetchAllEventsResponse.data.data);
-    }
-  }, []);
-
-  const fetchAllInterestedEventsForUser = async () => {
+  const fetchAllInterestedEventsForUser = useCallback(async () => {
     try {
       const token = localStorage.getItem("token");
       if (!token) return;
@@ -48,12 +40,11 @@ function ShowInterest() {
     } catch (err) {
       console.error("Failed to fetch interested events:", err);
     }
-  };
+  }, []);
 
   useEffect(() => {
-    fetchAllEvents();
     fetchAllInterestedEventsForUser();
-  }, [fetchAllEvents]);
+  }, [fetchAllInterestedEventsForUser]);
 
   const formatDate = (dateString: string): string => {
     const date = new Date(dateString);
@@ -66,23 +57,35 @@ function ShowInterest() {
 
   // Handler for toggling interest
   const handleToggle = async (eventId: number) => {
+    const token = localStorage.getItem("token");
+    if (!token) return;
+
+    const previousState = !!interested[eventId];
+    const nextState = !previousState;
+
+    setInterested((prev) => ({
+      ...prev,
+      [eventId]: nextState,
+    }));
+
     try {
-      const token = localStorage.getItem("token");
-      if (token) {
-        await axios.post(
-          `${BASE_URL}/api/events/${eventId}/interested-user`,
-          {},
-          {
-            headers: {
-              Authorization: `Bearer ${token}`,
-            },
-          }
-        );
-        // Refetch the interested events to get the updated state from the backend
-        await fetchAllInterestedEventsForUser();
-      }
+      await axios.post(
+        `${BASE_URL}/api/events/${eventId}/interested-user`,
+        {},
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+      // Reconcile with source of truth without blocking user interaction.
+      void fetchAllInterestedEventsForUser();
     } catch (err) {
       console.error("Failed to mark interest:", err);
+      setInterested((prev) => ({
+        ...prev,
+        [eventId]: previousState,
+      }));
     }
   };
 

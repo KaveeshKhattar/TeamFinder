@@ -1,29 +1,29 @@
 import { Route, BrowserRouter as Router, Routes } from 'react-router-dom'
 import './App.css'
-import { Suspense } from 'react'
+import { Suspense, lazy } from 'react'
 import Loading from './modules/core/components/Loading'
 import 'react-image-crop/dist/ReactCrop.css'
 import { ThemeProvider } from './components/themeProvider'
 
-import LandingPage from './modules/landingPage/components/LandingPage'
-import LandingPagev1 from './modules/landingPage/components/LandingPagev1'
-
-import Login from './modules/authentication/components/Login'
-import Signup from './modules/authentication/components/Signup'
 import { AuthProvider } from './modules/core/components/AuthContext'
-import Verification from './modules/authentication/components/Verification'
-import Profile from './modules/profile/components/Profile'
-import ChangePasswordVerification from './modules/authentication/components/ChangePasswordVerification'
-import ChangePassword from './modules/authentication/components/ChangePassword'
 
-import ShowInterest from './modules/showInterest/ShowInterest'
-import FindTeammates from './modules/find/FindTeammates'
-import FindTeammatesPeople from './modules/find/FindTeammatesPeople'
-
-import PostTeamLandingPage from './modules/teams/components/PostTeamLandingPage'
-import FindTeams from './modules/teams/components/FindTeam'
-import FindActualTeams from './modules/teams/components/FindActualTeams'
-import { AllChatsPage } from './modules/chat/AllChatsPage'
+const LandingPage = lazy(() => import('./modules/landingPage/components/LandingPage'))
+const LandingPagev1 = lazy(() => import('./modules/landingPage/components/LandingPagev1'))
+const Login = lazy(() => import('./modules/authentication/components/Login'))
+const Signup = lazy(() => import('./modules/authentication/components/Signup'))
+const Verification = lazy(() => import('./modules/authentication/components/Verification'))
+const Profile = lazy(() => import('./modules/profile/components/Profile'))
+const ChangePasswordVerification = lazy(() => import('./modules/authentication/components/ChangePasswordVerification'))
+const ChangePassword = lazy(() => import('./modules/authentication/components/ChangePassword'))
+const ShowInterest = lazy(() => import('./modules/showInterest/ShowInterest'))
+const FindTeammates = lazy(() => import('./modules/find/FindTeammates'))
+const FindTeammatesPeople = lazy(() => import('./modules/find/FindTeammatesPeople'))
+const PostTeamLandingPage = lazy(() => import('./modules/teams/components/PostTeamLandingPage'))
+const FindTeams = lazy(() => import('./modules/teams/components/FindTeam'))
+const FindActualTeams = lazy(() => import('./modules/teams/components/FindActualTeams'))
+const AllChatsPage = lazy(() =>
+  import('./modules/chat/AllChatsPage').then((module) => ({ default: module.AllChatsPage }))
+)
 
 function App() {
 

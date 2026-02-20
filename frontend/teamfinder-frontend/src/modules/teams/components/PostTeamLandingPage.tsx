@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback } from "react"
+import { useState, useEffect } from "react"
 import axios from "axios"
 
 import { Button } from "../../../components/ui/button"
@@ -27,6 +27,8 @@ import { Calendar, Check, ChevronsUpDown, MapPin, X } from "lucide-react"
 import Header from "../../landingPage/components/Header"
 import { BASE_URL } from "../../../config"
 import { Event, User } from "../../../types"
+import { useCurrentUser } from "../../core/hooks/useCurrentUser"
+import { useEvents } from "../../core/hooks/useEvents"
 
 function PostTeamLandingPage() {
 
@@ -38,45 +40,16 @@ function PostTeamLandingPage() {
     const [selectedUsers, setSelectedUsers] = useState<User[]>([])
     const [searchQuery, setSearchQuery] = useState('');
 
-    const [allEvents, setAllEvents] = useState<Event[]>([])
     const [users, setUsers] = useState<User[]>([])
-
-    const fetchAllEvents = useCallback(async () => {
-        const res = await axios.get(`${BASE_URL}/api/events`)
-        if (res.status === 200) {
-            setAllEvents(res.data.data)
-        }
-    }, [])
-
-    useEffect(() => {
-        fetchAllEvents()
-    }, [fetchAllEvents])
+    const { events: allEvents } = useEvents();
 
     const token = localStorage.getItem("token");
+    const { user } = useCurrentUser();
     useEffect(() => {
-        if (!token) return; // ⬅️ important
-      
-        const fetchProfile = async () => {
-          try {
-            const response = await axios.get(
-              `${BASE_URL}/users/profile`,
-              {
-                headers: {
-                  Authorization: `Bearer ${token}`,
-                },
-              }
-            );
-      
-            if (response.status >= 200 && response.status < 300) {
-              setCurrentUserId(response.data.data.id);
-            }
-          } catch (err) {
-            console.error("Assigning self to members list failed!", err);
-          }
-        };
-      
-        fetchProfile();
-      }, [token]);
+        if (user?.id) {
+            setCurrentUserId(user.id);
+        }
+    }, [user]);
 
     const formatDate = (dateString: string) =>
         new Date(dateString).toLocaleDateString("en-US", {

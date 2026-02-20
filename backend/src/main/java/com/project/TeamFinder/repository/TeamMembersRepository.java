@@ -16,6 +16,7 @@ import jakarta.transaction.Transactional;
 public interface TeamMembersRepository extends CrudRepository<TeamMembers, Long> {
     
     List<TeamMembers> findByTeamId(Long teamId);
+    List<TeamMembers> findByTeamIdIn(List<Long> teamIds);
     
     @Query(value = "SELECT team_id FROM team_members WHERE user_id = :userId", nativeQuery = true)
     List<Long> findTeamIdByUserId(@Param("userId") Long userId);

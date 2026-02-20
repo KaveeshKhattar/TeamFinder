@@ -1,6 +1,5 @@
 package com.project.TeamFinder.controller;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.http.HttpStatus;
@@ -152,14 +151,7 @@ public class EventController {
         UserDTO user = userService.getProfile(userEmail);
 
         List<Team> leads = eventService.getLeadsTeamsForUser(eventId, user.getId());
-
-        List<TeamWithMembersDTO> newLeads = new ArrayList<>();
-
-        for (Team lead : leads) {
-
-            TeamWithMembersDTO team = teamService.getTeam(lead.getId());
-            newLeads.add(team);
-        }
+        List<TeamWithMembersDTO> newLeads = teamService.getTeamsWithMembers(leads);
         
         return ResponseEntity.status(HttpStatus.OK)
                     .body(new ApiResponse<>(
@@ -178,13 +170,7 @@ public class EventController {
         UserDTO user = userService.getProfile(userEmail);
 
         List<Team> leads = eventService.getTeamsCreatedByUserForEvent(eventId, user.getId());
-
-        List<TeamWithMembersDTO> newLeads = new ArrayList<>();
-
-        for (Team lead : leads) {
-            TeamWithMembersDTO team = teamService.getTeam(lead.getId());
-            newLeads.add(team);
-        }
+        List<TeamWithMembersDTO> newLeads = teamService.getTeamsWithMembers(leads);
         
         return ResponseEntity.ok(newLeads);
         

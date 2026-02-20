@@ -1,8 +1,4 @@
-import { useState, useEffect, useCallback } from "react";
-import axios from "axios";
 import { Button } from "../../components/ui/button";
-import { Event } from "../../types";
-import { BASE_URL } from "../../config";
 import { Calendar, MapPin, ArrowRight } from "lucide-react";
 import { Link } from "react-router-dom";
 import Header from "../landingPage/components/Header";
@@ -14,20 +10,10 @@ import {
     CarouselPrevious,
 } from "../../components/ui/carousel";
 import { Card, CardContent } from "../../components/ui/card";
+import { useEvents } from "../core/hooks/useEvents";
 
 function FindTeammates() {
-    const [allEvents, setAllEvents] = useState<Event[]>([]);
-
-    const fetchAllEvents = useCallback(async () => {
-        const fetchAllEventsResponse = await axios.get(`${BASE_URL}/api/events`);
-        if (fetchAllEventsResponse.status === 200) {
-            setAllEvents(fetchAllEventsResponse.data.data);
-        }
-    }, []);
-
-    useEffect(() => {
-        fetchAllEvents();
-    }, [fetchAllEvents]);
+    const { events: allEvents } = useEvents();
 
     const formatDate = (dateString: string): string => {
         const date = new Date(dateString);

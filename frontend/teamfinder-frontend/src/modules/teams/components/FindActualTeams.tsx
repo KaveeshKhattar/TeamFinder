@@ -15,6 +15,7 @@ import { Toggle } from "../../../components/ui/toggle";
 import { Heart, MessageCircle } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { ChatRoom } from "@/types";
+import { useCurrentUser } from "@/modules/core/hooks/useCurrentUser";
 
 type Team = {
     teamId: number;
@@ -34,29 +35,11 @@ type TeamMember = {
 function FindActualTeams() {
     const [teams, setTeams] = useState<Team[]>([]);
     const { eventId } = useParams<{ eventId: string }>();
-    const [loggedInUserId, setLoggedInUserId] = useState<number | null>(null);
     const token = localStorage.getItem("token");
     const [interested, setInterested] = useState<{ [teamId: number]: boolean }>({});
     const navigate = useNavigate();
-
-    // Fetch logged-in user id
-    useEffect(() => {
-        const fetchLoggedInUserId = async () => {
-            if (!token) return;
-            try {
-                const res = await axios.get(`${BASE_URL}/users/profile`, {
-                    headers: { Authorization: `Bearer ${token}` },
-                });
-                if (res.data && res.data.data.id) {
-                    console.log("logged in user id: ", res.data.data.id);
-                    setLoggedInUserId(res.data.data.id);
-                }
-            } catch (err) {
-                console.error("Failed to fetch logged-in user profile", err);
-            }
-        };
-        fetchLoggedInUserId();
-    }, [token]);
+    const { user } = useCurrentUser();
+    const loggedInUserId = user?.id ?? null;
 
     const fetchTeams = useCallback(async () => {
         if (!eventId) return;

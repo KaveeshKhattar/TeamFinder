@@ -1,7 +1,11 @@
 package com.project.TeamFinder.service;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.LinkedHashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
@@ -124,61 +128,26 @@ public class TeamService {
     }
 
     public List<TeamWithMembersDTO> getAllTeamsWithMembers(Long eventId) {
-        // Step 1: Fetch all teams based on eventID
-
         List<Team> teams = teamRepository.findByEventId(eventId);
-        List<TeamWithMembersDTO> teamsWithMembers = new ArrayList<>();
-
-        // Step 2: Iterate over each team to get its members
-        for (Team team : teams) {
-
-            // Fetch team member IDs using the team ID
-            List<TeamMembers> members = teamMembersRepository.findByTeamId(team.getId());
-
-            List<Long> userIds = members.stream()
-                    .map(TeamMembers::getUserId) // Use method reference to get userId
-                    .collect(Collectors.toList());
-
-            // List<User> users = (List<User>) userRepository.findAllById(userIds);
-            List<UserProjection> users = userRepository.findAllByIdIn(userIds);
-
-            TeamWithMembersDTO teamWithMembersDTO = new TeamWithMembersDTO(team, users);
-            teamsWithMembers.add(teamWithMembersDTO);
-        }
-
-        return teamsWithMembers;
-
+        return buildTeamWithMembersDTOs(teams);
     }
 
     public TeamWithMembersDTO getTeam(Long teamId) {
-        // Step 1: Fetch all teams based on eventID
-
         Optional<Team> team = teamRepository.findById(teamId);
-        TeamWithMembersDTO teamWithMembers;
 
         if (team.isEmpty()) {
             return null;
         }
 
-        // Step 2: Iterate over each team to get its members
+        List<TeamWithMembersDTO> teamsWithMembers = buildTeamWithMembersDTOs(List.of(team.get()));
+        if (teamsWithMembers.isEmpty()) {
+            return null;
+        }
+        return teamsWithMembers.get(0);
+    }
 
-        // Fetch team member IDs using the team ID
-        List<TeamMembers> members = teamMembersRepository.findByTeamId(teamId);
-
-        List<Long> userIds = members.stream()
-                .map(TeamMembers::getUserId) // Use method reference to get userId
-                .collect(Collectors.toList());
-
-        // List<User> users = (List<User>) userRepository.findAllById(userIds);
-        List<UserProjection> users = userRepository.findAllByIdIn(userIds);
-
-
-        TeamWithMembersDTO teamWithMembersDTO = new TeamWithMembersDTO(team.get(), users);
-        teamWithMembers = teamWithMembersDTO;
-        
-
-        return teamWithMembers;
-
+    public List<TeamWithMembersDTO> getTeamsWithMembers(List<Team> teams) {
+        return buildTeamWithMembersDTOs(teams);
     }
 
     // public List<Long> getTeamIdsPerUserId(Long userId) {
@@ -219,6 +188,50 @@ public class TeamService {
             return List.of();
         }
         return teamIds;
+    }
+
+    private List<TeamWithMembersDTO> buildTeamWithMembersDTOs(List<Team> teams) {
+        if (teams == null || teams.isEmpty()) {
+            return List.of();
+        }
+
+        List<Long> teamIds = teams.stream()
+                .map(Team::getId)
+                .collect(Collectors.toList());
+
+        List<TeamMembers> allMemberships = teamMembersRepository.findByTeamIdIn(teamIds);
+        Map<Long, List<Long>> userIdsByTeamId = new HashMap<>();
+        LinkedHashSet<Long> allUserIds = new LinkedHashSet<>();
+
+        for (TeamMembers membership : allMemberships) {
+            userIdsByTeamId
+                    .computeIfAbsent(membership.getTeamId(), ignored -> new ArrayList<>())
+                    .add(membership.getUserId());
+            allUserIds.add(membership.getUserId());
+        }
+
+        Map<Long, UserProjection> usersById = new HashMap<>();
+        if (!allUserIds.isEmpty()) {
+            List<UserProjection> users = userRepository.findAllByIdIn(new ArrayList<>(allUserIds));
+            for (UserProjection user : users) {
+                usersById.put(user.getId(), user);
+            }
+        }
+
+        List<TeamWithMembersDTO> teamsWithMembers = new ArrayList<>(teams.size());
+        for (Team team : teams) {
+            List<Long> memberIds = userIdsByTeamId.getOrDefault(team.getId(), Collections.emptyList());
+            List<UserProjection> members = new ArrayList<>(memberIds.size());
+            for (Long memberId : memberIds) {
+                UserProjection user = usersById.get(memberId);
+                if (user != null) {
+                    members.add(user);
+                }
+            }
+            teamsWithMembers.add(new TeamWithMembersDTO(team, members));
+        }
+
+        return teamsWithMembers;
     }
 
 }

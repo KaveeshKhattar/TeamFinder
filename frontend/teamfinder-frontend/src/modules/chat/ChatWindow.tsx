@@ -1,40 +1,22 @@
-import { BASE_URL } from "@/config";
 import { useChat } from "@/lib/useChat";
-import axios from "axios";
 import { SendHorizontal, Loader2, MessageCircle } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Separator } from "@/components/ui/separator";
 import { cn } from "@/lib/utils";
+import { useCurrentUser } from "@/modules/core/hooks/useCurrentUser";
 
 export const ChatWindow: React.FC<{ roomId: string }> = ({ roomId }) => {
   const { messages, send } = useChat(roomId);
 
   const [text, setText] = useState("");
-  const [currentUserId, setCurrentUserId] = useState(-1);
-  const [loading, setLoading] = useState(true);
   const [sending, setSending] = useState(false);
+  const { user, loading } = useCurrentUser();
+  const currentUserId = user?.id ?? -1;
 
   const bottomRef = useRef<HTMLDivElement | null>(null);
   const inputRef = useRef<HTMLInputElement | null>(null);
-
-  useEffect(() => {
-    const token = localStorage.getItem("token");
-
-    axios
-      .get(`${BASE_URL}/users/profile`, {
-        headers: { Authorization: `Bearer ${token}` },
-      })
-      .then((r) => {
-        setCurrentUserId(r.data.data.id);
-        setLoading(false);
-      })
-      .catch((err) => {
-        console.error("Failed to fetch user profile:", err);
-        setLoading(false);
-      });
-  }, []);
 
   useEffect(() => {
     bottomRef.current?.scrollIntoView({ behavior: "smooth" });

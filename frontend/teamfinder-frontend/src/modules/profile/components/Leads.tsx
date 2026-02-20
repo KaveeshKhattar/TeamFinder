@@ -18,29 +18,17 @@ import {
   TabsTrigger,
 } from "../../../components/ui/tabs";
 import { Button } from "../../../components/ui/button";
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import { Check, ChevronsUpDown } from "lucide-react";
 import { cn } from "../../../lib/utils";
-import axios from "axios";
-import { BASE_URL } from "../../../config";
-import { Event } from "../../../types";
 import IndividualsUserIsInterestedInForEvent from "./IndividualsUserIsInterestedInForEvent";
 
 import TeamsCreatedPerEventByUser from "./TeamsCreatedPerEventByUser";
 import TeamsUserIsInterestedInForEvent from "./TeamsUserIsInterestedInForEvent";
+import { useEvents } from "../../core/hooks/useEvents";
 
 function Leads() {
-  const [events, setEvents] = useState<Event[]>([]);
-
-  useEffect(() => {
-    async function fetchAllEvents() {
-      const fetchAllEventsResponse = await axios.get(`${BASE_URL}/api/events`);
-      if (fetchAllEventsResponse.status === 200) {
-        setEvents(fetchAllEventsResponse.data.data);
-      }
-    }
-    fetchAllEvents();
-  }, []);
+  const { events } = useEvents();
 
   const [open, setOpen] = React.useState(false);
   const [value, setValue] = React.useState("");

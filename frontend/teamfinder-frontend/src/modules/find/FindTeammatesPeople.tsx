@@ -17,6 +17,7 @@ import defaultProfilePicture from "../profile/assets/blank-profile-picture-97346
 import { Button } from "@/components/ui/button";
 import { useNavigate } from 'react-router-dom';
 import { ChatRoom } from "@/types";
+import { useCurrentUser } from "../core/hooks/useCurrentUser";
 
 type User = {
   id: number;
@@ -29,40 +30,21 @@ type User = {
 
 function FindTeammatesPeople() {
   const [users, setUsers] = useState<User[]>([]);
-  const [loggedInUserId, setLoggedInUserId] = useState<number | null>(null);
   const { eventId } = useParams<{ eventId: string }>();
   // Track interest state per user by id
   const [interestedInUser, setInterestedInUser] = useState<{ [userId: number]: boolean }>({});
 
   const token = localStorage.getItem("token");
   const navigate = useNavigate();
-
-  // Fetch logged-in user id
-  useEffect(() => {
-    const fetchLoggedInUserId = async () => {
-      if (!token) return;
-      try {
-        // Get user email from token (decode JWT or use backend endpoint)
-        // Here, we assume a backend endpoint exists to get the user profile
-        const res = await axios.get(`${BASE_URL}/users/profile`, {
-          headers: { Authorization: `Bearer ${token}` },
-        });
-        if (res.data && res.data.data && res.data.data.id) {
-          setLoggedInUserId(res.data.data.id);
-        }
-      } catch (err) {
-        console.error("Failed to fetch logged-in user profile", err);
-      }
-    };
-    fetchLoggedInUserId();
-  }, [token]);
+  const { user } = useCurrentUser();
+  const loggedInUserId = user?.id ?? null;
 
   const fetchInterestedUsers = useCallback(async () => {
     if (!eventId) return; // 🔒 guard
 
     try {
       const res = await axios.get(
-        `${BASE_URL}/api/events/${eventId}/leads`,
+        `${BASE_URL}/api/events/${eventId}/interested-users`,
         {
           headers: {
             Authorization: `Bearer ${token}`,
@@ -76,7 +58,7 @@ function FindTeammatesPeople() {
       console.error("Failed to fetch interested users", err);
       setUsers([]); // fail-safe
     }
-  }, [eventId]);
+  }, [eventId, token]);
 
   useEffect(() => {
     fetchInterestedUsers();
@@ -88,7 +70,7 @@ function FindTeammatesPeople() {
     if (!eventId || !loggedInUserId || !token) return;
 
     try {
-      // Get a list of user projections this team is interested in
+      // Get a list of user projections this user has favorited for this event
       const res = await axios.get(
         `${BASE_URL}/api/events/${eventId}/leads`,
         {
@@ -120,10 +102,16 @@ function FindTeammatesPeople() {
   }, [fetchLeads]);
 
   const handleToggle = async (targetUserId: number) => {
-    try {
-      const isCurrentlyInterested = !!interestedInUser[targetUserId];
+    const previousState = !!interestedInUser[targetUserId];
+    const nextState = !previousState;
 
-      if (!isCurrentlyInterested) {
+    setInterestedInUser((prev) => ({
+      ...prev,
+      [targetUserId]: nextState,
+    }));
+
+    try {
+      if (nextState) {
         // ❤️ ADD favourite
         await axios.post(
           `${BASE_URL}/api/leads`,
@@ -150,10 +138,14 @@ function FindTeammatesPeople() {
         });
       }
 
-      // Refetch leads from the backend to get the updated state
-      await fetchLeads();
+      // Reconcile from backend without blocking UI.
+      void fetchLeads();
     } catch (err) {
       console.error("Failed to toggle favourite", err);
+      setInterestedInUser((prev) => ({
+        ...prev,
+        [targetUserId]: previousState,
+      }));
     }
   };
         
