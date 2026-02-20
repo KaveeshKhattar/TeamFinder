@@ -7,27 +7,49 @@ import { ChatMessage } from "@/types";
 export function useChat(roomId: string) {
 
   const [messages, setMessages] = useState<ChatMessage[]>([]);
+  const [historyLoading, setHistoryLoading] = useState(true);
   const clientRef = useRef<Client | null>(null);
+  const activeRoomRef = useRef(roomId);
 
-  console.log("room id: ", roomId)
+  useEffect(() => {
+    activeRoomRef.current = roomId;
+  }, [roomId]);
 
   // 1. load history
   useEffect(() => {
-
     const token = localStorage.getItem("token");
+    let cancelled = false;
+    setHistoryLoading(true);
 
-    setMessages([]); // important when switching rooms
+    axios
+      .get<ChatMessage[]>(
+        `${BASE_URL}/api/chats/${roomId}/messages`,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      )
+      .then((res) => {
+        if (!cancelled && activeRoomRef.current === roomId) {
+          setMessages(res.data);
+        }
+      })
+      .catch((err) => {
+        console.error("Failed to load chat history", err);
+        if (!cancelled && activeRoomRef.current === roomId) {
+          setMessages([]);
+        }
+      })
+      .finally(() => {
+        if (!cancelled && activeRoomRef.current === roomId) {
+          setHistoryLoading(false);
+        }
+      });
 
-    axios.get<ChatMessage[]>(
-      `${BASE_URL}/api/chats/${roomId}/messages`,
-      {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      }
-    ).then(res => {
-      setMessages(res.data);
-    });
+    return () => {
+      cancelled = true;
+    };
 
   }, [roomId]);
 
@@ -66,18 +88,35 @@ export function useChat(roomId: string) {
   }, [roomId]);
 
   // 3. send message
-  function send(content: string) {
+  function send(content: string): Promise<void> {
 
-    if (!clientRef.current?.connected) return;
+    const client = clientRef.current;
+    if (!client?.connected) {
+      return Promise.reject(new Error("Chat is not connected"));
+    }
 
-    clientRef.current.publish({
-      destination: "/app/chat.send",
-      body: JSON.stringify({
-        chatRoomId: roomId,
-        content
-      })
+    const receipt = `send-${Date.now()}-${Math.random().toString(16).slice(2)}`;
+
+    return new Promise<void>((resolve, reject) => {
+      const timeoutId = setTimeout(() => {
+        reject(new Error("Message send timeout"));
+      }, 5000);
+
+      client.watchForReceipt(receipt, () => {
+        clearTimeout(timeoutId);
+        resolve();
+      });
+
+      client.publish({
+        destination: "/app/chat.send",
+        headers: { receipt },
+        body: JSON.stringify({
+          chatRoomId: roomId,
+          content
+        })
+      });
     });
   }
 
-  return { messages, send };
+  return { messages, historyLoading, send };
 }

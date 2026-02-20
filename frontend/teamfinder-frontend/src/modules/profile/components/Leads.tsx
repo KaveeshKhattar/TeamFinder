@@ -18,7 +18,7 @@ import {
   TabsTrigger,
 } from "../../../components/ui/tabs";
 import { Button } from "../../../components/ui/button";
-import React, { useState } from "react";
+import React from "react";
 import { Check, ChevronsUpDown } from "lucide-react";
 import { cn } from "../../../lib/utils";
 import IndividualsUserIsInterestedInForEvent from "./IndividualsUserIsInterestedInForEvent";

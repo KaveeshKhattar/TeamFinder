@@ -8,7 +8,7 @@ import { cn } from "@/lib/utils";
 import { useCurrentUser } from "@/modules/core/hooks/useCurrentUser";
 
 export const ChatWindow: React.FC<{ roomId: string }> = ({ roomId }) => {
-  const { messages, send } = useChat(roomId);
+  const { messages, historyLoading, send } = useChat(roomId);
 
   const [text, setText] = useState("");
   const [sending, setSending] = useState(false);
@@ -56,11 +56,12 @@ export const ChatWindow: React.FC<{ roomId: string }> = ({ roomId }) => {
   };
 
   const handleSend = async () => {
-    if (!text.trim() || sending) return;
+    const trimmed = text.trim();
+    if (!trimmed || sending) return;
 
     setSending(true);
     try {
-      await send(text);
+      await send(trimmed);
       setText("");
       inputRef.current?.focus();
     } catch (error) {
@@ -87,7 +88,14 @@ export const ChatWindow: React.FC<{ roomId: string }> = ({ roomId }) => {
       ) : (
         <>
           <div className="min-h-0 flex-1 overflow-y-auto p-4">
-            {messages.length === 0 ? (
+            {historyLoading ? (
+              <div className="flex flex-col items-center justify-center py-12 text-center">
+                <Loader2 className="h-6 w-6 animate-spin text-muted-foreground" />
+                <p className="mt-3 text-sm text-muted-foreground">
+                  Loading conversation...
+                </p>
+              </div>
+            ) : messages.length === 0 ? (
               <div className="flex flex-col items-center justify-center py-12 text-center">
                 <div className="flex h-14 w-14 items-center justify-center rounded-full bg-muted">
                   <MessageCircle className="h-7 w-7 text-muted-foreground" />

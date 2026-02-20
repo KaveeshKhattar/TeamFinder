@@ -61,7 +61,7 @@ function FindActualTeams() {
             console.error("Failed to fetch teams", err);
             setTeams([]);
         }
-    }, [eventId]);
+    }, [eventId, token]);
 
     useEffect(() => {
         fetchTeams();
