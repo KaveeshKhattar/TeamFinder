@@ -7,7 +7,6 @@ import { ThemeProvider } from './components/themeProvider'
 
 import { AuthProvider } from './modules/core/components/AuthContext'
 
-const LandingPage = lazy(() => import('./modules/landingPage/components/LandingPage'))
 const LandingPagev1 = lazy(() => import('./modules/landingPage/components/LandingPagev1'))
 const Login = lazy(() => import('./modules/authentication/components/Login'))
 const Signup = lazy(() => import('./modules/authentication/components/Signup'))
