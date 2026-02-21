@@ -1,39 +1,10 @@
-import { Users, Lightbulb, Zap, Trophy, Quote, ArrowRight } from "lucide-react";
+import { Users, Lightbulb, Zap, Trophy, ArrowRight } from "lucide-react";
 import { Button } from "../../../components/ui/button";
 import { Link } from "react-router-dom";
 import Header from "./Header";
 
 function TeamFinderSections() {
-    const testimonials = [
-        {
-            quote:
-                "Half of the offers I give are sourced from Wellfound. It's the best product for anyone looking for startup talent.",
-            author: "Sarah Johnson",
-            role: "Head of Talent",
-            company: "TechStartup Inc.",
-        },
-        {
-            quote:
-                "TeamFinder helped me find the perfect co-founder for my hackathon project. We ended up winning first place!",
-            author: "Alex Chen",
-            role: "Software Engineer",
-            company: "Google",
-        },
-        {
-            quote:
-                "I've never seen a platform that makes team building this easy. Found my entire team in under 24 hours.",
-            author: "Maria Garcia",
-            role: "Product Designer",
-            company: "Airbnb",
-        },
-        {
-            quote:
-                "I've never seen a platform that makes team building this easy. Found my entire team in under 24 hours.",
-            author: "Mary Ellis David",
-            role: "Product Manager",
-            company: "Dropbox",
-        },
-    ];
+    
     return (
         <div className="min-h-screen bg-background">
             {/* Hero Section */}
@@ -200,25 +171,7 @@ function TeamFinderSections() {
                     </div>
                 </section>
 
-                {/* Stats Section */}
-                <section className="py-12 sm:py-16 md:py-24 border-t border-border">
-                    <div className="grid md:grid-cols-3 gap-8 sm:gap-12 text-center">
-                        <div>
-                            <h2 className="text-4xl sm:text-5xl lg:text-6xl font-semibold mb-2 sm:mb-3">0</h2>
-                            <p className="text-sm sm:text-base text-muted-foreground">Matches Made</p>
-                        </div>
-
-                        <div>
-                            <h2 className="text-4xl sm:text-5xl lg:text-6xl font-semibold mb-2 sm:mb-3">5+</h2>
-                            <p className="text-sm sm:text-base text-muted-foreground">Events</p>
-                        </div>
-
-                        <div>
-                            <h2 className="text-4xl sm:text-5xl lg:text-6xl font-semibold mb-2 sm:mb-3">5+</h2>
-                            <p className="text-sm sm:text-base text-muted-foreground">Ready Candidates</p>
-                        </div>
-                    </div>
-                </section>
+                
 
                 {/* AI Helper Section */}
                 <section className="py-12 sm:py-16 md:py-24 border-t border-border">
@@ -232,66 +185,7 @@ function TeamFinderSections() {
                     </div>
                 </section>
 
-                {/* Testimonials Section */}
-                <section className="py-12 sm:py-16 md:py-24 border-t border-border">
-                    <div className="text-center mb-8 sm:mb-12 px-4">
-                        <h2 className="text-2xl sm:text-3xl lg:text-4xl font-semibold mb-2 sm:mb-3">
-                            What people are saying
-                        </h2>
-                        <p className="text-sm sm:text-base text-muted-foreground">
-                            Hear from teams and individuals who found their perfect match
-                        </p>
-                    </div>
-
-                    {/* Auto-scrolling horizontal carousel */}
-                    <div className="overflow-x-hidden w-full relative px-4">
-                        <div className="flex gap-4 sm:gap-6 animate-scroll-x">
-                            {[...testimonials, ...testimonials].map((testimonial, index) => (
-                                <div
-                                    key={index}
-                                    className="border border-border rounded-lg p-4 sm:p-6 md:p-8 bg-card hover:shadow-md transition-shadow duration-300 min-w-[280px] sm:min-w-[320px] md:min-w-[380px] max-w-[280px] sm:max-w-[320px] md:max-w-[380px] flex-shrink-0"
-                                >
-                                    <div className="flex justify-center mb-6">
-                                        <div className="rounded-full p-3 bg-muted">
-                                            <Quote className="w-5 h-5 text-foreground" />
-                                        </div>
-                                    </div>
-
-                                    <blockquote className="text-foreground text-base leading-relaxed mb-6 text-center">
-                                        "{testimonial.quote}"
-                                    </blockquote>
-
-                                    <div className="text-center border-t border-border pt-6">
-                                        <p className="font-medium text-foreground">
-                                            {testimonial.author}
-                                        </p>
-                                        <p className="text-sm text-muted-foreground">
-                                            {testimonial.role}
-                                        </p>
-                                        <p className="text-sm text-muted-foreground">
-                                            {testimonial.company}
-                                        </p>
-                                    </div>
-                                </div>
-                            ))}
-                        </div>
-                    </div>
-                    <style>{`
-                        @keyframes scroll-x {
-                            0% { transform: translateX(0); }
-                            100% { transform: translateX(-1140px); }
-                        }
-                        .animate-scroll-x {
-                            animation: scroll-x 18s linear infinite;
-                        }
-                        @media (max-width: 640px) {
-                            @keyframes scroll-x {
-                                0% { transform: translateX(0); }
-                                100% { transform: translateX(-840px); }
-                            }
-                        }
-                    `}</style>
-                </section>
+                
             </main>
 
             {/* Footer Section */}
