@@ -43,8 +43,8 @@ function App() {
               <Route path="/profile" element={<Profile />} />
 
               {/* Home */}
-              <Route path="/" element={<LandingPage />} />
-              <Route path="/launch" element={<LandingPagev1 />} />
+              {/* <Route path="/" element={<LandingPage />} /> */}
+              <Route path="/" element={<LandingPagev1 />} />
 
               {/* Show Interest */}
               <Route path="/show-interest" element={<ShowInterest />} />
