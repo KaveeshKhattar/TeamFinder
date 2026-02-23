@@ -568,7 +568,7 @@ function OrganizerDashboard() {
             <div className="max-h-64 overflow-y-auto space-y-1">
               {allUsers.map((user) => (
                 <p key={user.id} className="text-sm">
-                  #{user.id} - {user.firstName} {user.lastName} ({user.email})
+                  #{user.id} - {user.firstName} {user.lastName}
                   {user.preferredRole ? ` | role: ${user.preferredRole}` : ""}
                 </p>
               ))}

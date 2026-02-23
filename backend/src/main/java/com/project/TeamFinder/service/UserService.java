@@ -7,6 +7,7 @@ import org.springframework.stereotype.Service;
 import com.project.TeamFinder.dto.UserDTO;
 import com.project.TeamFinder.dto.auth.UpdateUserDTO;
 import com.project.TeamFinder.model.User;
+import com.project.TeamFinder.projection.PublicUserProjection;
 import com.project.TeamFinder.projection.UserProjection;
 import com.project.TeamFinder.repository.UserRepository;
 
@@ -27,6 +28,10 @@ public class UserService {
 
     public List<UserProjection> getAllUsers() {
         return userRepository.findAllUsers();
+    }
+
+    public List<PublicUserProjection> getAllPublicUsers() {
+        return userRepository.findAllPublicUsers();
     }
 
     public UserDTO getProfile(String email) {

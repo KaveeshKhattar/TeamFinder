@@ -4,6 +4,7 @@ import java.util.List;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
@@ -37,12 +38,8 @@ public class SecurityConfiguration {
                 .authorizeHttpRequests(authorize -> authorize
                         .requestMatchers("/auth/**").permitAll()
                         .requestMatchers("/users/waitlist").permitAll()
-                        // Backward-compatible: older frontend used /users/getAllUsers
-                        // Current route
-                        .requestMatchers("/users/all-users").permitAll()
-                        // Secure selected /api endpoints for authenticated users only
-                        .requestMatchers("/api/*").permitAll()
-                        // Any other /api/** endpoint will fall through to the default rule below
+                        .requestMatchers(HttpMethod.GET, "/api/events").permitAll()
+                        .requestMatchers(HttpMethod.GET, "/api/events/*/teams").permitAll()
                         .requestMatchers("/users/is-organizer").authenticated()
                         .requestMatchers("/users/is-admin").authenticated()
                         .requestMatchers("/admin/**").authenticated()
@@ -61,7 +58,11 @@ public class SecurityConfiguration {
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();
-        configuration.setAllowedOrigins(List.of("https://app-backend.com", "http://localhost:8080", "http://localhost:5173/", "https://teamfinder-frontend.vercel.app/"));
+        configuration.setAllowedOrigins(List.of(
+                "https://app-backend.com",
+                "http://localhost:8080",
+                "http://localhost:5173",
+                "https://teamfinder-frontend.vercel.app"));
         configuration.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "OPTIONS"));
         configuration.setAllowedHeaders(List.of("Authorization", "Content-Type"));
         configuration.setAllowCredentials(true);

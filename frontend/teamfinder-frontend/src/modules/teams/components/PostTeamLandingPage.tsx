@@ -60,7 +60,7 @@ function PostTeamLandingPage() {
         })
 
     const handleSubmit = async () => {
-        if (!activeEvent) return
+        if (!activeEvent || !token || !currentUserId) return
 
         await axios.post(`${BASE_URL}/api/team`, {
             eventId: activeEvent.id,
@@ -70,9 +70,12 @@ function PostTeamLandingPage() {
                 .split(",")
                 .map((role) => role.trim())
                 .filter((role) => role.length > 0),
+        }, {
+            headers: {
+                Authorization: `Bearer ${token}`,
+            },
         })
 
-        console.log(selectedUsers.map(u => u.id))
         // reset
         setTeamName("")
         setSelectedUsers([])
@@ -250,9 +253,6 @@ function PostTeamLandingPage() {
                                                     <div className="flex-1">
                                                         <div className="text-sm font-medium text-slate-900">
                                                             {user.firstName} {user.lastName}
-                                                        </div>
-                                                        <div className="text-xs text-slate-500">
-                                                            {user.email}
                                                         </div>
                                                     </div>
                                                 </div>

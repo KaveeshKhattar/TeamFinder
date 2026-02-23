@@ -10,6 +10,7 @@ import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.project.TeamFinder.model.User;
+import com.project.TeamFinder.projection.PublicUserProjection;
 import com.project.TeamFinder.projection.UserProjection;
 
 @Repository
@@ -29,5 +30,8 @@ public interface UserRepository extends JpaRepository<User, Long> {
 
     @Query("SELECT u.id AS id, u.email AS email, u.firstName AS firstName, u.lastName AS lastName, u.bio as bio, u.skills as skills, u.pictureURL as pictureURL, u.preferredRole as preferredRole FROM User u")
     List<UserProjection> findAllUsers();
+
+    @Query("SELECT u.id AS id, u.firstName AS firstName, u.lastName AS lastName, u.bio as bio, u.skills as skills, u.pictureURL as pictureURL, u.preferredRole as preferredRole FROM User u")
+    List<PublicUserProjection> findAllPublicUsers();
 
 }

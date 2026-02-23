@@ -16,8 +16,6 @@ import com.project.TeamFinder.dto.CreateTeamRequestDTO;
 import com.project.TeamFinder.dto.TeamWithMembersDTO;
 import com.project.TeamFinder.dto.UserDTO;
 import com.project.TeamFinder.dto.responses.ApiResponse;
-
-import com.project.TeamFinder.model.UserInterestedInTeam;
 import com.project.TeamFinder.service.TeamService;
 import com.project.TeamFinder.service.UserService;
 
@@ -45,7 +43,11 @@ public class TeamController {
 
     // Create team for an event
     @PostMapping("/team")
-    public ResponseEntity<ApiResponse<String>> postTeam(@RequestBody CreateTeamRequestDTO newTeam) {
+    public ResponseEntity<ApiResponse<String>> postTeam(@AuthenticationPrincipal UserDetails userDetails,
+            @RequestBody CreateTeamRequestDTO newTeam) {
+        final String userEmail = userDetails.getUsername();
+        UserDTO userProfile = userService.getProfile(userEmail);
+        newTeam.setUserIds(teamService.sanitizeTeamMemberIds(newTeam.getEventId(), newTeam.getUserIds(), userProfile.getId()));
         teamService.addTeam(newTeam);
         return ResponseEntity.status(HttpStatus.OK)
                 .body(new ApiResponse<>(
@@ -74,12 +76,12 @@ public class TeamController {
 
     @DeleteMapping("/teams/{teamId}/favorite")
     public ResponseEntity<ApiResponse<String>> deleteLead(@AuthenticationPrincipal UserDetails userDetails,
-            @RequestBody UserInterestedInTeam userInterestedInTeamDTO) {
+            @PathVariable Long teamId) {
 
         final String userEmail = userDetails.getUsername();
         UserDTO user = userService.getProfile(userEmail);
 
-        teamService.toggleLead(userInterestedInTeamDTO.getTeamId(), user.getId());
+        teamService.toggleLead(teamId, user.getId());
         return ResponseEntity.status(HttpStatus.OK)
                 .body(new ApiResponse<>(
                         true,

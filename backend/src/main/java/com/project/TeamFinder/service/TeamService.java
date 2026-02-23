@@ -68,12 +68,48 @@ public class TeamService {
 
         if (team.getUserIds() != null && !team.getUserIds().isEmpty()) {
             for (Long userId : team.getUserIds()) {
-                System.out.println("userId " + userId);
                 teamMembersRepository.addUserToTeam(teamId, userId);
 
             }
         }
 
+    }
+
+    public List<Long> sanitizeTeamMemberIds(Long eventId, List<Long> requestedUserIds, Long currentUserId) {
+        if (eventId == null) {
+            throw new RuntimeException("Event is required");
+        }
+        if (currentUserId == null) {
+            throw new RuntimeException("User is required");
+        }
+
+        int maxTeamSize = eventRepository.findById(eventId)
+                .map(event -> event.getTeamSize() == null || event.getTeamSize() < 1 ? 4 : event.getTeamSize())
+                .orElseThrow(() -> new RuntimeException("Event not found"));
+
+        LinkedHashSet<Long> normalizedUserIds = new LinkedHashSet<>();
+        normalizedUserIds.add(currentUserId);
+
+        if (requestedUserIds != null) {
+            for (Long userId : requestedUserIds) {
+                if (userId != null && userId > 0) {
+                    normalizedUserIds.add(userId);
+                }
+            }
+        }
+
+        if (normalizedUserIds.size() > maxTeamSize) {
+            throw new RuntimeException("Team size exceeds event limit of " + maxTeamSize);
+        }
+
+        List<Long> sanitizedUserIds = new ArrayList<>(normalizedUserIds);
+        for (Long userId : sanitizedUserIds) {
+            if (!userRepository.existsById(userId)) {
+                throw new RuntimeException("Invalid team member id: " + userId);
+            }
+        }
+
+        return sanitizedUserIds;
     }
 
     public void addUsersToTeam(Long teamId, List<Long> userIds) {

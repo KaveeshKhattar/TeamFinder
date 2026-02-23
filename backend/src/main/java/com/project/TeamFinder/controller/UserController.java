@@ -10,7 +10,7 @@ import com.project.TeamFinder.dto.UserDTO;
 import com.project.TeamFinder.dto.auth.UpdateUserDTO;
 import com.project.TeamFinder.dto.auth.WaitlistRequestDTO;
 import com.project.TeamFinder.dto.responses.ApiResponse;
-import com.project.TeamFinder.projection.UserProjection;
+import com.project.TeamFinder.projection.PublicUserProjection;
 import com.project.TeamFinder.service.ImageHandlerService;
 import com.project.TeamFinder.service.AdminAccessService;
 import com.project.TeamFinder.service.OrganizerAccessService;
@@ -89,8 +89,8 @@ public class UserController {
 
     // Fetch all users
     @GetMapping("/all-users")
-    public ResponseEntity<ApiResponse<List<UserProjection>>> allUsers() {
-        List<UserProjection> users = userService.getAllUsers();
+    public ResponseEntity<ApiResponse<List<PublicUserProjection>>> allUsers() {
+        List<PublicUserProjection> users = userService.getAllPublicUsers();
         return ResponseEntity.status(HttpStatus.OK)
                     .body(new ApiResponse<>(
                             true,

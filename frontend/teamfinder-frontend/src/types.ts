@@ -1,6 +1,6 @@
 export interface User {
     id: number;
-    email: string;
+    email?: string;
     firstName: string;
     lastName: string;
     enabled: boolean;
