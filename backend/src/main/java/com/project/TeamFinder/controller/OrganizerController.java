@@ -26,7 +26,10 @@ import com.project.TeamFinder.dto.TeamWithMembersDTO;
 import com.project.TeamFinder.dto.organizer.BulkImportResultDTO;
 import com.project.TeamFinder.dto.organizer.EventMetricsDTO;
 import com.project.TeamFinder.dto.organizer.MergeTeamsRequestDTO;
+import com.project.TeamFinder.dto.organizer.NotificationCampaignRequestDTO;
+import com.project.TeamFinder.dto.organizer.NotificationCampaignResultDTO;
 import com.project.TeamFinder.dto.organizer.SplitTeamRequestDTO;
+import com.project.TeamFinder.dto.organizer.SuggestedMatchDTO;
 import com.project.TeamFinder.dto.organizer.TeamJoinRequestDTO;
 import com.project.TeamFinder.dto.organizer.UpdateTeamOrganizerRequestDTO;
 import com.project.TeamFinder.dto.responses.ApiResponse;
@@ -69,10 +72,9 @@ public class OrganizerController {
     @GetMapping("/events/{eventId}/metrics")
     public ResponseEntity<ApiResponse<EventMetricsDTO>> getEventMetrics(
             @PathVariable Long eventId,
-            @AuthenticationPrincipal UserDetails userDetails,
-            @RequestParam(required = false) Integer targetTeamSize) {
+            @AuthenticationPrincipal UserDetails userDetails) {
         ensureOrganizerForEvent(userDetails, eventId);
-        EventMetricsDTO metrics = organizerService.getEventMetrics(eventId, targetTeamSize);
+        EventMetricsDTO metrics = organizerService.getEventMetrics(eventId);
         return ResponseEntity.ok(new ApiResponse<>(true, metrics, "event metrics"));
     }
 
@@ -103,6 +105,36 @@ public class OrganizerController {
         ensureOrganizerForEvent(userDetails, eventId);
         List<TeamJoinRequestDTO> requests = organizerService.getJoinRequests(eventId);
         return ResponseEntity.ok(new ApiResponse<>(true, requests, "join requests"));
+    }
+
+    @GetMapping("/events/{eventId}/suggested-matches")
+    public ResponseEntity<ApiResponse<List<SuggestedMatchDTO>>> getSuggestedMatches(
+            @PathVariable Long eventId,
+            @AuthenticationPrincipal UserDetails userDetails,
+            @RequestParam(required = false) Integer limit) {
+        ensureOrganizerForEvent(userDetails, eventId);
+        List<SuggestedMatchDTO> matches = organizerService.getSuggestedMatches(eventId, limit);
+        return ResponseEntity.ok(new ApiResponse<>(true, matches, "suggested matches"));
+    }
+
+    @PostMapping("/events/{eventId}/nudge-unmatched")
+    public ResponseEntity<ApiResponse<NotificationCampaignResultDTO>> nudgeUnmatchedUsers(
+            @PathVariable Long eventId,
+            @AuthenticationPrincipal UserDetails userDetails,
+            @RequestBody(required = false) NotificationCampaignRequestDTO request) {
+        ensureOrganizerForEvent(userDetails, eventId);
+        NotificationCampaignResultDTO result = organizerService.sendNudgesToUnmatchedUsers(eventId, request);
+        return ResponseEntity.ok(new ApiResponse<>(true, result, "nudge campaign sent"));
+    }
+
+    @PostMapping("/events/{eventId}/deadline-reminders")
+    public ResponseEntity<ApiResponse<NotificationCampaignResultDTO>> sendDeadlineReminders(
+            @PathVariable Long eventId,
+            @AuthenticationPrincipal UserDetails userDetails,
+            @RequestBody(required = false) NotificationCampaignRequestDTO request) {
+        ensureOrganizerForEvent(userDetails, eventId);
+        NotificationCampaignResultDTO result = organizerService.sendDeadlineReminders(eventId, request);
+        return ResponseEntity.ok(new ApiResponse<>(true, result, "deadline reminder flow sent"));
     }
 
     @PostMapping("/teams/{teamId}/join-requests/{userId}/approve")

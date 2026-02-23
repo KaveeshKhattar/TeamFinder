@@ -12,6 +12,7 @@ import com.project.TeamFinder.dto.auth.WaitlistRequestDTO;
 import com.project.TeamFinder.dto.responses.ApiResponse;
 import com.project.TeamFinder.projection.UserProjection;
 import com.project.TeamFinder.service.ImageHandlerService;
+import com.project.TeamFinder.service.AdminAccessService;
 import com.project.TeamFinder.service.OrganizerAccessService;
 import com.project.TeamFinder.service.UserService;
 
@@ -45,11 +46,17 @@ public class UserController {
     private final UserService userService;
     private final ImageHandlerService imageHandlerService;
     private final OrganizerAccessService organizerAccessService;
+    private final AdminAccessService adminAccessService;
 
-    public UserController(UserService userService, ImageHandlerService imageHandlerService, OrganizerAccessService organizerAccessService) {
+    public UserController(
+            UserService userService,
+            ImageHandlerService imageHandlerService,
+            OrganizerAccessService organizerAccessService,
+            AdminAccessService adminAccessService) {
         this.userService = userService;
         this.imageHandlerService = imageHandlerService;
         this.organizerAccessService = organizerAccessService;
+        this.adminAccessService = adminAccessService;
     }
 
     @PostMapping("/waitlist")
@@ -105,6 +112,22 @@ public class UserController {
                 true,
                 organizer,
                 "organizer access"));
+    }
+
+    @GetMapping("/is-admin")
+    public ResponseEntity<ApiResponse<Boolean>> isAdmin(@AuthenticationPrincipal UserDetails userDetails) {
+        if (userDetails == null || userDetails.getUsername() == null) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
+                    .body(new ApiResponse<>(
+                            false,
+                            false,
+                            "Unauthorized"));
+        }
+        boolean admin = adminAccessService.isAdmin(userDetails.getUsername());
+        return ResponseEntity.ok(new ApiResponse<>(
+                true,
+                admin,
+                "admin access"));
     }
 
     @GetMapping("/profile")

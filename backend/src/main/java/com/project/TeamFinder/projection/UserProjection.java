@@ -10,4 +10,5 @@ public interface UserProjection {
     String getPictureURL();
     String getBio();
     List<String> getSkills();
+    String getPreferredRole();
 }

@@ -9,6 +9,8 @@ public class TeamWithMembersDTO {
     private Long teamId;
     private String teamName;
     private Long eventId;
+    private Integer openSlots;
+    private List<String> rolesLookingFor;
     private List<UserProjection> members;
 
     public Long getTeamId() {
@@ -41,6 +43,22 @@ public class TeamWithMembersDTO {
 
     public void setMembers(List<UserProjection> members) {
         this.members = members;
+    }
+
+    public Integer getOpenSlots() {
+        return openSlots;
+    }
+
+    public void setOpenSlots(Integer openSlots) {
+        this.openSlots = openSlots;
+    }
+
+    public List<String> getRolesLookingFor() {
+        return rolesLookingFor;
+    }
+
+    public void setRolesLookingFor(List<String> rolesLookingFor) {
+        this.rolesLookingFor = rolesLookingFor;
     }
 
     public TeamWithMembersDTO(Team team, List<UserProjection> members) {

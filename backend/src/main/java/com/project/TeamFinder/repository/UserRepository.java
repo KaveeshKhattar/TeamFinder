@@ -27,7 +27,7 @@ public interface UserRepository extends JpaRepository<User, Long> {
     @Query(value = "INSERT INTO waitlist (email) VALUES (:email)", nativeQuery = true)
     void addToWaitlist(String email);
 
-    @Query("SELECT u.id AS id, u.email AS email, u.firstName AS firstName, u.lastName AS lastName, u.bio as bio, u.skills as skills, u.pictureURL as pictureURL FROM User u")
+    @Query("SELECT u.id AS id, u.email AS email, u.firstName AS firstName, u.lastName AS lastName, u.bio as bio, u.skills as skills, u.pictureURL as pictureURL, u.preferredRole as preferredRole FROM User u")
     List<UserProjection> findAllUsers();
 
 }

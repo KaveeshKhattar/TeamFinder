@@ -21,6 +21,9 @@ public class Team {
     @Column(name="event_id")
     private long eventId;
 
+    @Column(name = "roles_looking_for")
+    private String rolesLookingFor;
+
     public long getId() {
         return id;
     }
@@ -43,6 +46,14 @@ public class Team {
 
     public void setEventId(long eventId) {
         this.eventId = eventId;
+    }
+
+    public String getRolesLookingFor() {
+        return rolesLookingFor;
+    }
+
+    public void setRolesLookingFor(String rolesLookingFor) {
+        this.rolesLookingFor = rolesLookingFor;
     }
 
     @Override 

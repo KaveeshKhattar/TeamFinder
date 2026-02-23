@@ -7,6 +7,7 @@ import java.nio.charset.StandardCharsets;
 import java.time.Instant;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedHashMap;
@@ -14,6 +15,7 @@ import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -25,7 +27,10 @@ import org.springframework.web.multipart.MultipartFile;
 import com.project.TeamFinder.dto.TeamWithMembersDTO;
 import com.project.TeamFinder.dto.organizer.BulkImportResultDTO;
 import com.project.TeamFinder.dto.organizer.EventMetricsDTO;
+import com.project.TeamFinder.dto.organizer.NotificationCampaignRequestDTO;
+import com.project.TeamFinder.dto.organizer.NotificationCampaignResultDTO;
 import com.project.TeamFinder.dto.organizer.SplitTeamRequestDTO;
+import com.project.TeamFinder.dto.organizer.SuggestedMatchDTO;
 import com.project.TeamFinder.dto.organizer.TeamJoinRequestDTO;
 import com.project.TeamFinder.dto.organizer.TeamOpenSpotDTO;
 import com.project.TeamFinder.dto.organizer.UpdateTeamOrganizerRequestDTO;
@@ -54,6 +59,7 @@ public class OrganizerService {
     private final UserRepository userRepository;
     private final MessageRepository messageRepository;
     private final TeamService teamService;
+    private final EmailService emailService;
 
     public OrganizerService(
             EventRepository eventRepository,
@@ -63,7 +69,8 @@ public class OrganizerService {
             UserInterestedInTeamRepository userInterestedInTeamRepository,
             UserRepository userRepository,
             MessageRepository messageRepository,
-            TeamService teamService) {
+            TeamService teamService,
+            EmailService emailService) {
         this.eventRepository = eventRepository;
         this.eventUserRepository = eventUserRepository;
         this.teamRepository = teamRepository;
@@ -72,12 +79,13 @@ public class OrganizerService {
         this.userRepository = userRepository;
         this.messageRepository = messageRepository;
         this.teamService = teamService;
+        this.emailService = emailService;
     }
 
-    public EventMetricsDTO getEventMetrics(Long eventId, Integer targetTeamSizeParam) {
+    public EventMetricsDTO getEventMetrics(Long eventId) {
         Event event = eventRepository.findById(eventId)
                 .orElseThrow(() -> new RuntimeException("Event not found"));
-        int targetTeamSize = targetTeamSizeParam == null || targetTeamSizeParam < 1 ? 4 : targetTeamSizeParam;
+        int targetTeamSize = normalizeEventTeamSize(event.getTeamSize());
 
         List<EventUser> interestedRows = eventUserRepository.findByEventId(eventId);
         Set<Long> interestedUserIds = interestedRows.stream()
@@ -241,6 +249,7 @@ public class OrganizerService {
 
             String teamName = columns[0].trim();
             String memberEmailsValue = columns[1].trim();
+            String rolesLookingForValue = columns.length > 2 ? columns[2].trim() : "";
             if (teamName.isBlank()) {
                 skipped++;
                 result.addError("Row " + (i + 1) + ": missing team name");
@@ -256,6 +265,7 @@ public class OrganizerService {
             Team team = new Team();
             team.setName(teamName);
             team.setEventId(eventId);
+            team.setRolesLookingFor(normalizeRolesCsv(rolesLookingForValue));
             Team savedTeam = teamRepository.save(team);
             teamsCreated++;
 
@@ -348,8 +358,11 @@ public class OrganizerService {
         Team team = teamRepository.findById(teamId).orElseThrow(() -> new RuntimeException("Team not found"));
         if (request.getTeamName() != null && !request.getTeamName().isBlank()) {
             team.setName(request.getTeamName().trim());
-            teamRepository.save(team);
         }
+        if (request.getRolesLookingFor() != null) {
+            team.setRolesLookingFor(teamService.joinRoles(request.getRolesLookingFor()));
+        }
+        teamRepository.save(team);
 
         List<Long> userIds = request.getUserIds();
         if (userIds != null) {
@@ -417,6 +430,7 @@ public class OrganizerService {
         Team newTeam = new Team();
         newTeam.setName(request.getNewTeamName().trim());
         newTeam.setEventId(sourceTeam.getEventId());
+        newTeam.setRolesLookingFor(sourceTeam.getRolesLookingFor());
         Team savedTeam = teamRepository.save(newTeam);
 
         for (Long userId : moveUserIds) {
@@ -451,6 +465,249 @@ public class OrganizerService {
             }
         }
         return csv.toString();
+    }
+
+    public List<SuggestedMatchDTO> getSuggestedMatches(Long eventId, Integer limitParam) {
+        Event event = eventRepository.findById(eventId).orElseThrow(() -> new RuntimeException("Event not found"));
+        int eventTeamSize = normalizeEventTeamSize(event.getTeamSize());
+        int limit = limitParam == null || limitParam < 1 ? 20 : Math.min(limitParam, 200);
+
+        Set<Long> interestedUserIds = eventUserRepository.findByEventId(eventId).stream()
+                .map(EventUser::getUserId)
+                .collect(Collectors.toSet());
+        if (interestedUserIds.isEmpty()) {
+            return List.of();
+        }
+
+        List<Team> teams = teamRepository.findByEventId(eventId);
+        if (teams.isEmpty()) {
+            return List.of();
+        }
+
+        List<Long> teamIds = teams.stream().map(Team::getId).toList();
+        List<TeamMembers> memberships = teamMembersRepository.findByTeamIdIn(teamIds);
+        Set<Long> matchedUserIds = memberships.stream().map(TeamMembers::getUserId).collect(Collectors.toSet());
+        List<Long> unmatchedUserIds = interestedUserIds.stream()
+                .filter(userId -> !matchedUserIds.contains(userId))
+                .toList();
+        if (unmatchedUserIds.isEmpty()) {
+            return List.of();
+        }
+
+        List<User> unmatchedUsers = userRepository.findAllById(unmatchedUserIds);
+        Map<Long, Integer> memberCountByTeamId = new HashMap<>();
+        for (TeamMembers membership : memberships) {
+            memberCountByTeamId.merge(membership.getTeamId(), 1, Integer::sum);
+        }
+
+        List<SuggestedMatchDTO> scoredMatches = new ArrayList<>();
+        for (Team team : teams) {
+            int memberCount = memberCountByTeamId.getOrDefault(team.getId(), 0);
+            int openSlots = Math.max(0, eventTeamSize - memberCount);
+            if (openSlots < 1) {
+                continue;
+            }
+
+            List<String> neededRoles = splitRoles(team.getRolesLookingFor());
+            Set<String> neededRoleSet = toLowerSet(neededRoles);
+
+            for (User user : unmatchedUsers) {
+                MatchScore score = scoreUserForTeam(user, neededRoleSet, openSlots);
+                if (score.score() <= 0) {
+                    continue;
+                }
+
+                SuggestedMatchDTO dto = new SuggestedMatchDTO();
+                dto.setUserId(user.getId());
+                dto.setUserEmail(user.getEmail());
+                dto.setUserName((user.getFirstName() + " " + user.getLastName()).trim());
+                dto.setUserPreferredRole(user.getPreferredRole());
+                dto.setUserSkills(user.getSkills() == null ? List.of() : user.getSkills());
+                dto.setTeamId(team.getId());
+                dto.setTeamName(team.getName());
+                dto.setTeamOpenSlots(openSlots);
+                dto.setTeamRolesLookingFor(neededRoles);
+                dto.setScore(score.score());
+                dto.setReasons(score.reasons());
+                scoredMatches.add(dto);
+            }
+        }
+
+        return scoredMatches.stream()
+                .sorted(Comparator
+                        .comparingInt(SuggestedMatchDTO::getScore).reversed()
+                        .thenComparing(SuggestedMatchDTO::getTeamId)
+                        .thenComparing(SuggestedMatchDTO::getUserId))
+                .limit(limit)
+                .toList();
+    }
+
+    public NotificationCampaignResultDTO sendNudgesToUnmatchedUsers(Long eventId, NotificationCampaignRequestDTO request) {
+        Event event = eventRepository.findById(eventId)
+                .orElseThrow(() -> new RuntimeException("Event not found"));
+        String subject = request != null && request.getSubject() != null && !request.getSubject().isBlank()
+                ? request.getSubject().trim()
+                : "TeamFinder: You're still unmatched for " + event.getName();
+        String body = request != null && request.getMessage() != null && !request.getMessage().isBlank()
+                ? request.getMessage().trim()
+                : "You still have time to join a team. Explore open teams and connect with people now.";
+        return sendCampaignToUnmatchedUsers(eventId, subject, body);
+    }
+
+    public NotificationCampaignResultDTO sendDeadlineReminders(Long eventId, NotificationCampaignRequestDTO request) {
+        Event event = eventRepository.findById(eventId)
+                .orElseThrow(() -> new RuntimeException("Event not found"));
+        int daysBeforeDeadline = request != null && request.getDaysBeforeDeadline() != null
+                ? Math.max(0, request.getDaysBeforeDeadline())
+                : 3;
+
+        long nowMillis = System.currentTimeMillis();
+        long deadlineMillis = event.getEnd_date() == null ? 0L : event.getEnd_date().getTime();
+        long thresholdMillis = nowMillis + (daysBeforeDeadline * 24L * 60L * 60L * 1000L);
+        NotificationCampaignResultDTO result = new NotificationCampaignResultDTO();
+        if (deadlineMillis == 0L || deadlineMillis > thresholdMillis) {
+            return result;
+        }
+
+        String subject = request != null && request.getSubject() != null && !request.getSubject().isBlank()
+                ? request.getSubject().trim()
+                : "TeamFinder: Deadline approaching for " + event.getName();
+        String body = request != null && request.getMessage() != null && !request.getMessage().isBlank()
+                ? request.getMessage().trim()
+                : "Reminder: this event is closing soon. Join a team before the deadline.";
+        return sendCampaignToUnmatchedUsers(eventId, subject, body);
+    }
+
+    private NotificationCampaignResultDTO sendCampaignToUnmatchedUsers(Long eventId, String subject, String message) {
+        List<User> recipients = getUnmatchedUsersForEvent(eventId);
+        NotificationCampaignResultDTO result = new NotificationCampaignResultDTO();
+        result.setRecipients(recipients.size());
+
+        int sent = 0;
+        for (User user : recipients) {
+            try {
+                emailService.sendVerificationEmail(
+                        user.getEmail(),
+                        subject,
+                        "<p>" + escapeHtml(message) + "</p>");
+                sent++;
+            } catch (Exception e) {
+                result.addError("Failed for " + user.getEmail() + ": " + e.getMessage());
+            }
+        }
+        result.setSent(sent);
+        return result;
+    }
+
+    private List<User> getUnmatchedUsersForEvent(Long eventId) {
+        Set<Long> interestedUserIds = eventUserRepository.findByEventId(eventId).stream()
+                .map(EventUser::getUserId)
+                .collect(Collectors.toSet());
+        if (interestedUserIds.isEmpty()) {
+            return List.of();
+        }
+
+        List<Team> teams = teamRepository.findByEventId(eventId);
+        List<Long> teamIds = teams.stream().map(Team::getId).toList();
+        Set<Long> matchedUserIds = teamIds.isEmpty()
+                ? Set.of()
+                : teamMembersRepository.findByTeamIdIn(teamIds).stream()
+                        .map(TeamMembers::getUserId)
+                        .collect(Collectors.toSet());
+
+        List<Long> unmatchedUserIds = interestedUserIds.stream()
+                .filter(userId -> !matchedUserIds.contains(userId))
+                .toList();
+        if (unmatchedUserIds.isEmpty()) {
+            return List.of();
+        }
+        return userRepository.findAllById(unmatchedUserIds);
+    }
+
+    private record MatchScore(int score, List<String> reasons) {
+    }
+
+    private MatchScore scoreUserForTeam(User user, Set<String> neededRoles, int openSlots) {
+        int score = 0;
+        List<String> reasons = new ArrayList<>();
+
+        Set<String> userSkills = toLowerSet(user.getSkills());
+        long skillMatches = userSkills.stream().filter(neededRoles::contains).count();
+        if (skillMatches > 0) {
+            score += (int) skillMatches * 10;
+            reasons.add("skill overlap: " + skillMatches);
+        }
+
+        String preferredRole = normalize(user.getPreferredRole());
+        if (!preferredRole.isBlank() && neededRoles.contains(preferredRole)) {
+            score += 20;
+            reasons.add("preferred role match");
+        }
+
+        score += Math.min(openSlots, 3) * 2;
+        reasons.add("open slots: " + openSlots);
+
+        return new MatchScore(score, reasons);
+    }
+
+    private Set<String> toLowerSet(List<String> values) {
+        if (values == null || values.isEmpty()) {
+            return Set.of();
+        }
+        return values.stream()
+                .filter(Objects::nonNull)
+                .map(this::normalize)
+                .filter(value -> !value.isBlank())
+                .collect(Collectors.toSet());
+    }
+
+    private Set<String> toLowerSet(Set<String> values) {
+        if (values == null || values.isEmpty()) {
+            return Set.of();
+        }
+        return values.stream()
+                .map(this::normalize)
+                .filter(value -> !value.isBlank())
+                .collect(Collectors.toSet());
+    }
+
+    private String normalize(String value) {
+        return value == null ? "" : value.trim().toLowerCase(Locale.ROOT);
+    }
+
+    private List<String> splitRoles(String rolesCsv) {
+        if (rolesCsv == null || rolesCsv.isBlank()) {
+            return List.of();
+        }
+        return List.of(rolesCsv.split(",")).stream()
+                .map(String::trim)
+                .filter(role -> !role.isBlank())
+                .toList();
+    }
+
+    private String normalizeRolesCsv(String rolesValue) {
+        if (rolesValue == null || rolesValue.isBlank()) {
+            return "";
+        }
+        return List.of(rolesValue.split("[;|,]")).stream()
+                .map(this::normalize)
+                .filter(role -> !role.isBlank())
+                .distinct()
+                .collect(Collectors.joining(","));
+    }
+
+    private int normalizeEventTeamSize(Integer eventTeamSize) {
+        return eventTeamSize == null || eventTeamSize < 1 ? 4 : eventTeamSize;
+    }
+
+    private String escapeHtml(String input) {
+        if (input == null) {
+            return "";
+        }
+        return input
+                .replace("&", "&amp;")
+                .replace("<", "&lt;")
+                .replace(">", "&gt;");
     }
 
     private List<String> readCsvLines(MultipartFile file) throws IOException {

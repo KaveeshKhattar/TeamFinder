@@ -7,6 +7,7 @@ import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.Locale;
 import java.util.stream.Collectors;
 
 import org.springframework.stereotype.Service;
@@ -16,6 +17,7 @@ import com.project.TeamFinder.dto.TeamWithMembersDTO;
 import com.project.TeamFinder.model.Team;
 import com.project.TeamFinder.model.TeamMembers;
 import com.project.TeamFinder.projection.UserProjection;
+import com.project.TeamFinder.repository.EventRepository;
 import com.project.TeamFinder.repository.EventUserRepository;
 import com.project.TeamFinder.repository.TeamMembersRepository;
 import com.project.TeamFinder.repository.TeamRepository;
@@ -29,14 +31,17 @@ public class TeamService {
     private final TeamMembersRepository teamMembersRepository;
     private final UserInterestedInTeamRepository userInterestedInTeamRepository;
     private final UserRepository userRepository;
+    private final EventRepository eventRepository;
 
     public TeamService(TeamRepository teamRepository, TeamMembersRepository teamMembersRepository,
             UserRepository userRepository, EventUserRepository eventUserRepositroy,
-            UserInterestedInTeamRepository userInterestedInTeamRepository) {
+            UserInterestedInTeamRepository userInterestedInTeamRepository,
+            EventRepository eventRepository) {
         this.teamRepository = teamRepository;
         this.teamMembersRepository = teamMembersRepository;
         this.userRepository = userRepository;
         this.userInterestedInTeamRepository = userInterestedInTeamRepository;
+        this.eventRepository = eventRepository;
     }
 
     public List<Team> getTeamsByEventId(Long eventId) {
@@ -56,6 +61,7 @@ public class TeamService {
 
         newTeam.setName(team.getTeamName());
         newTeam.setEventId(team.getEventId());
+        newTeam.setRolesLookingFor(joinRoles(team.getRolesLookingFor()));
 
         Team savedTeam = teamRepository.save(newTeam);
         Long teamId = savedTeam.getId();
@@ -200,6 +206,7 @@ public class TeamService {
                 .collect(Collectors.toList());
 
         List<TeamMembers> allMemberships = teamMembersRepository.findByTeamIdIn(teamIds);
+        Map<Long, Integer> teamSizeByEventId = buildTeamSizeByEventId(teams);
         Map<Long, List<Long>> userIdsByTeamId = new HashMap<>();
         LinkedHashSet<Long> allUserIds = new LinkedHashSet<>();
 
@@ -228,10 +235,50 @@ public class TeamService {
                     members.add(user);
                 }
             }
-            teamsWithMembers.add(new TeamWithMembersDTO(team, members));
+            TeamWithMembersDTO dto = new TeamWithMembersDTO(team, members);
+            int eventTeamSize = teamSizeByEventId.getOrDefault(team.getEventId(), 4);
+            dto.setOpenSlots(Math.max(0, eventTeamSize - members.size()));
+            dto.setRolesLookingFor(splitRoles(team.getRolesLookingFor()));
+            teamsWithMembers.add(dto);
         }
 
         return teamsWithMembers;
+    }
+
+    private Map<Long, Integer> buildTeamSizeByEventId(List<Team> teams) {
+        Map<Long, Integer> result = new HashMap<>();
+        LinkedHashSet<Long> eventIds = teams.stream()
+                .map(Team::getEventId)
+                .collect(Collectors.toCollection(LinkedHashSet::new));
+        for (Long eventId : eventIds) {
+            int teamSize = eventRepository.findById(eventId)
+                    .map(event -> event.getTeamSize() == null || event.getTeamSize() < 1 ? 4 : event.getTeamSize())
+                    .orElse(4);
+            result.put(eventId, teamSize);
+        }
+        return result;
+    }
+
+    public String joinRoles(List<String> roles) {
+        if (roles == null || roles.isEmpty()) {
+            return "";
+        }
+        return roles.stream()
+                .filter(role -> role != null && !role.isBlank())
+                .map(role -> role.trim().toLowerCase(Locale.ROOT))
+                .distinct()
+                .collect(Collectors.joining(","));
+    }
+
+    public List<String> splitRoles(String rolesCsv) {
+        if (rolesCsv == null || rolesCsv.isBlank()) {
+            return List.of();
+        }
+        return List.of(rolesCsv.split(",")).stream()
+                .map(String::trim)
+                .filter(role -> !role.isBlank())
+                .distinct()
+                .toList();
     }
 
 }

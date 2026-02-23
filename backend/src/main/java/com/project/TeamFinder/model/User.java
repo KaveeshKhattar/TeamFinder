@@ -38,6 +38,9 @@ public class User implements UserDetails {
     @Column(name="skills")
     private List<String> skills;
 
+    @Column(name="preferred_role")
+    private String preferredRole;
+
     // checks whether they have verified using OTP sent to their email
     @Column(name="enabled")
     private boolean enabled;
@@ -130,6 +133,14 @@ public class User implements UserDetails {
 
     public void setSkills(List<String> skills) {
         this.skills = skills;
+    }
+
+    public String getPreferredRole() {
+        return preferredRole;
+    }
+
+    public void setPreferredRole(String preferredRole) {
+        this.preferredRole = preferredRole;
     }
 
     public User(String firstName, String lastName, String email, String password) {

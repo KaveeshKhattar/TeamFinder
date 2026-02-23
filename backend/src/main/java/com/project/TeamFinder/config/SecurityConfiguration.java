@@ -44,6 +44,8 @@ public class SecurityConfiguration {
                         .requestMatchers("/api/*").permitAll()
                         // Any other /api/** endpoint will fall through to the default rule below
                         .requestMatchers("/users/is-organizer").authenticated()
+                        .requestMatchers("/users/is-admin").authenticated()
+                        .requestMatchers("/admin/**").authenticated()
                         .requestMatchers("/ws/**").permitAll()
                         .anyRequest().authenticated()
                 )

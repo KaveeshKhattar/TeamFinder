@@ -5,6 +5,7 @@ import java.util.List;
 public class UpdateTeamOrganizerRequestDTO {
     private String teamName;
     private List<Long> userIds;
+    private List<String> rolesLookingFor;
 
     public String getTeamName() {
         return teamName;
@@ -20,5 +21,13 @@ public class UpdateTeamOrganizerRequestDTO {
 
     public void setUserIds(List<Long> userIds) {
         this.userIds = userIds;
+    }
+
+    public List<String> getRolesLookingFor() {
+        return rolesLookingFor;
+    }
+
+    public void setRolesLookingFor(List<String> rolesLookingFor) {
+        this.rolesLookingFor = rolesLookingFor;
     }
 }

@@ -8,6 +8,7 @@ public class UpdateUserDTO {
     private String email;
     private String bio;
     private List<String> skills;
+    private String preferredRole;
 
     public List<String> getSkills() {
         return skills;
@@ -58,5 +59,13 @@ public class UpdateUserDTO {
 
     public void setEmail(String email) {
         this.email = email;
+    }
+
+    public String getPreferredRole() {
+        return preferredRole;
+    }
+
+    public void setPreferredRole(String preferredRole) {
+        this.preferredRole = preferredRole;
     }
 }

@@ -31,6 +31,9 @@ public class Event {
     @Column(name = "end_date")
     private Date end_date;
 
+    @Column(name = "team_size")
+    private Integer teamSize;
+
     public Long getId() {
         return id;
     }
@@ -78,6 +81,14 @@ public class Event {
 
     public void setEnd_date(Date end_date) {
         this.end_date = end_date;
+    }
+
+    public Integer getTeamSize() {
+        return teamSize;
+    }
+
+    public void setTeamSize(Integer teamSize) {
+        this.teamSize = teamSize;
     }
 
 }

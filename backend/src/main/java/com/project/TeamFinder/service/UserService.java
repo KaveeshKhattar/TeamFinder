@@ -41,7 +41,8 @@ public class UserService {
             user.getLastName(),
             user.getBio(),
             user.getSkills(),
-            user.getPictureURL()
+            user.getPictureURL(),
+            user.getPreferredRole()
         );
     }
 
@@ -57,6 +58,7 @@ public class UserService {
         user.setEmail(updateUserDTO.getEmail());
         user.setBio(updateUserDTO.getBio());
         user.setSkills(updateUserDTO.getSkills());
+        user.setPreferredRole(updateUserDTO.getPreferredRole());
         return userRepository.save(user);
     }
 

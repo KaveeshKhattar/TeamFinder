@@ -17,6 +17,7 @@ public class UserDTO {
     private String bio;
     private List<String> skills;
     private String pictureURL;
+    private String preferredRole;
     
     public String getFirstName() {
         return firstName;
@@ -54,13 +55,19 @@ public class UserDTO {
     public void setPictureURL(String pictureURL) {
         this.pictureURL = pictureURL;
     }
+    public String getPreferredRole() {
+        return preferredRole;
+    }
+    public void setPreferredRole(String preferredRole) {
+        this.preferredRole = preferredRole;
+    }
 
     // No-argument constructor
     public UserDTO() {
     }
 
     // All-arguments constructor
-    public UserDTO(Long id, String email, String firstName, String lastName, String bio, List<String> skills, String pictureURL) {
+    public UserDTO(Long id, String email, String firstName, String lastName, String bio, List<String> skills, String pictureURL, String preferredRole) {
         this.id  = id;
         this.email = email;
         this.firstName = firstName;
@@ -68,6 +75,7 @@ public class UserDTO {
         this.bio = bio;
         this.skills = skills;
         this.pictureURL = pictureURL;
+        this.preferredRole = preferredRole;
     }
     
     public String toString() {
@@ -79,6 +87,7 @@ public class UserDTO {
                 ", bio='" + bio + '\'' +
                 ", skills=" + skills +
                 ", pictureURL='" + pictureURL + '\'' +
+                ", preferredRole='" + preferredRole + '\'' +
                 '}';
     }
 }
