@@ -23,6 +23,8 @@ type Team = {
     teamId: number;
     teamName: string;
     eventId: number;
+    openSlots?: number;
+    rolesLookingFor?: string[];
     members: TeamMember[];
 };
 
@@ -232,6 +234,14 @@ function FindActualTeams() {
                                                                     </span>
                                                                 )}
                                                             </h2>
+                                                            <p className="text-sm text-muted-foreground">
+                                                                Open slots: {team.openSlots ?? 0}
+                                                            </p>
+                                                            {team.rolesLookingFor && team.rolesLookingFor.length > 0 && (
+                                                                <p className="text-xs text-muted-foreground mt-1">
+                                                                    Looking for: {team.rolesLookingFor.join(", ")}
+                                                                </p>
+                                                            )}
                                                         </div>
 
                                                         {/* Team Members */}

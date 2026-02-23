@@ -7,6 +7,7 @@ import { ThemeProvider } from './components/themeProvider'
 
 import { AuthProvider } from './modules/core/components/AuthContext'
 import OrganizerRouteGuard from './modules/core/components/OrganizerRouteGuard'
+import AdminRouteGuard from './modules/core/components/AdminRouteGuard'
 
 const LandingPagev1 = lazy(() => import('./modules/landingPage/components/LandingPagev1'))
 const Login = lazy(() => import('./modules/authentication/components/Login'))
@@ -25,6 +26,7 @@ const AllChatsPage = lazy(() =>
   import('./modules/chat/AllChatsPage').then((module) => ({ default: module.AllChatsPage }))
 )
 const OrganizerDashboard = lazy(() => import('./modules/organizer/components/OrganizerDashboard'))
+const AdminOrganizerAccess = lazy(() => import('./modules/admin/components/AdminOrganizerAccess'))
 
 function App() {
 
@@ -63,6 +65,11 @@ function App() {
                 <OrganizerRouteGuard>
                   <OrganizerDashboard />
                 </OrganizerRouteGuard>
+              } />
+              <Route path="/admin/organizers" element={
+                <AdminRouteGuard>
+                  <AdminOrganizerAccess />
+                </AdminRouteGuard>
               } />
 
             </Routes>

@@ -7,6 +7,7 @@ export interface User {
     pictureURL: string;
     bio: string;
     skills: string[];
+    preferredRole?: string;
 }
 
 export interface Event {
@@ -22,6 +23,8 @@ export interface Team {
     teamId: number;
     teamName: string;
     eventId: number;
+    openSlots?: number;
+    rolesLookingFor?: string[];
     members: User[];
 }
 

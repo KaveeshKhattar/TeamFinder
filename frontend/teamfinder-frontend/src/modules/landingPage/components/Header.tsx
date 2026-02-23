@@ -4,6 +4,7 @@ import { Link, useLocation, useNavigate } from "react-router-dom";
 import { Button } from "../../../components/ui/button";
 import { ModeToggle } from "../../../components/modeToggle";
 import { useOrganizerAccess } from "../../core/hooks/useOrganizerAccess";
+import { useAdminAccess } from "../../core/hooks/useAdminAccess";
 
 function Header() {
   const [isOpen, setIsOpen] = useState(false);
@@ -13,6 +14,7 @@ function Header() {
   const location = useLocation();
   const isOnProfilePage = location.pathname === "/profile";
   const { isOrganizer } = useOrganizerAccess();
+  const { isAdmin } = useAdminAccess();
 
   const toggleMenu = () => {
     setIsOpen(!isOpen);
@@ -60,6 +62,11 @@ function Header() {
               <Button size="sm" variant="outline" className="hidden sm:inline-flex">Organizer</Button>
             </Link>
           )}
+          {isSignedIn && isAdmin && !isOnProfilePage && (
+            <Link to="/admin/organizers">
+              <Button size="sm" variant="outline" className="hidden sm:inline-flex">Admin</Button>
+            </Link>
+          )}
           {isSignedIn && !isOnProfilePage && (
             <Link to="/profile">
               <Button size="sm" className="hidden sm:inline-flex">Profile</Button>
@@ -103,6 +110,11 @@ function Header() {
               {isOrganizer && <Link to="/organizer" onClick={() => setIsOpen(false)} className="w-full">
               <Button variant="outline" className="w-full min-h-[44px] underline">
                 <p className="dark:text-white">Organizer dashboard</p>
+                </Button>
+              </Link>}
+              {isAdmin && <Link to="/admin/organizers" onClick={() => setIsOpen(false)} className="w-full">
+              <Button variant="outline" className="w-full min-h-[44px] underline">
+                <p className="dark:text-white">Admin organizer access</p>
                 </Button>
               </Link>}
               <Link to="/show-interest" onClick={() => setIsOpen(false)} className="w-full">

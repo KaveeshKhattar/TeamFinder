@@ -36,6 +36,7 @@ function PostTeamLandingPage() {
     const [comboOpen, setComboOpen] = useState(false)
 
     const [teamName, setTeamName] = useState("")
+    const [rolesLookingFor, setRolesLookingFor] = useState("")
     const [currentUserId, setCurrentUserId] = useState<number | null>(null);
     const [selectedUsers, setSelectedUsers] = useState<User[]>([])
     const [searchQuery, setSearchQuery] = useState('');
@@ -65,12 +66,17 @@ function PostTeamLandingPage() {
             eventId: activeEvent.id,
             teamName: teamName,
             userIds: [currentUserId, ...selectedUsers.map(u => u.id)],
+            rolesLookingFor: rolesLookingFor
+                .split(",")
+                .map((role) => role.trim())
+                .filter((role) => role.length > 0),
         })
 
         console.log(selectedUsers.map(u => u.id))
         // reset
         setTeamName("")
         setSelectedUsers([])
+        setRolesLookingFor("")
         setActiveEvent(null)
     }
 
@@ -180,6 +186,15 @@ function PostTeamLandingPage() {
                             placeholder="Enter team name"
                             value={teamName}
                             onChange={(e) => setTeamName(e.target.value)}
+                        />
+                    </div>
+
+                    <div className="grid gap-2">
+                        <Label>Roles looking for</Label>
+                        <Input
+                            placeholder="Comma separated (e.g., backend, designer)"
+                            value={rolesLookingFor}
+                            onChange={(e) => setRolesLookingFor(e.target.value)}
                         />
                     </div>
 

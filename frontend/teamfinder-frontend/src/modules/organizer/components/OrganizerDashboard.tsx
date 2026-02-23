@@ -39,15 +39,29 @@ type JoinRequest = {
   lastName: string;
 };
 
+type SuggestedMatch = {
+  userId: number;
+  userEmail: string;
+  userName: string;
+  userPreferredRole: string | null;
+  userSkills: string[];
+  teamId: number;
+  teamName: string;
+  teamOpenSlots: number;
+  teamRolesLookingFor: string[];
+  score: number;
+  reasons: string[];
+};
+
 function OrganizerDashboard() {
   const { events } = useEvents();
   const [selectedEventId, setSelectedEventId] = useState<number | null>(null);
-  const [targetTeamSize, setTargetTeamSize] = useState("4");
 
   const [metrics, setMetrics] = useState<Metrics | null>(null);
   const [teams, setTeams] = useState<Team[]>([]);
   const [joinRequests, setJoinRequests] = useState<JoinRequest[]>([]);
   const [allUsers, setAllUsers] = useState<User[]>([]);
+  const [suggestedMatches, setSuggestedMatches] = useState<SuggestedMatch[]>([]);
 
   const [participantsFile, setParticipantsFile] = useState<File | null>(null);
   const [teamsFile, setTeamsFile] = useState<File | null>(null);
@@ -64,6 +78,14 @@ function OrganizerDashboard() {
   const [splitTeamId, setSplitTeamId] = useState("");
   const [splitTeamName, setSplitTeamName] = useState("");
   const [splitMemberIds, setSplitMemberIds] = useState("");
+
+  const [editRolesLookingFor, setEditRolesLookingFor] = useState("");
+
+  const [nudgeSubject, setNudgeSubject] = useState("");
+  const [nudgeMessage, setNudgeMessage] = useState("");
+  const [reminderDaysBefore, setReminderDaysBefore] = useState("3");
+  const [reminderSubject, setReminderSubject] = useState("");
+  const [reminderMessage, setReminderMessage] = useState("");
 
   const token = localStorage.getItem("token");
   const selectedEvent = useMemo(
@@ -84,11 +106,7 @@ function OrganizerDashboard() {
   };
 
   const loadMetrics = async (eventId: number) => {
-    const parsedTeamSize = Number(targetTeamSize) > 0 ? Number(targetTeamSize) : 4;
-    const res = await axios.get(`${BASE_URL}/api/organizer/events/${eventId}/metrics`, {
-      ...authHeaders,
-      params: { targetTeamSize: parsedTeamSize },
-    });
+    const res = await axios.get(`${BASE_URL}/api/organizer/events/${eventId}/metrics`, authHeaders);
     setMetrics(res.data.data);
   };
 
@@ -107,6 +125,14 @@ function OrganizerDashboard() {
     setAllUsers(Array.isArray(res.data.data) ? res.data.data : []);
   };
 
+  const loadSuggestedMatches = async (eventId: number) => {
+    const res = await axios.get(`${BASE_URL}/api/organizer/events/${eventId}/suggested-matches`, {
+      ...authHeaders,
+      params: { limit: 30 },
+    });
+    setSuggestedMatches(Array.isArray(res.data.data) ? res.data.data : []);
+  };
+
   const refreshAll = async () => {
     if (!selectedEventId) return;
     setPageLoading(true);
@@ -116,6 +142,7 @@ function OrganizerDashboard() {
         loadTeams(selectedEventId),
         loadJoinRequests(selectedEventId),
         loadAllUsers(),
+        loadSuggestedMatches(selectedEventId),
       ]);
     } finally {
       setPageLoading(false);
@@ -198,6 +225,10 @@ function OrganizerDashboard() {
       {
         teamName: editTeamName,
         userIds: parsedUserIds,
+        rolesLookingFor: editRolesLookingFor
+          .split(",")
+          .map((role) => role.trim())
+          .filter((role) => role.length > 0),
       },
       authHeaders
     );
@@ -254,13 +285,42 @@ function OrganizerDashboard() {
     setStatusMessage("Team sheet exported.");
   };
 
+  const sendNudgeCampaign = async () => {
+    if (!selectedEventId) return;
+    const res = await axios.post(
+      `${BASE_URL}/api/organizer/events/${selectedEventId}/nudge-unmatched`,
+      {
+        subject: nudgeSubject,
+        message: nudgeMessage,
+      },
+      authHeaders
+    );
+    const data = res.data?.data;
+    setStatusMessage(`Nudges sent: ${data?.sent ?? 0}/${data?.recipients ?? 0}`);
+  };
+
+  const sendDeadlineReminders = async () => {
+    if (!selectedEventId) return;
+    const res = await axios.post(
+      `${BASE_URL}/api/organizer/events/${selectedEventId}/deadline-reminders`,
+      {
+        subject: reminderSubject,
+        message: reminderMessage,
+        daysBeforeDeadline: Number(reminderDaysBefore) > 0 ? Number(reminderDaysBefore) : 0,
+      },
+      authHeaders
+    );
+    const data = res.data?.data;
+    setStatusMessage(`Deadline reminders sent: ${data?.sent ?? 0}/${data?.recipients ?? 0}`);
+  };
+
   return (
-    <div className="min-h-screen bg-background">
+    <div className="min-h-screen bg-background ambient-canvas">
       <Header />
       <main className="max-w-6xl mx-auto px-4 py-6 space-y-6">
         <div className="flex flex-col sm:flex-row gap-3">
           <select
-            className="border border-border rounded-md px-3 py-2 bg-background"
+            className="border border-border rounded-md px-3 py-2 bg-background touch-target dotted-panel"
             value={selectedEventId ?? ""}
             onChange={(e) => setSelectedEventId(Number(e.target.value))}
           >
@@ -270,16 +330,8 @@ function OrganizerDashboard() {
               </option>
             ))}
           </select>
-          <Input
-            type="number"
-            min={1}
-            value={targetTeamSize}
-            onChange={(e) => setTargetTeamSize(e.target.value)}
-            placeholder="Target team size"
-            className="max-w-[180px]"
-          />
-          <Button onClick={() => selectedEventId && refreshAll()}>Refresh</Button>
-          <Button variant="outline" onClick={exportTeamSheet}>Export Final Team Sheet</Button>
+          <Button className="touch-target" onClick={() => selectedEventId && refreshAll()}>Refresh</Button>
+          <Button className="touch-target" variant="outline" onClick={exportTeamSheet}>Export Final Team Sheet</Button>
         </div>
 
         {selectedEvent && (
@@ -288,12 +340,12 @@ function OrganizerDashboard() {
           </p>
         )}
 
-        {statusMessage && <p className="text-sm">{statusMessage}</p>}
+        {statusMessage && <p className="status-chip">{statusMessage}</p>}
 
         {pageLoading ? (
           <section className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-3 fade-in-soft">
             {Array.from({ length: 5 }).map((_, index) => (
-              <Card key={index}>
+              <Card key={index} className="glass-card">
                 <CardContent className="p-4 space-y-2">
                   <Skeleton className="h-3 w-20" />
                   <Skeleton className="h-8 w-16" />
@@ -318,12 +370,12 @@ function OrganizerDashboard() {
           </section>
         )}
 
-        <Card>
+        <Card className="glass-card">
           <CardContent className="p-4 space-y-2">
             <h2 className="text-lg font-semibold">Open Spots By Team</h2>
             <div className="space-y-2">
               {(metrics?.openSpotsByTeam ?? []).map((team) => (
-                <div key={team.teamId} className="flex items-center justify-between text-sm border-b border-border pb-1">
+                <div key={team.teamId} className="flex items-center justify-between text-sm border-b border-border border-dotted pb-1">
                   <span>{team.teamName}</span>
                   <span>{team.memberCount} members, {team.openSpots} open</span>
                 </div>
@@ -335,27 +387,65 @@ function OrganizerDashboard() {
           </CardContent>
         </Card>
 
+        <Card className="glass-card">
+          <CardContent className="p-4 space-y-3">
+            <div className="flex items-center justify-between">
+              <h2 className="text-lg font-semibold">Auto-Suggested Matches</h2>
+              <Button className="touch-target" variant="outline" size="sm" onClick={() => selectedEventId && loadSuggestedMatches(selectedEventId)}>
+                Refresh Suggestions
+              </Button>
+            </div>
+            {suggestedMatches.length === 0 ? (
+              <p className="text-sm text-muted-foreground">No suggested matches right now.</p>
+            ) : (
+              <div className="space-y-2 max-h-72 overflow-y-auto">
+                {suggestedMatches.map((match, index) => (
+                  <div key={`${match.userId}-${match.teamId}-${index}`} className="border border-border border-dotted rounded-md p-2 bg-cyan-50/40 dark:bg-cyan-900/20">
+                    <p className="text-sm font-medium">
+                      {match.userName} ({match.userEmail}) → {match.teamName} (#{match.teamId})
+                    </p>
+                    <p className="text-xs text-muted-foreground">
+                      Score: {match.score} | Open slots: {match.teamOpenSlots}
+                    </p>
+                    {match.userPreferredRole && (
+                      <p className="text-xs text-muted-foreground">Preferred role: {match.userPreferredRole}</p>
+                    )}
+                    {match.teamRolesLookingFor?.length > 0 && (
+                      <p className="text-xs text-muted-foreground">
+                        Team needs: {match.teamRolesLookingFor.join(", ")}
+                      </p>
+                    )}
+                    {match.reasons?.length > 0 && (
+                      <p className="text-xs text-muted-foreground">Reasons: {match.reasons.join(", ")}</p>
+                    )}
+                  </div>
+                ))}
+              </div>
+            )}
+          </CardContent>
+        </Card>
+
         <section className="grid grid-cols-1 lg:grid-cols-2 gap-4">
-          <Card>
+          <Card className="glass-card">
             <CardContent className="p-4 space-y-3">
               <h2 className="text-lg font-semibold">Bulk Import Participants</h2>
               <p className="text-xs text-muted-foreground">CSV format: `email`</p>
               <Input type="file" accept=".csv,text/csv" onChange={(e) => setParticipantsFile(e.target.files?.[0] ?? null)} />
-              <Button onClick={uploadParticipantsCsv} disabled={!participantsFile}>Import Participants CSV</Button>
+              <Button className="touch-target" onClick={uploadParticipantsCsv} disabled={!participantsFile}>Import Participants CSV</Button>
             </CardContent>
           </Card>
 
-          <Card>
+          <Card className="glass-card">
             <CardContent className="p-4 space-y-3">
               <h2 className="text-lg font-semibold">Bulk Import Teams</h2>
               <p className="text-xs text-muted-foreground">CSV format: `team_name,member_emails` where member emails are separated by `;`</p>
               <Input type="file" accept=".csv,text/csv" onChange={(e) => setTeamsFile(e.target.files?.[0] ?? null)} />
-              <Button onClick={uploadTeamsCsv} disabled={!teamsFile}>Import Teams CSV</Button>
+              <Button className="touch-target" onClick={uploadTeamsCsv} disabled={!teamsFile}>Import Teams CSV</Button>
             </CardContent>
           </Card>
         </section>
 
-        <Card>
+        <Card className="glass-card">
           <CardContent className="p-4 space-y-3">
             <h2 className="text-lg font-semibold">Join Requests</h2>
             {joinRequests.length === 0 ? (
@@ -363,7 +453,7 @@ function OrganizerDashboard() {
             ) : (
               <div className="space-y-2">
                 {joinRequests.map((request, index) => (
-                  <div key={`${request.teamId}-${request.userId}-${index}`} className="flex items-center justify-between border border-border rounded-md p-2">
+                  <div key={`${request.teamId}-${request.userId}-${index}`} className="flex items-center justify-between border border-border border-dotted rounded-md p-2">
                     <div className="text-sm">
                       <p>
                         <span className="font-medium">{request.firstName} {request.lastName}</span> ({request.userEmail})
@@ -371,8 +461,8 @@ function OrganizerDashboard() {
                       <p className="text-muted-foreground">Team: {request.teamName} (#{request.teamId})</p>
                     </div>
                     <div className="flex gap-2">
-                      <Button size="sm" onClick={() => approveRequest(request.teamId, request.userId)}>Approve</Button>
-                      <Button size="sm" variant="destructive" onClick={() => rejectRequest(request.teamId, request.userId)}>Reject</Button>
+                      <Button className="touch-target" size="sm" onClick={() => approveRequest(request.teamId, request.userId)}>Approve</Button>
+                      <Button className="touch-target" size="sm" variant="destructive" onClick={() => rejectRequest(request.teamId, request.userId)}>Reject</Button>
                     </div>
                   </div>
                 ))}
@@ -381,31 +471,62 @@ function OrganizerDashboard() {
           </CardContent>
         </Card>
 
+        <section className="grid grid-cols-1 lg:grid-cols-2 gap-4">
+          <Card className="glass-card">
+            <CardContent className="p-4 space-y-2">
+              <h2 className="text-lg font-semibold">Nudge Campaign (Unmatched Users)</h2>
+              <Input placeholder="Subject (optional)" value={nudgeSubject} onChange={(e) => setNudgeSubject(e.target.value)} />
+              <Input placeholder="Message (optional)" value={nudgeMessage} onChange={(e) => setNudgeMessage(e.target.value)} />
+              <Button className="touch-target" onClick={sendNudgeCampaign}>Send Nudges</Button>
+            </CardContent>
+          </Card>
+          <Card className="glass-card">
+            <CardContent className="p-4 space-y-2">
+              <h2 className="text-lg font-semibold">Deadline Reminder Flow</h2>
+              <Input
+                type="number"
+                min={0}
+                placeholder="Days before deadline"
+                value={reminderDaysBefore}
+                onChange={(e) => setReminderDaysBefore(e.target.value)}
+              />
+              <Input placeholder="Subject (optional)" value={reminderSubject} onChange={(e) => setReminderSubject(e.target.value)} />
+              <Input placeholder="Message (optional)" value={reminderMessage} onChange={(e) => setReminderMessage(e.target.value)} />
+              <Button className="touch-target" onClick={sendDeadlineReminders}>Send Reminders</Button>
+            </CardContent>
+          </Card>
+        </section>
+
         <section className="grid grid-cols-1 lg:grid-cols-3 gap-4">
-          <Card>
+          <Card className="glass-card">
             <CardContent className="p-4 space-y-2">
               <h2 className="text-lg font-semibold">Edit Team</h2>
               <Input placeholder="Team ID" value={editTeamId} onChange={(e) => setEditTeamId(e.target.value)} />
               <Input placeholder="New Team Name" value={editTeamName} onChange={(e) => setEditTeamName(e.target.value)} />
               <Input
+                placeholder="Roles looking for (comma separated)"
+                value={editRolesLookingFor}
+                onChange={(e) => setEditRolesLookingFor(e.target.value)}
+              />
+              <Input
                 placeholder="Member user IDs (comma separated)"
                 value={editTeamMemberIds}
                 onChange={(e) => setEditTeamMemberIds(e.target.value)}
               />
-              <Button onClick={submitTeamEdit}>Save Team</Button>
+              <Button className="touch-target" onClick={submitTeamEdit}>Save Team</Button>
             </CardContent>
           </Card>
 
-          <Card>
+          <Card className="glass-card">
             <CardContent className="p-4 space-y-2">
               <h2 className="text-lg font-semibold">Merge Teams</h2>
               <Input placeholder="From Team ID" value={mergeFromTeamId} onChange={(e) => setMergeFromTeamId(e.target.value)} />
               <Input placeholder="To Team ID" value={mergeToTeamId} onChange={(e) => setMergeToTeamId(e.target.value)} />
-              <Button onClick={submitMergeTeams}>Merge</Button>
+              <Button className="touch-target" onClick={submitMergeTeams}>Merge</Button>
             </CardContent>
           </Card>
 
-          <Card>
+          <Card className="glass-card">
             <CardContent className="p-4 space-y-2">
               <h2 className="text-lg font-semibold">Split Team</h2>
               <Input placeholder="Source Team ID" value={splitTeamId} onChange={(e) => setSplitTeamId(e.target.value)} />
@@ -415,17 +536,23 @@ function OrganizerDashboard() {
                 value={splitMemberIds}
                 onChange={(e) => setSplitMemberIds(e.target.value)}
               />
-              <Button onClick={submitSplitTeam}>Split</Button>
+              <Button className="touch-target" onClick={submitSplitTeam}>Split</Button>
             </CardContent>
           </Card>
         </section>
 
-        <Card>
+        <Card className="glass-card">
           <CardContent className="p-4 space-y-2">
             <h2 className="text-lg font-semibold">Teams In Event</h2>
             {teams.map((team) => (
-              <div key={team.teamId} className="border border-border rounded-md p-2">
+              <div key={team.teamId} className="border border-border border-dotted rounded-md p-2">
                 <p className="font-medium">{team.teamName} (#{team.teamId})</p>
+                <p className="text-xs text-muted-foreground">
+                  Open slots: {team.openSlots ?? 0}
+                </p>
+                <p className="text-xs text-muted-foreground">
+                  Roles needed: {team.rolesLookingFor?.join(", ") || "Not specified"}
+                </p>
                 <p className="text-xs text-muted-foreground">
                   Members: {team.members?.map((member) => `${member.firstName} ${member.lastName} (#${member.id})`).join(", ") || "None"}
                 </p>
@@ -434,7 +561,7 @@ function OrganizerDashboard() {
           </CardContent>
         </Card>
 
-        <Card>
+        <Card className="glass-card">
           <CardContent className="p-4 space-y-2">
             <h2 className="text-lg font-semibold">User Directory</h2>
             <p className="text-xs text-muted-foreground">Use IDs below for edit/split actions.</p>
@@ -442,6 +569,7 @@ function OrganizerDashboard() {
               {allUsers.map((user) => (
                 <p key={user.id} className="text-sm">
                   #{user.id} - {user.firstName} {user.lastName} ({user.email})
+                  {user.preferredRole ? ` | role: ${user.preferredRole}` : ""}
                 </p>
               ))}
             </div>

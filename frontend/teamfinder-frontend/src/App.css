@@ -23,3 +23,51 @@ html, body, #root {
 .fade-in-soft {
   animation: fadeInSoft 220ms ease-out;
 }
+
+.ambient-canvas {
+  position: relative;
+  isolation: isolate;
+}
+
+.ambient-canvas::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  background:
+    radial-gradient(circle at 12% 8%, rgba(20, 184, 166, 0.1), transparent 35%),
+    radial-gradient(circle at 86% 16%, rgba(249, 115, 22, 0.09), transparent 30%),
+    linear-gradient(180deg, rgba(2, 132, 199, 0.03), transparent 40%);
+  pointer-events: none;
+}
+
+.glass-card {
+  background: color-mix(in oklab, hsl(var(--card)) 88%, white 12%);
+  backdrop-filter: blur(10px);
+  border: 1px solid color-mix(in oklab, hsl(var(--border)) 72%, rgb(20 184 166 / 0.35) 28%);
+  box-shadow: 0 10px 26px -18px rgba(15, 23, 42, 0.3);
+}
+
+.dotted-panel {
+  border-style: dotted;
+  border-width: 1px;
+  border-color: color-mix(in oklab, hsl(var(--border)) 70%, rgb(2 132 199 / 0.55) 30%);
+}
+
+.status-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  padding: 0.3rem 0.6rem;
+  border-radius: 9999px;
+  font-size: 0.75rem;
+  line-height: 1rem;
+  color: rgb(2 132 199);
+  background: rgba(2, 132, 199, 0.1);
+  border: 1px solid rgba(2, 132, 199, 0.25);
+}
+
+.touch-target {
+  min-height: 44px;
+  touch-action: manipulation;
+}

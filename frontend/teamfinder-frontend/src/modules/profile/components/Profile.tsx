@@ -108,6 +108,7 @@ function Profile() {
       email: formData.get("email"),
       bio: formData.get("bio"),
       skills: formData.get("skills")?.toString().split(",").map(skill => skill.trim()),
+      preferredRole: formData.get("preferredRole"),
     };
     try {
       const token = localStorage.getItem("token");
@@ -327,6 +328,15 @@ function Profile() {
                               defaultValue={`${user?.skills?.join(", ") || ""}`}
                             />
                           </div>
+                          <div className="grid gap-2">
+                            <Label htmlFor="preferredRole-1">Preferred Role</Label>
+                            <Input
+                              id="preferredRole-1"
+                              name="preferredRole"
+                              placeholder="e.g., backend, designer, product manager"
+                              defaultValue={`${user?.preferredRole || ""}`}
+                            />
+                          </div>
                         </div>
                         <DialogFooter>
                           <DialogClose asChild>
@@ -350,6 +360,11 @@ function Profile() {
             {/* Skills Section */}
             <div className="border border-border rounded-lg bg-card p-4 sm:p-6 md:p-8 mb-6 sm:mb-8">
               <h2 className="text-lg sm:text-xl font-semibold mb-3 sm:mb-4">Skills</h2>
+              {user?.preferredRole && (
+                <p className="text-sm text-muted-foreground mb-3">
+                  Preferred role: <span className="font-medium text-foreground">{user.preferredRole}</span>
+                </p>
+              )}
               <div className="flex flex-wrap gap-2">
                 {user?.skills && user.skills.length > 0 ? (
                   user.skills.map((skill, index) => (
