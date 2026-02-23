@@ -12,6 +12,7 @@ import com.project.TeamFinder.dto.auth.WaitlistRequestDTO;
 import com.project.TeamFinder.dto.responses.ApiResponse;
 import com.project.TeamFinder.projection.UserProjection;
 import com.project.TeamFinder.service.ImageHandlerService;
+import com.project.TeamFinder.service.OrganizerAccessService;
 import com.project.TeamFinder.service.UserService;
 
 import org.springframework.security.core.Authentication;
@@ -43,10 +44,12 @@ public class UserController {
 
     private final UserService userService;
     private final ImageHandlerService imageHandlerService;
+    private final OrganizerAccessService organizerAccessService;
 
-    public UserController(UserService userService, ImageHandlerService imageHandlerService) {
+    public UserController(UserService userService, ImageHandlerService imageHandlerService, OrganizerAccessService organizerAccessService) {
         this.userService = userService;
         this.imageHandlerService = imageHandlerService;
+        this.organizerAccessService = organizerAccessService;
     }
 
     @PostMapping("/waitlist")
@@ -86,6 +89,22 @@ public class UserController {
                             true,
                             users,
                             "all users"));
+    }
+
+    @GetMapping("/is-organizer")
+    public ResponseEntity<ApiResponse<Boolean>> isOrganizer(@AuthenticationPrincipal UserDetails userDetails) {
+        if (userDetails == null || userDetails.getUsername() == null) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
+                    .body(new ApiResponse<>(
+                            false,
+                            false,
+                            "Unauthorized"));
+        }
+        boolean organizer = organizerAccessService.isOrganizer(userDetails.getUsername());
+        return ResponseEntity.ok(new ApiResponse<>(
+                true,
+                organizer,
+                "organizer access"));
     }
 
     @GetMapping("/profile")

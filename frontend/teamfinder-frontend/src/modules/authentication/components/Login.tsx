@@ -37,7 +37,7 @@ function Login() {
                 localStorage.setItem("role", response.data.data.role);
                 startTokenRefreshTimer();
                 signIn();
-                navigate("/launch", { state: { email } });
+                navigate("/", { state: { email } });
             } else {
                 setError("Incorrect Credentials: " + message);
             }

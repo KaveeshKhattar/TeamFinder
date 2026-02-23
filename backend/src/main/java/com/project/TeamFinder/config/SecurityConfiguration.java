@@ -43,7 +43,7 @@ public class SecurityConfiguration {
                         // Secure selected /api endpoints for authenticated users only
                         .requestMatchers("/api/*").permitAll()
                         // Any other /api/** endpoint will fall through to the default rule below
-                        .requestMatchers("/users/checkIfUserisCollegeRepresentative").hasRole("REPRESENTATIVE")
+                        .requestMatchers("/users/is-organizer").authenticated()
                         .requestMatchers("/ws/**").permitAll()
                         .anyRequest().authenticated()
                 )

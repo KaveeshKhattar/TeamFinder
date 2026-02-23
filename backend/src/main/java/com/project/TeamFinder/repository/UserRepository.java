@@ -20,6 +20,7 @@ public interface UserRepository extends JpaRepository<User, Long> {
     Boolean existsByEmailContainingIgnoreCase(String email);
 
     List<UserProjection> findAllByIdIn(List<Long> userIds);
+    List<User> findAllByEmailIn(List<String> emails);
 
     @Modifying
     @Transactional

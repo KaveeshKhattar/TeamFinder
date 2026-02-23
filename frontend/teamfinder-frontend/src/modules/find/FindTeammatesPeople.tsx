@@ -18,6 +18,8 @@ import { Button } from "@/components/ui/button";
 import { useNavigate } from 'react-router-dom';
 import { ChatRoom } from "@/types";
 import { useCurrentUser } from "../core/hooks/useCurrentUser";
+import AuthRequiredDialog from "../core/components/AuthRequiredDialog";
+import { Skeleton } from "../../components/ui/skeleton";
 
 type User = {
   id: number;
@@ -33,14 +35,18 @@ function FindTeammatesPeople() {
   const { eventId } = useParams<{ eventId: string }>();
   // Track interest state per user by id
   const [interestedInUser, setInterestedInUser] = useState<{ [userId: number]: boolean }>({});
+  const [usersLoading, setUsersLoading] = useState(true);
+  const [leadsLoading, setLeadsLoading] = useState(true);
 
   const token = localStorage.getItem("token");
+  const [authDialogOpen, setAuthDialogOpen] = useState(false);
   const navigate = useNavigate();
   const { user } = useCurrentUser();
   const loggedInUserId = user?.id ?? null;
 
   const fetchInterestedUsers = useCallback(async () => {
     if (!eventId) return; // 🔒 guard
+    setUsersLoading(true);
 
     try {
       const res = await axios.get(
@@ -57,6 +63,8 @@ function FindTeammatesPeople() {
     } catch (err) {
       console.error("Failed to fetch interested users", err);
       setUsers([]); // fail-safe
+    } finally {
+      setUsersLoading(false);
     }
   }, [eventId, token]);
 
@@ -67,7 +75,11 @@ function FindTeammatesPeople() {
   // get leads
   // Fetch users that the logged-in team is interested in ("leads")
   const fetchLeads = useCallback(async () => {
-    if (!eventId || !loggedInUserId || !token) return;
+    if (!eventId || !loggedInUserId || !token) {
+      setLeadsLoading(false);
+      return;
+    }
+    setLeadsLoading(true);
 
     try {
       // Get a list of user projections this user has favorited for this event
@@ -94,6 +106,8 @@ function FindTeammatesPeople() {
       console.error("Failed to fetch leads", err);
       // Initialize as empty object if fetch fails
       setInterestedInUser({});
+    } finally {
+      setLeadsLoading(false);
     }
   }, [eventId, loggedInUserId, token]);
 
@@ -102,6 +116,11 @@ function FindTeammatesPeople() {
   }, [fetchLeads]);
 
   const handleToggle = async (targetUserId: number) => {
+    if (!token) {
+      setAuthDialogOpen(true);
+      return;
+    }
+
     const previousState = !!interestedInUser[targetUserId];
     const nextState = !previousState;
 
@@ -150,6 +169,11 @@ function FindTeammatesPeople() {
   };
         
   const handleChatClick = async (otherUserId: number): Promise<void> => {
+    if (!token) {
+      setAuthDialogOpen(true);
+      return;
+    }
+
     const res = await axios.post<ChatRoom>(
       `${BASE_URL}/api/chats/start`,
       {otherUserId},
@@ -169,6 +193,12 @@ function FindTeammatesPeople() {
   return (
     <div className="min-h-screen bg-background">
       <Header />
+      <AuthRequiredDialog
+        open={authDialogOpen}
+        onOpenChange={setAuthDialogOpen}
+        title="Log in to chat or favorite"
+        description="Sign up or log in to favorite participants and start chats."
+      />
 
       <main className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-8 lg:py-12">
         <div className="mb-6 sm:mb-8">
@@ -178,7 +208,23 @@ function FindTeammatesPeople() {
           </p>
         </div>
 
-        {users.length === 0 ? (
+        {usersLoading || leadsLoading ? (
+          <div className="w-full max-w-2xl space-y-3 fade-in-soft">
+            {Array.from({ length: 3 }).map((_, index) => (
+              <Card key={index} className="border border-border">
+                <CardContent className="p-4 sm:p-6 space-y-4">
+                  <div className="flex items-center gap-3">
+                    <Skeleton className="w-12 h-12 rounded-full" />
+                    <Skeleton className="h-4 w-40" />
+                  </div>
+                  <Skeleton className="h-4 w-full" />
+                  <Skeleton className="h-4 w-5/6" />
+                  <Skeleton className="h-9 w-full" />
+                </CardContent>
+              </Card>
+            ))}
+          </div>
+        ) : users.length === 0 ? (
           <div className="text-center py-12">
             <p className="text-muted-foreground">No interested users found for this event.</p>
           </div>

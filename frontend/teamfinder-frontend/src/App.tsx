@@ -6,6 +6,7 @@ import 'react-image-crop/dist/ReactCrop.css'
 import { ThemeProvider } from './components/themeProvider'
 
 import { AuthProvider } from './modules/core/components/AuthContext'
+import OrganizerRouteGuard from './modules/core/components/OrganizerRouteGuard'
 
 const LandingPagev1 = lazy(() => import('./modules/landingPage/components/LandingPagev1'))
 const Login = lazy(() => import('./modules/authentication/components/Login'))
@@ -23,6 +24,7 @@ const FindActualTeams = lazy(() => import('./modules/teams/components/FindActual
 const AllChatsPage = lazy(() =>
   import('./modules/chat/AllChatsPage').then((module) => ({ default: module.AllChatsPage }))
 )
+const OrganizerDashboard = lazy(() => import('./modules/organizer/components/OrganizerDashboard'))
 
 function App() {
 
@@ -57,6 +59,11 @@ function App() {
 
               {/* Chats */}
               <Route path="/chats" element={<AllChatsPage />} />
+              <Route path="/organizer" element={
+                <OrganizerRouteGuard>
+                  <OrganizerDashboard />
+                </OrganizerRouteGuard>
+              } />
 
             </Routes>
           </Suspense>

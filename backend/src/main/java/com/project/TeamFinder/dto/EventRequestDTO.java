@@ -3,14 +3,10 @@ package com.project.TeamFinder.dto;
 import java.time.OffsetDateTime;
 
 public class EventRequestDTO {
-    // private Long collegeId;
     private String eventName;
-    // private String eventDate;
-    // private String eventTime;
     private OffsetDateTime eventTime;
-    private String eventVenue; // Adjust type if needed
+    private String eventVenue;
     private Long size;
-    // private String eventDescription;
 
     public Long getTeamSize() {
         return size;
@@ -19,16 +15,6 @@ public class EventRequestDTO {
     public void setTeamSize(Long size) {
         this.size = size;
     }
-
-    // public String getEventDescription() {
-    //     return eventDescription;
-    // }
-
-    // public void setEventDescription(String eventDescription) {
-    //     this.eventDescription = eventDescription;
-    // }
-
-    // Getters and Setters
 
     public String getEventName() {
         return eventName;

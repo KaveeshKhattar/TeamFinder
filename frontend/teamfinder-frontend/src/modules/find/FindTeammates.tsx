@@ -1,6 +1,6 @@
 import { Button } from "../../components/ui/button";
 import { Calendar, MapPin, ArrowRight } from "lucide-react";
-import { Link } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import Header from "../landingPage/components/Header";
 import {
     Carousel,
@@ -11,9 +11,14 @@ import {
 } from "../../components/ui/carousel";
 import { Card, CardContent } from "../../components/ui/card";
 import { useEvents } from "../core/hooks/useEvents";
+import { useState } from "react";
+import AuthRequiredDialog from "../core/components/AuthRequiredDialog";
+import { Skeleton } from "../../components/ui/skeleton";
 
 function FindTeammates() {
-    const { events: allEvents } = useEvents();
+    const { events: allEvents, loading: eventsLoading, error: eventsError } = useEvents();
+    const [authDialogOpen, setAuthDialogOpen] = useState(false);
+    const navigate = useNavigate();
 
     const formatDate = (dateString: string): string => {
         const date = new Date(dateString);
@@ -24,9 +29,23 @@ function FindTeammates() {
         });
     };
 
+    const handleViewInterestedUsers = (eventId: number) => {
+        if (!localStorage.getItem("token")) {
+            setAuthDialogOpen(true);
+            return;
+        }
+        navigate(`events/${eventId}`);
+    };
+
     return (
         <div className="min-h-screen bg-background">
             <Header />
+            <AuthRequiredDialog
+                open={authDialogOpen}
+                onOpenChange={setAuthDialogOpen}
+                title="Log in to view interested users"
+                description="Sign up or log in to view event participants and connect with potential teammates."
+            />
 
       <main className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-8 lg:py-12">
         <div className="mb-6 sm:mb-8">
@@ -38,6 +57,22 @@ function FindTeammates() {
 
                 {/* Events Carousel */}
                 <div className="flex items-center justify-center">
+                    {eventsLoading ? (
+                        <div className="w-full max-w-2xl px-10 space-y-3 fade-in-soft">
+                            {Array.from({ length: 3 }).map((_, index) => (
+                                <Card key={index} className="border border-border">
+                                    <CardContent className="p-4 sm:p-6 space-y-4">
+                                        <Skeleton className="h-6 w-48" />
+                                        <Skeleton className="h-4 w-full" />
+                                        <Skeleton className="h-4 w-4/5" />
+                                        <Skeleton className="h-10 w-full" />
+                                    </CardContent>
+                                </Card>
+                            ))}
+                        </div>
+                    ) : eventsError ? (
+                        <p className="text-sm text-destructive fade-in-soft">Failed to load events. Please refresh.</p>
+                    ) : (
                     <Carousel className="w-full max-w-2xl px-10">
                         <CarouselContent>
                             {allEvents.map((event) => (
@@ -98,12 +133,14 @@ function FindTeammates() {
                                                 </div>
 
                                                 <div className="mt-auto pt-4 border-t border-border">
-                                                    <Link to={`events/${event.id}`} className="block">
-                                                        <Button className="w-full" variant="default">
-                                                            View Interested Users
-                                                            <ArrowRight className="w-4 h-4 ml-2" />
-                                                        </Button>
-                                                    </Link>
+                                                    <Button
+                                                        className="w-full"
+                                                        variant="default"
+                                                        onClick={() => handleViewInterestedUsers(event.id)}
+                                                    >
+                                                        View Interested Users
+                                                        <ArrowRight className="w-4 h-4 ml-2" />
+                                                    </Button>
                                                 </div>
                                             </CardContent>
                                         </Card>
@@ -114,6 +151,7 @@ function FindTeammates() {
                         <CarouselPrevious />
                         <CarouselNext />
                     </Carousel>
+                    )}
                 </div>
             </main>
         </div>

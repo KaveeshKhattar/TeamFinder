@@ -3,6 +3,7 @@ import { useAuth } from "../../core/hooks/useAuth";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { Button } from "../../../components/ui/button";
 import { ModeToggle } from "../../../components/modeToggle";
+import { useOrganizerAccess } from "../../core/hooks/useOrganizerAccess";
 
 function Header() {
   const [isOpen, setIsOpen] = useState(false);
@@ -11,6 +12,7 @@ function Header() {
   const navigate = useNavigate();
   const location = useLocation();
   const isOnProfilePage = location.pathname === "/profile";
+  const { isOrganizer } = useOrganizerAccess();
 
   const toggleMenu = () => {
     setIsOpen(!isOpen);
@@ -39,7 +41,7 @@ function Header() {
             <i className={`fa-solid ${isOpen ? "fa-xmark" : "fa-bars"}`}></i>
           </button>
           <h2>
-            <Link to="/launch">
+            <Link to="/">
               <span className="text-xl sm:text-2xl font-bold text-foreground">
                 TeamFinder
               </span>
@@ -53,6 +55,11 @@ function Header() {
         {/* Right Section with Profile/Sign In Links */}
         <div className="flex items-center space-x-2">
           <ModeToggle />
+          {isSignedIn && isOrganizer && !isOnProfilePage && (
+            <Link to="/organizer">
+              <Button size="sm" variant="outline" className="hidden sm:inline-flex">Organizer</Button>
+            </Link>
+          )}
           {isSignedIn && !isOnProfilePage && (
             <Link to="/profile">
               <Button size="sm" className="hidden sm:inline-flex">Profile</Button>
@@ -93,6 +100,11 @@ function Header() {
                 <p className="dark:text-white">Profile</p>
                 </Button>
               </Link>
+              {isOrganizer && <Link to="/organizer" onClick={() => setIsOpen(false)} className="w-full">
+              <Button variant="outline" className="w-full min-h-[44px] underline">
+                <p className="dark:text-white">Organizer dashboard</p>
+                </Button>
+              </Link>}
               <Link to="/show-interest" onClick={() => setIsOpen(false)} className="w-full">
               <Button variant="outline" className="w-full min-h-[44px] underline">
                 <p className="dark:text-white">Show your interest</p>

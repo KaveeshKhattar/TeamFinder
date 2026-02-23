@@ -11,9 +11,10 @@ import {
 } from "../../../components/ui/carousel";
 import { Card, CardContent } from "../../../components/ui/card";
 import { useEvents } from "../../core/hooks/useEvents";
+import { Skeleton } from "../../../components/ui/skeleton";
 
 function FindTeammates() {
-    const { events: allEvents } = useEvents();
+    const { events: allEvents, loading: eventsLoading, error: eventsError } = useEvents();
 
     const formatDate = (dateString: string): string => {
         const date = new Date(dateString);
@@ -38,6 +39,22 @@ function FindTeammates() {
 
                 {/* Events Carousel */}
                 <div className="flex items-center justify-center">
+                {eventsLoading ? (
+                <div className="w-full max-w-2xl px-10 space-y-3 fade-in-soft">
+                    {Array.from({ length: 3 }).map((_, index) => (
+                        <Card key={index} className="border border-border">
+                            <CardContent className="p-4 sm:p-6 space-y-4">
+                                <Skeleton className="h-6 w-48" />
+                                <Skeleton className="h-4 w-full" />
+                                <Skeleton className="h-4 w-4/5" />
+                                <Skeleton className="h-10 w-full" />
+                            </CardContent>
+                        </Card>
+                    ))}
+                </div>
+                ) : eventsError ? (
+                <p className="text-sm text-destructive fade-in-soft">Failed to load events. Please refresh.</p>
+                ) : (
                 <Carousel className="w-full max-w-2xl px-10">
                         <CarouselContent>
                             {allEvents.map((event) => (
@@ -114,6 +131,7 @@ function FindTeammates() {
                         <CarouselPrevious />
                         <CarouselNext />
                     </Carousel>
+                )}
                 </div>
             </main>
         </div>

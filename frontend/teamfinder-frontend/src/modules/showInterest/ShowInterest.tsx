@@ -15,15 +15,22 @@ import { Card, CardContent } from "../../components/ui/card";
 
 import { Toggle } from "../../components/ui/toggle";
 import { useEvents } from "../core/hooks/useEvents";
+import AuthRequiredDialog from "../core/components/AuthRequiredDialog";
+import { Skeleton } from "../../components/ui/skeleton";
 
 function ShowInterest() {
-  const { events: allEvents } = useEvents();
+  const { events: allEvents, loading: eventsLoading, error: eventsError } = useEvents();
   const [interested, setInterested] = useState<{ [eventId: number]: boolean }>({});
+  const [authDialogOpen, setAuthDialogOpen] = useState(false);
+  const [interestLoading, setInterestLoading] = useState(true);
 
   const fetchAllInterestedEventsForUser = useCallback(async () => {
     try {
       const token = localStorage.getItem("token");
-      if (!token) return;
+      if (!token) {
+        setInterestLoading(false);
+        return;
+      }
       const response = await axios.get(`${BASE_URL}/api/interested-events`, {
         headers: {
           Authorization: `Bearer ${token}`,
@@ -39,12 +46,20 @@ function ShowInterest() {
       }
     } catch (err) {
       console.error("Failed to fetch interested events:", err);
+    } finally {
+      setInterestLoading(false);
     }
   }, []);
 
   useEffect(() => {
     fetchAllInterestedEventsForUser();
   }, [fetchAllInterestedEventsForUser]);
+
+  useEffect(() => {
+    if (!localStorage.getItem("token")) {
+      setAuthDialogOpen(true);
+    }
+  }, []);
 
   const formatDate = (dateString: string): string => {
     const date = new Date(dateString);
@@ -58,7 +73,10 @@ function ShowInterest() {
   // Handler for toggling interest
   const handleToggle = async (eventId: number) => {
     const token = localStorage.getItem("token");
-    if (!token) return;
+    if (!token) {
+      setAuthDialogOpen(true);
+      return;
+    }
 
     const previousState = !!interested[eventId];
     const nextState = !previousState;
@@ -92,6 +110,12 @@ function ShowInterest() {
   return (
     <div className="min-h-screen bg-background">
       <Header />
+      <AuthRequiredDialog
+        open={authDialogOpen}
+        onOpenChange={setAuthDialogOpen}
+        title="Log in to show interest"
+        description="Create an account or log in to mark interest in events and get matched with teams."
+      />
 
       <main className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-8 lg:py-12">
         <div className="mb-6 sm:mb-8">
@@ -103,7 +127,23 @@ function ShowInterest() {
 
         {/* Events Carousel */}
         <div className="flex items-center justify-center">
-          <Carousel className="w-full max-w-2xl px-10">
+          {eventsLoading || interestLoading ? (
+            <div className="w-full max-w-2xl px-10 space-y-3 fade-in-soft">
+              {Array.from({ length: 3 }).map((_, index) => (
+                <Card key={index} className="border border-border">
+                  <CardContent className="p-4 sm:p-6 space-y-4">
+                    <Skeleton className="h-6 w-48" />
+                    <Skeleton className="h-4 w-full" />
+                    <Skeleton className="h-4 w-4/5" />
+                    <Skeleton className="h-10 w-full" />
+                  </CardContent>
+                </Card>
+              ))}
+            </div>
+          ) : eventsError ? (
+            <p className="text-sm text-destructive fade-in-soft">Failed to load events. Please refresh.</p>
+          ) : (
+          <Carousel className="w-full max-w-2xl px-10 fade-in-soft">
             <CarouselContent>
               {allEvents.map((event) => (
                 <CarouselItem key={event.id} className="">
@@ -189,6 +229,7 @@ function ShowInterest() {
             <CarouselPrevious />
             <CarouselNext />
           </Carousel>
+          )}
         </div>
       </main>
     </div>

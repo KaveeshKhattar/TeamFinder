@@ -204,7 +204,7 @@ TeamFinder uses a JWT-based authentication system with email verification. The s
    - Frontend stores tokens in localStorage
    - Starts token refresh timer
    - Updates auth context
-   - Navigates to `/launch`
+   - Navigates to `/`
 
 #### Functions Involved:
 

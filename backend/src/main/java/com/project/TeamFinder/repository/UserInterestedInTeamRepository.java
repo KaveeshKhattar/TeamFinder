@@ -31,6 +31,9 @@ public interface UserInterestedInTeamRepository extends CrudRepository<UserInter
     @Query(value = "SELECT team_id FROM user_interested_in_teams WHERE user_id = :userId", nativeQuery = true)
     List<Long> findInterestedTeamIdbyUserId(@Param("userId") Long userId);
 
+    @Query(value = "SELECT team_id, user_id FROM user_interested_in_teams WHERE team_id IN (:teamIds)", nativeQuery = true)
+    List<Object[]> findRequestsByTeamIds(@Param("teamIds") List<Long> teamIds);
+
     @Query(value = """
                 SELECT t.id
                 FROM teams t
@@ -44,4 +47,9 @@ public interface UserInterestedInTeamRepository extends CrudRepository<UserInter
     List<Number> findInterestedTeamIdsByUserAndEvent(
             @Param("userId") Long userId,
             @Param("eventId") Long eventId);
+
+    @Modifying
+    @Transactional
+    @Query(value = "UPDATE user_interested_in_teams SET team_id = :toTeamId WHERE team_id = :fromTeamId", nativeQuery = true)
+    void moveRequestsToAnotherTeam(@Param("fromTeamId") Long fromTeamId, @Param("toTeamId") Long toTeamId);
 }

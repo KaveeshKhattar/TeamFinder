@@ -1,6 +1,6 @@
 import { useState } from "react";
 import Header from "../../landingPage/components/Header";
-import { useLocation, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import { Input } from "../../../components/ui/input";
 import { Button } from "../../../components/ui/button";
@@ -8,9 +8,7 @@ import { BASE_URL } from "../../../config";
 
 function MakeEvent() {
     
-    const location = useLocation();
     const navigate = useNavigate();
-    const { collegeId } = location.state;
 
     const [eventName, setEventName] = useState("");
     const [eventDate, setEventDate] = useState("");
@@ -28,9 +26,9 @@ function MakeEvent() {
             return; // Prevent submission if team size is invalid
         }
         try {
-            console.log("Starting...", collegeId, eventName, eventDate, eventTime, eventVenue, parsedTeamSize, eventDescription);
+            console.log("Starting...", eventName, eventDate, eventTime, eventVenue, parsedTeamSize, eventDescription);
             const response = await axios.post(`${BASE_URL}/api/events/createEvent`, {
-                collegeId, eventName, eventDate, eventTime, eventVenue, teamSize: parsedTeamSize, eventDescription
+                eventName, eventDate, eventTime, eventVenue, teamSize: parsedTeamSize, eventDescription
             }, {
                 headers: {
                     Authorization: `Bearer ${token}`

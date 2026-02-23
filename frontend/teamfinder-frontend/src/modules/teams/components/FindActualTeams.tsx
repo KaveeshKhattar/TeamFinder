@@ -16,6 +16,8 @@ import { Heart, MessageCircle } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { ChatRoom } from "@/types";
 import { useCurrentUser } from "@/modules/core/hooks/useCurrentUser";
+import AuthRequiredDialog from "@/modules/core/components/AuthRequiredDialog";
+import { Skeleton } from "@/components/ui/skeleton";
 
 type Team = {
     teamId: number;
@@ -37,12 +39,16 @@ function FindActualTeams() {
     const { eventId } = useParams<{ eventId: string }>();
     const token = localStorage.getItem("token");
     const [interested, setInterested] = useState<{ [teamId: number]: boolean }>({});
+    const [authDialogOpen, setAuthDialogOpen] = useState(false);
+    const [teamsLoading, setTeamsLoading] = useState(true);
+    const [interestedLoading, setInterestedLoading] = useState(true);
     const navigate = useNavigate();
     const { user } = useCurrentUser();
     const loggedInUserId = user?.id ?? null;
 
     const fetchTeams = useCallback(async () => {
         if (!eventId) return;
+        setTeamsLoading(true);
 
         try {
             const res = await axios.get(
@@ -60,6 +66,8 @@ function FindActualTeams() {
         } catch (err) {
             console.error("Failed to fetch teams", err);
             setTeams([]);
+        } finally {
+            setTeamsLoading(false);
         }
     }, [eventId, token]);
 
@@ -70,6 +78,11 @@ function FindActualTeams() {
 
     // Toggle favorite for a team
     const handleToggle = async (teamId: number) => {
+        if (!token) {
+            setAuthDialogOpen(true);
+            return;
+        }
+
         const currentState = interested[teamId] || false;
         const newState = !currentState;
 
@@ -105,6 +118,11 @@ function FindActualTeams() {
     };
 
     const handleChatClick = async (otherUserId: number): Promise<void> => {
+        if (!token) {
+            setAuthDialogOpen(true);
+            return;
+        }
+
         const res = await axios.post<ChatRoom>(
           `${BASE_URL}/api/chats/start`,
           {otherUserId},
@@ -127,9 +145,13 @@ function FindActualTeams() {
     };
 
     const fetchAllInterestedTeamsForUser = async () => {
+        setInterestedLoading(true);
         try {
           const token = localStorage.getItem("token");
-          if (!token) return;
+          if (!token) {
+            setInterestedLoading(false);
+            return;
+          }
           const response = await axios.get(`${BASE_URL}/api/interested-teams`, {
             headers: {
               Authorization: `Bearer ${token}`,
@@ -146,6 +168,8 @@ function FindActualTeams() {
           }
         } catch (err) {
           console.error("Failed to fetch interested teams:", err);
+        } finally {
+          setInterestedLoading(false);
         }
       };
 
@@ -153,6 +177,12 @@ function FindActualTeams() {
     return (
         <>
             <Header />
+            <AuthRequiredDialog
+                open={authDialogOpen}
+                onOpenChange={setAuthDialogOpen}
+                title="Log in to chat or favorite teams"
+                description="Sign up or log in to favorite teams and start conversations with team members."
+            />
             <div className="min-h-screen bg-background">
                 <main className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-8 lg:py-12">
                     <div className="mb-6 sm:mb-8">
@@ -164,7 +194,20 @@ function FindActualTeams() {
                         </p>
                     </div>
 
-                    {teams.length === 0 ? (
+                    {teamsLoading || interestedLoading ? (
+                        <div className="w-full max-w-2xl px-10 space-y-3 fade-in-soft">
+                            {Array.from({ length: 3 }).map((_, index) => (
+                                <Card key={index} className="border border-border">
+                                    <CardContent className="p-4 sm:p-6 space-y-4">
+                                        <Skeleton className="h-6 w-48" />
+                                        <Skeleton className="h-4 w-full" />
+                                        <Skeleton className="h-4 w-5/6" />
+                                        <Skeleton className="h-9 w-full" />
+                                    </CardContent>
+                                </Card>
+                            ))}
+                        </div>
+                    ) : teams.length === 0 ? (
                         <div className="text-center py-12">
                             <p className="text-muted-foreground">
                                 No interested teams found for this event.

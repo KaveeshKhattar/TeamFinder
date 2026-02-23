@@ -17,6 +17,8 @@ public interface TeamMembersRepository extends CrudRepository<TeamMembers, Long>
     
     List<TeamMembers> findByTeamId(Long teamId);
     List<TeamMembers> findByTeamIdIn(List<Long> teamIds);
+    List<TeamMembers> findByUserId(Long userId);
+    List<TeamMembers> findByUserIdIn(List<Long> userIds);
     
     @Query(value = "SELECT team_id FROM team_members WHERE user_id = :userId", nativeQuery = true)
     List<Long> findTeamIdByUserId(@Param("userId") Long userId);
@@ -26,8 +28,15 @@ public interface TeamMembersRepository extends CrudRepository<TeamMembers, Long>
     @Query(value = "INSERT INTO team_members (team_id, user_id) VALUES (:teamId, :userId)", nativeQuery = true)
     void addUserToTeam(@Param("teamId") Long teamId, @Param("userId") Long userId); 
 
+    @Modifying
+    @Transactional
     @Query(value = "DELETE FROM team_members WHERE team_id = :id", nativeQuery = true)
     void deleteMembers(@Param("id") Long id);
+
+    @Modifying
+    @Transactional
+    @Query(value = "DELETE FROM team_members WHERE team_id = :teamId AND user_id = :userId", nativeQuery = true)
+    void deleteMember(@Param("teamId") Long teamId, @Param("userId") Long userId);
 
     @Modifying
     @Transactional

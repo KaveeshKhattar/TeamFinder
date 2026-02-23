@@ -105,7 +105,7 @@ function Contents() {
                         style={{ fontSize: '18px', fontWeight: 'bold' }}
                         key="fourth"
                     >
-                        Find events across multiple colleges
+                        Find events across multiple communities
                     </motion.div>
                 )}
 
